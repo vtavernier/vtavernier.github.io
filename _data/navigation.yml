@@ -1,0 +1,41 @@
+main:
+  - title: "Posts"
+    url: /year-archive/
+  - title: "Projects"
+    url: /projects/
+  - title: "About"
+    url: /about/
+
+hyperion.rs-links:
+  - title: Source
+    children:
+      - title: Documentation
+        url: /hyperion.rs/
+      - title: Repository
+        url: https://github.com/vtavernier/hyperion.rs
+
+libshadertoy-links:
+  - title: Source
+    children:
+      - title: Documentation
+        url: /libshadertoy/
+      - title: Repository
+        url: https://github.com/vtavernier/libshadertoy
+
+efiboot-rs-links:
+  - title: Source
+    children:
+      - title: Documentation
+        url: https://docs.rs/efivar/
+      - title: Repository
+        url: https://github.com/vtavernier/efiboot-rs
+
+posts-by-links:
+  - title: Sort by
+    children:
+      - title: Year
+        url: /year-archive/
+      - title: Category
+        url: /categories/
+      - title: Tag
+        url: /tags/
