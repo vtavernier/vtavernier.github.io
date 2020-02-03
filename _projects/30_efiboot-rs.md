@@ -5,6 +5,9 @@ excerpt: Rust tools for working with EFI variables under Linux and Windows
 sidebar:
   title: Links
   nav: efiboot-rs-links
+project:
+  status: active
+  crate: efivar
 ---
 
-Under construction.
+{% include project.html %}
