@@ -6,6 +6,14 @@ main:
   - title: "About"
     url: /about/
 
+glslt-links:
+  - title: Source
+    children:
+      - title: Documentation
+        url: /glslt/
+      - title: Repository
+        url: https://github.com/vtavernier/glslt
+
 hyperion.rs-links:
   - title: Source
     children:
