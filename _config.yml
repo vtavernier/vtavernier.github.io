@@ -110,7 +110,7 @@ analytics:
 author:
   name             : "Vincent Tavernier"
   avatar           : "https://gravatar.com/avatar/f16e5442997ff8b43d7cc30d14f9613f?s=200" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Ph.D student in Computer Graphics"
+  bio              : "PhD student in Computer Graphics"
   location         : "Grenoble"
   email            :
   links:
