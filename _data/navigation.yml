@@ -9,6 +9,8 @@ main:
 glslt-links:
   - title: Source
     children:
+      - title: Documentation
+        url: https://vtavernier.github.io/glslt/doc/glslt/
       - title: Repository
         url: https://github.com/vtavernier/glslt
 
