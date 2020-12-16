@@ -81,7 +81,7 @@ and are then overridden by the user-level file, `~/.gitconfig`. Here is a typica
 	autosquash = true
 ```
 
-This sets up your user information as well as your editor preferences. This is all that's needed for now.
+This sets up your user information as well as your editor preferences. This is all that's needed for now!
 
 # Git isn't just a backup solution
 
@@ -170,8 +170,7 @@ All of this adds up to a lot of wasted time in the end for each collaborator, pr
 
 I instead like to use the time I'm spending preparing a commit to reflect on what the commit actually brings. This makes
 committing part of my workflow instead of a chore. The key idea behind it is if you changed something in a project,
-there's a reason behind it. This reason actually should actually make up the subject line of your commit message. Here's
-a few examples:
+there is a reason behind it. This reason should be the subject line of your commit message. Here is a few examples:
 
 > * Fix window resizing bug
 > * Add support for non-linear transforms
@@ -454,4 +453,4 @@ In this first part, we reviewed the basics of writing good commits to keep the h
 those changes with the remote repository, and how this relates to a standard version-controlled workflow.
 
 In the next part we will look into more advanced techniques such as *interactive rebasing* as a way to cleanup a messy
-(local) history, and the power of `git bisect` to automatically find commits introducing bugs.
+(local) history.
