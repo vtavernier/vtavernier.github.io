@@ -14,6 +14,18 @@ glslt-links:
       - title: Repository
         url: https://github.com/vtavernier/glslt
 
+txkit-links:
+  - title: Source
+    children:
+      - title: Repository
+        url: https://github.com/vtavernier/txkit
+
+tinygl-links:
+  - title: Source
+    children:
+      - title: Repository
+        url: https://github.com/vtavernier/tinygl
+
 hyperion.rs-links:
   - title: Source
     children:
