@@ -1,1 +1,3 @@
 set tw=120
+set spell
+set spelllang=en
