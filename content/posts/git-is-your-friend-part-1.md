@@ -1,8 +1,9 @@
 ---
 title: Git is your friend, not your enemy - Part 1
 tags: [tutorial, git]
-toc: true
-draft: true
+date: 2020-01-11
+_build:
+  list: never
 ---
 
 > This post is the first part of a tutorial series on how to use Git to its full potential, based on my personal
@@ -12,7 +13,7 @@ draft: true
 
 A common trend among inexperienced Git users is to think of Git as a burden that they need to carry along while also
 doing the rest of their work. This is especially true as they have not been introduced to the more powerful features of
-Git, so all of this is just a convoluted way of keeping a version history. Indeed, this is what a typical file editing
+Git. Thus, Git is just a convoluted way of keeping a version history. Indeed, this is what a typical file editing
 session looks like if you're just starting to use Git:
 
 ```sh
@@ -49,8 +50,9 @@ And honestly, no one would use Git if it was this hard every time you make a sin
 the only thing this enables is "you can now use `git checkout` to manually copy and paste previous versions of your
 file, provided you know when the changes happened".
 
-But 87.2% of developers use Git ([Stack Overflow Developer Survey 2018](https://insights.stackoverflow.com/survey/2018#work-_-version-control)),
-so let's debunk some myths about Git and start using its more powerful features!
+But 87.2% of developers use Git ([Stack Overflow Developer Survey
+2018](https://insights.stackoverflow.com/survey/2018#work-_-version-control)) for many very valid reasons, so let's
+debunk some myths about Git and start using its more powerful features!
 
 # First: properly configure Git
 
@@ -74,10 +76,6 @@ and are then overridden by the user-level file, `~/.gitconfig`. Here is a typica
 	#editor = code --wait
 	#editor = atom --wait
 	# etc...
-
-[rebase]
-	# Useful when we'll start using git commit --fixup
-	autosquash = true
 ```
 
 This sets up your user information as well as your editor preferences. This is all that's needed for now!
@@ -107,7 +105,7 @@ $ git checkout HEAD -- CMakeLists.txt
 ```
 
 However, a *commit* is **not** a version of a file. It is actually a set of changes (a patch) associated with some metadata
-(author and committer information, date, and commit message). This is what the `git show` command allows to inspect:
+(author and committer information, date, and commit message). This is what the `git show` command allows you to inspect:
 
 {{< aha >}}
 $ <span style="font-weight:bold;color:white;">git show 1d9a8de</span>
@@ -136,7 +134,7 @@ Date:   Fri Aug 23 16:25:14 2019 +0200
 
 Each commit also references one (or more in case of a merge) parent commits, which is how the *history* of a repository
 is constructed. Here is an example from the `git merge` reference manual. *A* to *H* refer to commits, *topic* and
-*master* are branch names.
+*master* are branch names. Time evolves from left to right in these graphs, with more recent commits at the right.
 
 ```txt
        A---B---C topic
@@ -159,11 +157,12 @@ is probably the worst thing you can do:
 * Even worse, if you collaborate with other people on the same repository, they will have to inspect every single change
   in every commit to discover what you changed.
 
-All of this adds up to a lot of wasted time in the end for each collaborator, present and future.
+All of this adds up to a lot of wasted time for each collaborator, present and future.
 
-I instead like to use the time I'm spending preparing a commit to reflect on what the commit actually brings. This makes
-committing part of my workflow instead of a chore. The key idea behind it is if you changed something in a project,
-there is a reason behind it. This reason should be the subject line of your commit message. Here is a few examples:
+I instead like to use the time I'm spending preparing a commit to reflect on what the commit actually brings to the
+project. This makes committing part of my workflow instead of a chore. The key idea behind it is if you changed
+something in a project, there is a reason behind it. This reason should be the subject line of your commit message. Here
+are a few examples:
 
 > * Fix window resizing bug
 > * Add support for non-linear transforms
@@ -181,7 +180,7 @@ But you should still make ***individual*** commits for each of those reasons. Co
 change you made individually you can create a well-formatted log of changes made to the project for yourself and your
 collaborators.
 
-One way to do that is to use the `-p` option of `git add`. This makes `git add` enter interactive mode where you can
+One way to do that is to use the `-p` option of `git add`. This makes `git add` enter *interactive mode* where you can
 choose to stage (i.e. include in your next commit) each individual change or not. Here is an example of an interactive
 staging session using `git add -p`:
 
@@ -329,7 +328,7 @@ A few things are worth noting:
   current branch (denoted by an asterisk).
 * The `origin` remote has three branches: `master`, `develop` and `gh-pages`.
 * The default branch of the remote repository is `master`: this is what `origin/HEAD` points to, and is checked out when
-  you clone the repository initially.
+  you clone the repository initially[^master-branch-name]
 
 Since all this information is stored locally, the remote branches represent the last known state of the remote
 repository. Running the `git status`, `git branch` or even `git checkout origin/master` commands will **not** try to
@@ -423,7 +422,105 @@ and have 1 and 1 different commits each, respectively.</span>
 
 ## Merging remote changes -- How to `git pull`
 
-In progress.
+The situation we just witnessed requires "manual" action. There is no way for Git to decide which strategy to choose to
+solve this problem since mind-reading has not been implemented into any known Git clients yet. We have two options to
+solve this conflict:
+
+* Integrate the remote's changes into our own, and push the result: this is the default behavior of Git you have
+  probably encountered already. We'll refer to this strategy as a *merge pull*[^non-official-term]. This strategy is
+  suitable when you are responsible for integrating the remote changes into your work before sharing it.
+* Apply our local changes onto the new state of the remote: this is an alternative to the first behavior which can be
+  set as the default, or invoked through `git pull --rebase`. We'll refer to this strategy as a *rebase
+  pull*[^non-official-term]. This strategy requires you to modify your (already-made) changes to be able to integrate
+  with the existing remote changes, before sharing it.
+
+You might encounter online posts or people advising you to always stick to one of the two approaches. This is heavily
+misguided advice however, since each strategy has its pros and cons, and you should always evaluate which one is
+appropriate depending on the context. Let us review these two approaches for the above case.
+
+### *Merge pull*
+
+Without `--rebase`, `git pull` is equivalent to `git fetch && git merge origin/master`[^master-in-this-example]. This
+will result in the following situation:
+
+```txt
+                  origin/master
+                 /
+        A---B---C---.
+       /             \
+  D---E---F---G---H---M master
+```
+
+* A *merge commit* was created: this is the commit *M* which was added to the local `master` branch. Note that it has
+  two parents, *C* and *H*. Aside from indicating we are combining two branches together, eventual merge conflicts would
+  be solved and committed as part of this commit.
+* The `origin/master` branch is still on commit *C*. This will be updated once we push to the `origin` remote with the
+  `git push` command.
+
+This merge operation solves the problem encountered by `git push`: there is now a fast-forward path for the
+`origin/master` branch:
+
+```txt
+                 / > > > origin/master
+        A---B---C---.   /
+       /             \ /
+  D---E---F---G---H---M master
+```
+
+The main drawback of this kind of `git pull` is that it results in a non-linear history. If it makes sense to have an
+explicit merge commit, this is the recommended approach. However a *rebase pull* is more suited for merging unrelated, non-conflicting work and obtain a linear history.
+
+### *Rebase pull*
+
+With `--rebase`, `git pull` is equivalent to `git fetch && git rebase origin/master`[^master-in-this-example]. This will
+result in the following situation:
+
+```txt
+                  origin/master
+                 /
+        A---B---C---F'---G'---H' master
+       /
+  D---E---F---G---H
+```
+
+* Three commits were created: *F'*, *G'* and *H'*: these commits correspond to the *F*, *G* and *H* commits (our local
+  work), but *rebased* onto the `origin/master` branch. The resulting `master` branch looks as if we committed our work
+  after *A*, *B* and *C* were added to the repository.
+* The `origin/master` branch is still on commit *C*. This will be updated once we push to the `origin` remote with the
+  `git push` command.
+
+This rebase operation also solves the problem encountered by `git push`: there is now a fast-forward path for the
+`origin/master` branch:
+
+```txt
+                  > > > > > > > origin/master
+                 /             /
+        A---B---C---F'---G'---H' master
+       /
+  D---E---F---G---H
+```
+
+Note that contrarily to the *merge pull*, the history is linear and does not keep a trace of a merge operation
+happening. If we remove the old `master` branch state from the graph, we obtain one single branch in the history:
+
+```txt
+                              origin/master
+                             /
+  D---A---B---C---F'---G'---H' master
+```
+
+This makes the log less noisy and thus much more readable. This doesn't make the *rebase pull* the magical solution:
+
+* Rebasing might introduce merge conflicts to be resolved at every single commit being rebased (3 in our case).
+* Rebasing changes the history (the commit SHA depends on the parent commit, which changes with a rebase), so if you
+  already published the *F*, *G* and *H* commits, you should ***absolutely not*** rebase commits.
+
+### `git pull` conclusion
+
+I will leave whether or not to add `--rebase` to your `git pull` commands to you, since they depend on your workflow.
+Personally, I always use `git pull --rebase` as long as I am working with local branch changes, and regular *merge
+pulls* otherwise. You can enable `git pull --rebase` by default globally: `git config --global pull.rebase true`, and
+make *merge pulls* instead with `git pull --no-rebase`.
 
 # Conclusion
 
@@ -431,4 +528,15 @@ In this first part, we reviewed the basics of writing good commits to keep the h
 those changes with the remote repository, and how this relates to a standard version-controlled workflow.
 
 In the next part we will look into more advanced techniques such as *interactive rebasing* as a way to cleanup a messy
-(local) history.
+(local) history, and using a merge tool to solve merge conflicts.
+
+[^master-branch-name]: Following the Black Lives Matter protests of 2020, many companies and individuals started
+  changing the default branch name of their Git repositories to other names. Look out for those in case your tools
+  complain about a missing master branch. One way to check for this is to use the `git remote show [remote]` command
+  and look for `HEAD branch` in its output.
+
+[^non-official-term]: These terms are not used in the official documentation, but we use them here for simplicity. The
+  man page for `git pull` explains the operation of these in much more detail if you need it.
+
+[^master-in-this-example]: We're pushing to the `master` branch of the `origin` repository in this case. Remember to
+  adapt this to your repository when following this tutorial.
