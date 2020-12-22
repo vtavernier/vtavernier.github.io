@@ -142,7 +142,7 @@ is constructed. Here is an example from the `git merge` reference manual. *A* to
  D---E---F---G---H master
 ```
 
-Thus, by thinking as commits as sets of changes instead of versions we can view the history of a repository as a log of
+Thus, by thinking of commits as sets of changes instead of versions we can view the history of a repository as a log of
 what was changed over time, instead of just a series of snapshots taken at random times. Which brings us to the next
 question.
 
