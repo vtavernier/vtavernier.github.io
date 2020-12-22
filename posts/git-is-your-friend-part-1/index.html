@@ -306,7 +306,7 @@ happening. If we remove the old <code>master</code> branch state from the graph,
                              /
   D---A---B---C---F&#39;---G&#39;---H&#39; master
 </code></pre></div><p>This makes the log less noisy and thus much more readable. This doesn&rsquo;t make the <em>rebase pull</em> the magical solution:</p><ul><li>Rebasing might introduce merge conflicts to be resolved at every single commit being rebased (3 in our case).</li><li>Rebasing changes the history (the commit SHA depends on the parent commit, which changes with a rebase), so if you
-already published the <em>F</em>, <em>G</em> and <em>H</em> commits, you should <em><strong>absolutely not</strong></em> rebase commits.</li></ul><h3 id=git-pull-conclusion><code>git pull</code> conclusion</h3><p>I will leave whether or not to add <code>--rebase</code> to your <code>git pull</code> commands, since they depend on your workflow.
+already published the <em>F</em>, <em>G</em> and <em>H</em> commits, you should <em><strong>absolutely not</strong></em> rebase commits.</li></ul><h3 id=git-pull-conclusion><code>git pull</code> conclusion</h3><p>I will leave whether or not to add <code>--rebase</code> to your <code>git pull</code> commands to you, since they depend on your workflow.
 Personally, I always use <code>git pull --rebase</code> as long as I am working with local branch changes, and regular <em>merge
 pulls</em> otherwise. You can enable <code>git pull --rebase</code> by default globally: <code>git config --global pull.rebase true</code>, and
 make <em>merge pulls</em> instead with <code>git pull --no-rebase</code>.</p><h1 id=conclusion>Conclusion</h1><p>In this first part, we reviewed the basics of writing good commits to keep the history useful, and how to properly merge
