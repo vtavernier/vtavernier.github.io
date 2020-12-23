@@ -30,3 +30,48 @@
 		font-size: 1.5rem;
 	}
 }
+
+.pub {
+}
+
+.pub-main {
+	display: flex;
+}
+
+.pub-right {
+	flex: 1;
+}
+
+.pub-thumb {
+	background: #fff;
+	height: 75px;
+	width: 58px;
+	margin-right: 1.5rem;
+}
+
+.pub-title {
+	margin-top: 0;
+}
+
+.pub-title a {
+	color: #dadada !important;
+	font-weight: bold;
+}
+
+.pub-year {
+	font-weight: normal;
+	display: block;
+}
+
+.pub-authors {
+	margin: 0;
+}
+
+.pub-citation {
+	margin: 0;
+}
+
+.pub-abstract {
+	font-size: 1.25rem;
+	margin: 1.5rem 3rem 8rem 3rem;
+}
