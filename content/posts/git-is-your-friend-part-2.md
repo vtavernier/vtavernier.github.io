@@ -88,7 +88,7 @@ How do we fix those changes?
 
 ## The manual (bad) way
 
-Upon discovering the `fix conflicts and then commit the result` message from Git, the inexperience Git user might do
+Upon discovering the `fix conflicts and then commit the result` message from Git, the inexperienced Git user might do
 exactly as suggested. They would open the files in conflict one-by-one in their editor, and be greeted with this
 interesting syntax:
 
@@ -234,6 +234,145 @@ informed decisions. Thankfully, Git also has us covered.
 
 # Rewriting local history with `git rebase`
 
+We already encountered rebasing in this tutorial: the `git pull --rebase` commands *rebases* (changes the parent of) a
+set of commits onto the current state of the remote branch in order to be able to push. However, we can rebase any set
+of commits while working locally, not just in the case of a pull.
+
+Let's consider the following situation, with two branches `feature` and `master`:
+
+```txt
+        A---B---C feature
+       /
+  D---E---F---G master
+```
+
+Running `git rebase master feature` will *rebase* the `feature` branch onto the `master` branch, resulting in this
+state:
+
+```txt
+                A'---B'---C' feature
+               /
+  D---E---F---G master
+```
+
+Since Git has to rewrite every commit in the range being rebased, we also have the option to change the contents being
+committed at each step. This is what the `-i` option of Git rebase allows us to do: enter *interactive rebasing*.
+
+## Interactive rebasing
+
+When rebasing, you specify which commit (by its SHA, branch name, tag name, etc.) should be the last kept intact. All
+the following commits up to `HEAD` (the latest commit on the current branch) will be rebased --- or `--root` to rebase
+all the way to the beginning of your repository's history.
+
+After running `git rebase -i --root` on this article's tutorial, Git opens the configured text editor on the *todo
+file* below:
+
+```ini
+pick a5aea3c Initial commit
+pick 836ba41 Add error return to main
+pick d105f20 Add success return to main
+
+# Rebase 1813570 onto 0625853 (3 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup <commit> = like "squash", but discard this commit's log message
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+# .       create a merge commit using the original merge commit's
+# .       message (or the oneline, if no original merge commit was
+# .       specified). Use -c <commit> to reword the commit message.
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+```
+
+Lines starting with `#` are comments to help use edit the *todo file* to describe the operations we want to apply to the
+commits about to be rebased. The first lines are commands:
+* First column: name of the command to apply
+* Second column: either a commit name for `pick`, `reword`, `edit`, `squash`, `fixup`, `drop`; or other command
+  arguments for `exec`, `label`, `reset`
+
+The description for these commands is pretty self-explanatory: each command is applied in order from top to bottom to
+the commits referenced in the command arguments. If a command fails, Git will stop the rebase process so you can fix the
+issue. Let's look at some changes we can make to this history.
+
+### Squashing commits
+
+If for some reason you think two commits should be merged into one instead of being separated, you can use the squash
+command. Edit the *todo file* to squash the third commit into the second:
+
+```ini
+pick a5aea3c Initial commit
+pick 836ba41 Add error return to main
+squash d105f20 Add success return to main
+```
+
+Then, save the file and exit the editor to run rebasing:
+
+```txt
+Auto-merging main.c
+CONFLICT (content): Merge conflict in main.c
+error: could not apply d105f20... Add success return to main
+Resolve all conflicts manually, mark them as resolved with
+"git add/rm <conflicted_files>", then run "git rebase --continue".
+You can instead skip this commit: run "git rebase --skip".
+To abort and get back to the state before "git rebase", run "git rebase --abort".
+Could not apply d105f20... Add success return to main
+```
+
+Uh-oh. There is a merge conflict while rebasing (the same merge conflict we studied earlier in this article). This can
+happen when rebasing since some changes may not be compatible and thus require user action. We can solve the issue `git
+mergetool` and carry on with the rebase process:
+
+```bash
+# Fix issues with your mergetool
+$ git mergetool
+
+# Continue rebasing
+$ git rebase --continue
+```
+
+Squashing commits brings up the editor again to write an appropriate commit message[^fixup-instead-of-squash]:
+
+```ini
+# This is a combination of 2 commits.
+# This is the 1st commit message:
+
+Add error return to main
+
+# This is the commit message #2:
+
+Add success return to main
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Dec 22 21:41:43 2020 +0100
+#
+# interactive rebase in progress; onto bf1a9ac
+# Last commands done (3 commands done):
+#    pick 836ba41 Add error return to main
+#    squash d105f20 Add success return to main
+# No commands remaining.
+# You are currently rebasing branch 'master' on 'bf1a9ac'.
+#
+# Changes to be committed:
+#	modified:   main.c
+#
+```
+
 ```ini
 # This may equivalently be changed with `git config --global rebase.autosquash true`
 [rebase]
@@ -255,3 +394,6 @@ which we'll see in the last part of this series.
   built-in or through plugins. Look online for instructions on how to set them up, for example for
   [Vim/Neovim](https://www.grzegorowski.com/using-vim-or-neovim-nvim-as-a-git-mergetool) and
   [Emacs](http://blog.binchen.org/posts/emacs-is-the-best-merge-tool-for-git.html).
+
+[^fixup-instead-of-squash]: If you want to keep the first commit message and save yourself one step, you can use the
+  `fixup` command, which does specifically that: squash commits, and keep the first message.
