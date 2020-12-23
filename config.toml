@@ -59,6 +59,12 @@ icon = "fa fa-github fa-2x"
 weight = 2
 url = "https://github.com/vtavernier/"
 
+[[params.social]]
+name = "LinkedIn"
+icon = "fa fa-linkedin fa-2x"
+weight = 4
+url = "https://www.linkedin.com/in/vincent-tavernier-707b5012a/"
+
 # Menu links
 [[menu.main]]
 name   = "Blog"
