@@ -1,0 +1,199 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="en"><meta name=author content="Vincent Tavernier"><meta name=description content="glslt      
+glslt is a prototype language for adding template functions to the GLSL language.
+Although they are not strictly needed for basic shading operations, they are of particular interest for designing reusable GLSL components which agree on common interfaces, as function pointers (or callbacks) would provide.
+Table of contents  Installation Usage  Static template function parameters Lambda template function parameters  Named placeholders   Nested lambda expressions Support for include directives Minifying mode   Features Bindings  Rust Python   Limitations Author  Installation Check out the releases for pre-compiled binaries for stable versions."><meta name=keywords content="blog,developer,personal,research,graphics"><meta name=twitter:card content="summary"><meta name=twitter:title content="glslt"><meta name=twitter:description content="glslt      
+glslt is a prototype language for adding template functions to the GLSL language.
+Although they are not strictly needed for basic shading operations, they are of particular interest for designing reusable GLSL components which agree on common interfaces, as function pointers (or callbacks) would provide.
+Table of contents  Installation Usage  Static template function parameters Lambda template function parameters  Named placeholders   Nested lambda expressions Support for include directives Minifying mode   Features Bindings  Rust Python   Limitations Author  Installation Check out the releases for pre-compiled binaries for stable versions."><meta property="og:title" content="glslt"><meta property="og:description" content="glslt      
+glslt is a prototype language for adding template functions to the GLSL language.
+Although they are not strictly needed for basic shading operations, they are of particular interest for designing reusable GLSL components which agree on common interfaces, as function pointers (or callbacks) would provide.
+Table of contents  Installation Usage  Static template function parameters Lambda template function parameters  Named placeholders   Nested lambda expressions Support for include directives Minifying mode   Features Bindings  Rust Python   Limitations Author  Installation Check out the releases for pre-compiled binaries for stable versions."><meta property="og:type" content="article"><meta property="og:url" content="https://vtavernier.github.io/projects/glslt/"><title>glslt · The Tavern</title><link rel=canonical href=https://vtavernier.github.io/projects/glslt/><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8/normalize.min.css><link rel=stylesheet href=/css/coder.min.f01c647a0d25b40da992a37c3376291185eed8a50ced8c26cc2c0bcfe38c97df.css integrity="sha256-8Bxkeg0ltA2pkqN8M3YpEYXu2KUM7YwmzCwLz+OMl98=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/coder-dark.min.126ad3988d46bdae6217a11105b53c9662bca05f39d42d3c0fb366919d334620.css integrity="sha256-EmrTmI1Gva5iF6ERBbU8lmK8oF851C08D7NmkZ0zRiA=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/main.css><link rel=icon type=image/png href=/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png><script defer src=https://twemoji.maxcdn.com/v/13.0.1/twemoji.min.js integrity=sha384-5f4X0lBluNY/Ib4VhGx0Pf6iDCF99VGXJIyYy7dDLY5QlEd7Ap0hICSSZA1XYbc4 crossorigin=anonymous></script><meta name=generator content="Hugo 0.75.1"></head><body class=colorscheme-dark onload=twemoji.parse(document.body);><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=/>The Tavern</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=/projects/>Projects</a></li></ul></section></nav><div class=content><section class="container page"><article><header><h1><a href=https://github.com/vtavernier/glslt>glslt</a></h1></header><p><a href=https://travis-ci.com/vtavernier/glslt><img src="https://travis-ci.com/vtavernier/glslt.svg?branch=master" alt="Build Status"></a> <a href=https://github.com/vtavernier/glslt/releases><img src=https://img.shields.io/github/v/release/vtavernier/glslt alt="GitHub release"></a> <a href=https://pypi.org/project/glslt/><img src=https://img.shields.io/pypi/v/glslt alt=PyPI></a> <a href=LICENSE><img src=https://img.shields.io/github/license/vtavernier/glslt alt=License></a></p><p><code>glslt</code> is a prototype language for adding template functions to the GLSL
+language.</p><p>Although they are not strictly needed for basic shading operations, they are of
+particular interest for designing reusable GLSL components which agree on
+common interfaces, as function pointers (or callbacks) would provide.</p><h2 id=table-of-contents>Table of contents</h2><ul><li><a href=#installation>Installation</a></li><li><a href=#usage>Usage</a><ul><li><a href=#static-template-function-parameters>Static template function parameters</a></li><li><a href=#lambda-template-function-parameters>Lambda template function parameters</a><ul><li><a href=#named-placeholders>Named placeholders</a></li></ul></li><li><a href=#nested-lambda-expressions>Nested lambda expressions</a></li><li><a href=#support-for-include-directives>Support for include directives</a></li><li><a href=#minifying-mode>Minifying mode</a></li></ul></li><li><a href=#features>Features</a></li><li><a href=#bindings>Bindings</a><ul><li><a href=#rust>Rust</a></li><li><a href=#python>Python</a></li></ul></li><li><a href=#limitations>Limitations</a></li><li><a href=#author>Author</a></li></ul><h2 id=installation>Installation</h2><p>Check out the <a href=https://github.com/vtavernier/glslt/releases>releases</a> for
+pre-compiled binaries for stable versions. Installing the Python module (see
+below) also installs the corresponding <code>glsltcc</code> binary.</p><p>Alternatively, you may compile <code>glslt</code> from source, assuming you have the
+<a href=https://rustup.rs/>Rust</a> compiler installed:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Fetch the source</span>
+git clone https://github.com/vtavernier/glslt.git
+<span style=color:#8be9fd;font-style:italic>cd</span> glslt
+<p><span style=color:#6272a4># Run the program directly</span>
+cargo run &ndash; test.glsl</p>
+<p><span style=color:#6272a4># Or, install the glsltcc binary permanently</span>
+cargo install &ndash;force .
+glsltcc test.glsl
+</code></pre></div><p>To install the Python module for the latest stable version, you can use <code>pip</code>:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install glslt
+</code></pre></div><p>If you downloaded the source and want to build the latest version of the Python
+module, use <code>maturin</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Install maturin (only needed once)</span>
+pip install maturin
+<p><span style=color:#6272a4># Assuming you are in a virtualenv</span>
+<span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> glslt <span style=color:#ff79c6>&amp;&amp;</span> maturin develop &ndash;cargo-extra-args<span style=color:#ff79c6>=</span><span style=color:#f1fa8c>'&ndash;features python'</span> -b pyo3<span style=color:#ff79c6>)</span>
+</code></pre></div><h2 id=usage>Usage</h2></p><h3 id=static-template-function-parameters>Static template function parameters</h3><p><code>glslt</code> supports <em>static template function parameters</em>. This means, passing the
+name of an already-declared function as a parameter for a templated function.
+Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#6272a4>// A pointer to a function that has no args and returns an int</span>
+<span style=color:#6272a4>//</span>
+<span style=color:#6272a4>// We use function prototypes for this matter since they&#39;re</span>
+<span style=color:#6272a4>// basically useless in GLSL. Since there can be no indirect</span>
+<span style=color:#6272a4>// recursion, there is no need for function pre-declarations.</span>
+<span style=color:#ff79c6>int</span> intfn();
+<p><span style=color:#6272a4>// A first function that could be an intfn</span>
+<span style=color:#ff79c6>int</span> fnReturnsOne() { <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>1</span>; }</p>
+<p><span style=color:#6272a4>// A second function that could be an intfn</span>
+<span style=color:#ff79c6>int</span> fnReturnsTwo() { <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>2</span>; }</p>
+<p><span style=color:#6272a4>// A template function. It's recognized as a template because it uses intfn</span>
+<span style=color:#6272a4>// which has been declared as a function pointer.</span>
+<span style=color:#6272a4>//</span>
+<span style=color:#6272a4>// In the generated code, there will be no function called fnTemplate, as all</span>
+<span style=color:#6272a4>// calls to fnTemplate will be replaced with template specializations.</span>
+<span style=color:#6272a4>//</span>
+<span style=color:#6272a4>// Thus, callback can only be an identifier of an existing function, which</span>
+<span style=color:#6272a4>// should (later: must with type-checking) match the pointer type</span>
+<span style=color:#ff79c6>int</span> fnTemplate(<span style=color:#ff79c6>in</span> intfn callback) { <span style=color:#ff79c6>return</span> callback(); }</p>
+<p><span style=color:#ff79c6>void</span> main() {
+<span style=color:#6272a4>// Calling fnTemplate with function pointers</span>
+gl_FragColor <span style=color:#ff79c6>=</span>
+<span style=color:#ff79c6>vec4</span>(fnTemplate(fnReturnsOne), fnTemplate(fnReturnsTwo), <span style=color:#bd93f9>0.</span>, <span style=color:#bd93f9>1.</span>);
+}
+</code></pre></div><p>Note that we do not define a new syntax. Instead, we use the function
+pre-declaration syntax which is rarely used to declare function pointers. Thus,
+all your existing tooling still works with <code>glslt</code>.</p></p><p>In order to run this code on your GPU, you need to process it so function
+templates are <em>instantiated</em> with their actual template parameters. This is
+where this tool comes in:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Assuming you installed the pre-built glsltcc binary, if running from source use `cargo run --` instead.</span>
+<span style=color:#6272a4>#</span>
+<span style=color:#6272a4># test.glsl is our input example, output.glsl is the generated code.</span>
+glsltcc -o output.glsl test.glsl
+</code></pre></div><p>The resulting code will look like this:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>int</span> fnReturnsOne() {
+    <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>1</span>;
+}
+<p><span style=color:#ff79c6>int</span> fnReturnsTwo() {
+<span style=color:#ff79c6>return</span> <span style=color:#bd93f9>2</span>;
+}</p>
+<p><span style=color:#ff79c6>int</span> _glslt_fnTemplate_dd5173() {
+<span style=color:#ff79c6>return</span> fnReturnsOne();
+}</p>
+<p><span style=color:#ff79c6>int</span> _glslt_fnTemplate_4314fd() {
+<span style=color:#ff79c6>return</span> fnReturnsTwo();
+}</p>
+<p><span style=color:#ff79c6>void</span> main() {
+gl_FragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(_glslt_fnTemplate_dd5173(), _glslt_fnTemplate_4314fd(), <span style=color:#bd93f9>0.</span>, <span style=color:#bd93f9>1.</span>);
+}
+</code></pre></div><p>Note how the template function calls have been replaced by regular GLSL
+functions. This code can be directly used in an OpenGL application.</p></p><h3 id=lambda-template-function-parameters>Lambda template function parameters</h3><p><code>glslt</code> also supports <em>lambda template function parameters</em>. Instead of passing
+a function name as a parameter to the templated function, you may pass an
+expression. This expression may capture local variables and parameters, which
+will be taken into account when instantiating the template. Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdf3d(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p);
+<p><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+<span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}</p>
+<p><span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+<span style=color:#ff79c6>return</span> primitive(q);
+}</p>
+<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_1, <span style=color:#bd93f9>4.</span>), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
+}
+</code></pre></div><p>Note how instead of just passing <code>sdSphere</code> as a template parameter, we pass
+<code>sdSphere(_1, 4.)</code>. This translates to calling <code>sdSphere</code> with the first
+parameter given by the template function <code>opElongate</code>, while the second
+parameter is the constant <code>4.</code>. This results in the following code:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+    <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}
+<p><span style=color:#ff79c6>float</span> _glslt_opElongate_d20939(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+<span style=color:#ff79c6>return</span> sdSphere(q, <span style=color:#bd93f9>4.</span>);
+}</p>
+<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_d20939(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.</span>);
+}
+</code></pre></div><p>Since captures are supported, this example may have been written with the
+sphere diameter being a parameter:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdf3d(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p);
+<p><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+<span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}</p>
+<p><span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+<span style=color:#ff79c6>return</span> primitive(q);
+}</p>
+<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+<span style=color:#ff79c6>float</span> sz <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>5.</span>;
+fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_1, sz), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
+<span style=color:#6272a4>//                                            ^^</span>
+<span style=color:#6272a4>// Using a local variable in the template argument</span>
+}
+</code></pre></div><p>The variable is properly captured in the generated code:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+    <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}
+<p><span style=color:#6272a4>// _glslt_lp2 is the captured variable input</span>
+<span style=color:#ff79c6>float</span> _glslt_opElongate_d9170f(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h, <span style=color:#ff79c6>float</span> _glslt_lp2) {
+<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+<span style=color:#ff79c6>return</span> sdSphere(q, _glslt_lp2);
+}</p>
+<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+<span style=color:#ff79c6>float</span> sz <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>5.</span>;
+fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_d9170f(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>), sz)), <span style=color:#bd93f9>1.</span>);
+<span style=color:#6272a4>//                                                                 Captured variable: ^^</span>
+}
+</code></pre></div><h4 id=named-placeholders>Named placeholders</h4></p><p>When passing a lambda expression to a template function, you may use the
+unnamed placeholders <code>_1</code>, <code>_2</code>, etc. to refer to the first, second, etc.
+arguments to the template function call. You may also use the parameter names
+as declared in the function prototype. The previous example could be written as
+follows:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#6272a4>// In sdf3d template parameters, `p` is the first parameter name</span>
+<span style=color:#ff79c6>float</span> sdf3d(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p);
+<p><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+<span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}</p>
+<p><span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+<span style=color:#ff79c6>return</span> primitive(q);
+}</p>
+<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_p, <span style=color:#bd93f9>1.0</span>), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
+<span style=color:#6272a4>//                                        ^^</span>
+<span style=color:#6272a4>// Named placeholder parameter in a template instead of _1</span>
+}
+</code></pre></div><p>The generated code will look like this:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+    <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}
+<p><span style=color:#ff79c6>float</span> _glslt_opElongate_784a47(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+<span style=color:#ff79c6>return</span> sdSphere(q, <span style=color:#bd93f9>1.</span>);
+}</p>
+<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_784a47(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.</span>);
+}
+</code></pre></div><h3 id=nested-lambda-expressions>Nested lambda expressions</h3></p><p>Nested lambda expressions are supported, however due to the syntax being used,
+we have to make a decision on how to resolve the anonymous placeholders to
+their corresponding lambda. The current algorithm transforms innermost lambdas
+first, so the placeholders will resolve to the most nested expression first.</p><p>This may be circumvented by using named placeholders (as long as there is no
+conflict) since undefined identifiers are passed as-is to the other passes of
+the transformation algorithm, and thus, to outer lambdas.</p><h3 id=support-for-include-directives>Support for include directives</h3><p><code>#include</code> directives are supported and will be processed, using the same rules
+as C preprocessors: double-quoted paths will be looked up from the current file
+being parsed, and then fallback to the system include paths. Angle-quoted paths
+will be looked up from the system include paths.</p><p>All files are only included once, as if they all started with <code>#pragma once</code>.</p><p><strong>Warning</strong>: since include directives are processed at the AST level, shaders
+which rely on included files to generate valid syntax are not supported.</p><h3 id=minifying-mode>Minifying mode</h3><p>In its default mode, the GLSLT compiler will copy all input declarations to its
+output (except function prototypes) and insert instantiated templates right
+before they are used.</p><p>However, if you are using the GLSLT compiler with a large template library,
+this will generate a lot of unused code. By using the <code>-K, --keep-fns</code> argument
+to the <code>glsltcc</code> command, GLSLT switches to the minifying mode. In this mode,
+only the functions, types, globals and <code>#define</code> directives that are transitive
+dependencies of the functions specified by the <code>-K</code> argument are kept.</p><p>Note that in this mode, no preprocessor directives (outside of <code>#define</code> and
+their use) are supported. <code>#version</code>, <code>#extension</code> and precision specifiers
+will be included at the top of the generated code.</p><p>As an example, compiling the previous example with <code>glsltcc -KsdSphere</code> will
+only return the code for the sdSphere function, since it has no dependencies.</p><p>This mode hasn&rsquo;t been tested throughly yet, so some types of declarations may
+not be supported.</p><h2 id=features>Features</h2><ul><li><input checked disabled type=checkbox> Include support</li><li><input disabled type=checkbox> Preserve comments in original source</li><li><input disabled type=checkbox> Report position in compiler errors</li><li><input checked disabled type=checkbox> Lambda template function parameters</li><li><input checked disabled type=checkbox> Static template function parameters</li></ul><h2 id=bindings>Bindings</h2><h3 id=rust>Rust</h3><p>Since this tool is developed in Rust, the <em>native</em> bindings are exposed as the
+<code>glslt</code> Rust crate and can be used directly by client code.</p><h3 id=python>Python</h3><p>The main library exposes a native Python 3 module using
+<a href=https://pyo3.rs/>pyo3</a>. Use <a href=https://github.com/PyO3/maturin>maturin</a> to
+build and develop the Python module, inside a virtualenv.</p><p>In order to build the Python package, you have to enable the <code>python</code> feature
+and have <code>python3-dev</code> installed. See the documentation for <a href=glslt/>glslt</a> for
+an example.</p><h2 id=limitations>Limitations</h2><p>This program is based on the excellent <a href=https://github.com/phaazon/glsl>glsl</a>
+crate for parsing and manipulating the GLSL AST in Rust. However, since it&rsquo;s
+only an AST and not a full parse tree, we have currently no way of preserving
+comments or original formatting.</p><p>Furthermore, since pre-processor directives have to be passed through to the
+GPU for accurate execution, shaders which are syntactically invalid without
+pre-processing are not supported.</p><h2 id=author>Author</h2><p>Vincent Tavernier <a href=mailto:vince.tavernier@gmail.com>vince.tavernier@gmail.com</a></p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
+2019 -
+2020
+Vincent Tavernier
+·
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main></body></html>
