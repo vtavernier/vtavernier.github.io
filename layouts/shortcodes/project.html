@@ -1,0 +1,8 @@
+{{ $repo := .Page.Params.repo }}
+{{ $json := getJSON "https://api.github.com/repos/vtavernier/" $repo "/readme" }}
+<header>
+  <h1>
+    <a href="https://github.com/vtavernier/{{ $repo }}">{{ .Page.Title }}</a>
+  </h1>
+</header>
+{{ $json.content | base64Decode | replaceRE "^#.*" "" | markdownify }}

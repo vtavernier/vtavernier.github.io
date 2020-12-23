@@ -1,0 +1,20 @@
+<section class="container list">
+  <h1 class="title">
+    {{- if eq .Kind "term" -}}
+      {{- i18n .Data.Singular | title -}}
+      {{- print ": " -}}
+    {{- end -}}
+
+    {{- .Title -}}
+  </h1>
+  {{ .Content }}
+  <ul>
+    {{ range .Paginator.Pages.ByParam "weight" }}
+    <li>
+      <a class="title-inverted" href="{{ .Params.externalLink | default .RelPermalink }}">{{ .Title }}</a>
+      <span class="desc-inverted">{{ (getJSON "https://api.github.com/repos/vtavernier/" .Params.repo).description }}</span>
+    </li>
+    {{ end }}
+  </ul>
+  {{ partial "pagination.html" . }}
+</section>
