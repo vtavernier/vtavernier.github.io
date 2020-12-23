@@ -5,3 +5,28 @@
 	-o-tab-size: 4;
 	tab-size: 4
 }
+
+.title-inverted {
+	color: #dadada !important;
+	font-weight: bold;
+	display: block;
+}
+
+.desc-inverted {
+	flex: 4;
+}
+
+@media (min-width: 768px) {
+	.title-inverted {
+		text-align: right;
+		display: inline-block;
+		flex: 1;
+		width: 20.0rem;
+		margin-right: 3.0rem;
+	}
+
+	.desc-inverted {
+		flex: 4;
+		font-size: 1.5rem;
+	}
+}

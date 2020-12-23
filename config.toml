@@ -61,9 +61,14 @@ url = "https://github.com/vtavernier/"
 
 # Menu links
 [[menu.main]]
-name = "Blog"
+name   = "Blog"
 weight = 1
-url  = "posts/"
+url    = "posts/"
+
+[[menu.main]]
+name   = "Projects"
+weight = 2
+url    = "projects/"
 
 [markup.highlight]
 style = "dracula"
