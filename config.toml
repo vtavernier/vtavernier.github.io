@@ -40,6 +40,9 @@ series = "series"
 tag = "tags"
 author = "authors"
 
+[params.goatCounter]
+code = "vtavernier"
+
 [params.utterances]
 repo = "vtavernier/vtavernier.github.io"
 issueTerm = "pathname"
