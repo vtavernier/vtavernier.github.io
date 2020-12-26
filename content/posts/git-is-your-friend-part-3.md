@@ -2,9 +2,7 @@
 title: Git is your friend, not your enemy - Part 3
 tags: [tutorial, git]
 draft: true
-date: 2020-02-08
-_build:
-  list: never
+date: 2021-02-08
 ---
 
 > This post is the third part of a tutorial series on how to use Git to its full potential. You may want to read the
