@@ -1,5 +1,5 @@
 ---
-title: Git is your friend, not your enemy - Part 1
+title: Git is your friend, not your enemy — Part 1
 tags: [tutorial, git]
 date: 2021-01-11
 ---
