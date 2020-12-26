@@ -3,6 +3,8 @@ title: Git is your friend, not your enemy — Part 2
 tags: [tutorial, git]
 draft: true
 date: 2021-01-25
+series:
+  - Git is your friend, not your enemy
 ---
 
 > This post is the second part of a tutorial series on how to use Git to its full potential. Read the first part
