@@ -5,6 +5,8 @@ draft: true
 date: 2021-01-25
 series:
   - Git is your friend, not your enemy
+description: Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how
+  to use Git to make it this way!
 ---
 
 > This post is the second part of a tutorial series on how to use Git to its full potential. Read the first part
