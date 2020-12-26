@@ -1,9 +1,7 @@
 ---
 title: Git is your friend, not your enemy - Part 1
 tags: [tutorial, git]
-date: 2020-01-11
-_build:
-  list: never
+date: 2021-01-11
 ---
 
 > This post is the first part of a tutorial series on how to use Git to its full potential, based on my personal
