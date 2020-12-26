@@ -373,10 +373,69 @@ Add success return to main
 #
 ```
 
+When you're done editing your commit message, exit your editor and observe the completed result:
+
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">git log --oneline</span>
+<span style="color:olive;">31c5062</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:teal;">HEAD -&gt; </span><span style="font-weight:bold;color:green;">master</span><span style="color:olive;">)</span> Add return to main
+<span style="color:olive;">a5aea3c</span> Initial commit
+{{</ aha >}}
+
+With our properly written history, we can keep on working on our project.
+
+### Editing commits
+
+Another option when rebasing is *editing* commits. This allows you to change the contents of a commit arbitrarily, by
+adding or removing changes, or changing the commit message[^use-reword-instead]. Let's edit commit `31c5062` in the following
+history:
+
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">git log --oneline</span>
+<span style="color:olive;">b9d4427</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:teal;">HEAD -&gt; </span><span style="font-weight:bold;color:green;">master</span><span style="color:olive;">)</span> Add computation
+<span style="color:olive;">31c5062</span> Add return to main
+<span style="color:olive;">a5aea3c</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:green;">origin/master</span><span style="color:olive;">)</span> Initial commit
+{{</ aha >}}
+
+Running `git rebase -i origin/master`, switching the command for `31c5062` to `edit`, saving and quitting the editor
+will drop us back to the terminal. Again, Git indicates what the next steps are:
+
+```txt
+Stopped at 31c5062...  Add return to main
+You can amend the commit now, with
+
+  git commit --amend
+
+Once you are satisfied with your changes, run
+
+  git rebase --continue
+```
+
+I decided to add some comments to `main.c` as an example change. We can then continue with the rebasing process:
+
+{{< aha >}}
+<span style="color:gray"># Modify the current commit with the changes made to main.c, skip opening the editor</span>
+$ <span style="font-weight:bold;color:white;">git commit --no-edit --amend main.c</span>
+[detached HEAD ffd5f65] Add return to main
+ Date: Tue Dec 22 21:41:43 2020 +0100
+ 1 file changed, 2 insertions(+)
+
+<span style="color:gray"># Continue the rebasing process</span>
+$ <span style="font-weight:bold;color:white;">git rebase --continue</span>
+[detached HEAD 6c65969] Add computation
+ 1 file changed, 5 insertions(+)
+Successfully rebased and updated refs/heads/master.
+{{</ aha >}}
+
+We're done with our changes!
+
+### Automating rebasing: `git commit --fixup`
+
+Fixing a previous commit with rebasing is such a common occurrence that there are commands dedicated to handling this
+case. First, we need to change our `~/.gitconfiŋ` a bit to make it easier to work with:
+
 ```ini
 # This may equivalently be changed with `git config --global rebase.autosquash true`
 [rebase]
-	# Useful for git commit --fixup
 	autosquash = true
 ```
 
@@ -397,3 +456,7 @@ which we'll see in the last part of this series.
 
 [^fixup-instead-of-squash]: If you want to keep the first commit message and save yourself one step, you can use the
   `fixup` command, which does specifically that: squash commits, and keep the first message.
+
+[^use-reword-instead]: IF you just want to change the message of a given commit, use the `reword` command to save you a
+  few steps: this will drop you directly in an editor to change the message instead of having to use `git commit
+  --amend`.
