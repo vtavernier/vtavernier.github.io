@@ -1,7 +1,6 @@
 ---
 title: Git is your friend, not your enemy — Part 2
 tags: [tutorial, git]
-draft: true
 date: 2021-01-25
 series:
   - Git is your friend, not your enemy
@@ -433,7 +432,7 @@ We're done with our changes!
 ### Automating rebasing: `git commit --fixup`
 
 Fixing a previous commit with rebasing is such a common occurrence that there are commands dedicated to handling this
-case. First, we need to change our `~/.gitconfiŋ` a bit to make it easier to work with:
+case. First, we need to change our `~/.gitconfig` a bit to make it easier to work with:
 
 ```ini
 # This may equivalently be changed with `git config --global rebase.autosquash true`
@@ -441,15 +440,71 @@ case. First, we need to change our `~/.gitconfiŋ` a bit to make it easier to wo
 	autosquash = true
 ```
 
-# Bonus round: making your shell smarter
+The workflow for `git commit --fixup` is as follows:
+1. Change the working copy as needed, and stage the changes with `git add`
+2. Identify the commit you want to fix with `git log`. Let's say we want to fix commit `ffd5f65`[^commit-ish] in our example.
+3. Run `git commit --fixup ffd5f65`. Note that no message is needed: a placeholder mentioning this is a fix-up is
+   generated, and will be discarded by the next step:
+{{< aha >}}
+$ <span style="font-weight:bold;color:white">git commit --fixup ffd5f65</span>
+[master cac3701] fixup! Add return to main
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+{{</ aha >}}
+4. Run `git rebase -i`. This starts an interactive rebase onto the last pushed state of the current branch. This means
+   it shouldn't contain commits that were already shared with other collaborators. As you will notice, the fixup commit
+   has been moved to the right location in the *TODO* file, and its action changed to `fixup` (due to the `.gitconfig`
+   change we made earlier):
+   ```ini
+   pick ffd5f65 Add return to main
+   fixup cac3701 fixup! Add return to main # <--- Our `git commit --fixup`
+   pick 6c65969 Add computation
 
-* zsh plugins for Git completion
+   # ...
+   ```
+<!-- ` -->
+5. Exit the editor for the *TODO* file. Rebasing procede as we described earlier in this article, stopping if your
+   changes were to trigger merge conflicts.
+
+Using `git commit --fixup` results in a more streamlined workflow, as you can just commit fixes to previous commits
+without interruption (i.e. you don't have to clean your repository until you actually start the rebasing). Then, when
+you are preparing to push your work to the remote, run `git rebase -i` once and all the changes to the history will be
+properly integrated!
+
+## Bonus round: making your shell smarter
+
+Editing the history of a Git repository often requires looking up previous commit identifiers, which can quickly become
+tedious. Thankfully, modern shells support completion plugins tailored for Git, and by understanding which commands you
+are about to run, are able to suggest appropriate completions, such as references and commit SHAs. For example, here's
+[Prezto](https://github.com/sorin-ionescu/prezto)'s Git plugin at work, completing a `git commit --fixup` command
+(`<TAB>` will cycle through all the options in this menu):
+
+![Prezto Git completion](zprezto-git-completion.png)
+
+These tools are huge time savers, so I highly recommend spending the time setting one up for your shell of choice:
+* [Bash, from the official Git Book](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash)
+* [Zsh, Prezto](https://github.com/sorin-ionescu/prezto). Enable the `git` plugin in `zpreztorc`.
+* [Zsh, oh-my-zsh](https://ohmyz.sh/). Also look for the `git` plugin.
+
+Git GUIs can also help with those features, as well as editor plugins for your editor of choice.
+
+# Final warning: do not rebase pushed commits
+
+I mentioned this multiple times, it is also mentioned in the Git manual pages, but ***do not rebase pushed commits***.
+As rebasing changes the commit data, this effectively creates a fork in the history. Since this fork will prevent
+fast-forwarding the remote branch label when running `git push`, you will have to run `git push --force[-with-lease]`.
+This might:
+* Destroy work pushed on the remote server (unless using `--force-with-lease` and making sure you didn't discard it
+  while editing the history).
+* Make others destroy their own work, when they'll be force to run `git fetch && git reset --hard origin/master` to
+  reset their local copies to the new history you rebased (discarding the local state of the branch).
+
+So, unless you published secrets in your Git repository, ***do not*** rebase public history to change it.
 
 # Conclusion
 
 In this second part, we studied how to maintain a clean history using various more or less automated methods. Aside from
 making the history human-readable, we'll see this plays a big role in some advanced uses of Git, such as `git bisect`,
-which we'll see in the last part of this series.
+and how to fix our history-editing mistakes using the *reflog*; which we'll see in the last part of this series.
 
 [^other-merge-tools]: Aside from dedicated merge tools, most editors also support merge conflict resolution, either
   built-in or through plugins. Look online for instructions on how to set them up, for example for
@@ -459,6 +514,10 @@ which we'll see in the last part of this series.
 [^fixup-instead-of-squash]: If you want to keep the first commit message and save yourself one step, you can use the
   `fixup` command, which does specifically that: squash commits, and keep the first message.
 
-[^use-reword-instead]: IF you just want to change the message of a given commit, use the `reword` command to save you a
+[^use-reword-instead]: If you just want to change the message of a given commit, use the `reword` command to save you a
   few steps: this will drop you directly in an editor to change the message instead of having to use `git commit
   --amend`.
+
+[^commit-ish]: You may also use symbolic references (HEAD, branch names) or ancestry references such as `HEAD^` (the
+  first parent of `HEAD`), or `HEAD~2` (the first parent of the first parent of `HEAD`). See
+  https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection for more details.
