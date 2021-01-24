@@ -1,8 +1,8 @@
 ---
 title: Git is your friend, not your enemy — Part 3
 tags: [tutorial, git]
-draft: true
 date: 2021-02-08
+katex: true
 series:
   - Git is your friend, not your enemy
 description: Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how
@@ -13,19 +13,336 @@ description: Git is a helpful tool when it's actually part of your workflow inst
 > [first part]({{< ref git-is-your-friend-part-1 >}}) and the
 > [second part]({{< ref git-is-your-friend-part-2 >}}) before proceeding.
 
-# WIP
+# Finding bugs with Git: problem statement
 
-This part of the article is a work-in-progress.
+You are working on a large-ish project which is --- thankfully --- under version control. This could be a project with a
+large amount of code, with many contributors and thus a lot of activity, or maybe some software you are using that you
+decided to contribute to by fixing some bugs. What we will learn today applies to all those cases where you just can't
+manually review every single line of code searching for bugs.
+
+Although in the case of this article, we will study a very stripped down example to just learn the essentials of one of
+Git's most advanced features: *bisection*. Our example will be a library implementing some sorting algorithms as they
+are described on their respective [Wikipedia pages](https://en.wikipedia.org/wiki/Sorting_algorithm).
+
+While developing this library, we shall follow good software development practices, especially ensuring our library has
+proper automated testing. Here is the [initial
+scaffolding](https://github.com/vtavernier/blog-git-libsort/tree/r-initial) for our library:
+
+* The following functions will be provided by our library:
+```cpp
+#ifndef _SORT_H_
+#define _SORT_H_
+
+#include <cstddef>
+
+typedef int sort_data_t;
+
+void sort_insertion(sort_data_t *data, size_t length);
+void sort_selection(sort_data_t *data, size_t length);
+void sort_merge(sort_data_t *data, size_t length);
+void sort_heap(sort_data_t *data, size_t length);
+void sort_quick(sort_data_t *data, size_t length);
+
+#endif /* _SORT_H_ */
+```
+* They will be tested using a test executable that returns 0 on success, and non-zero on failure:
+```cpp
+#include "sort.h"
+
+// [...]
+
+int main() {
+    int res = 0;
+    const size_t Ns[] = {10};
+
+    for (auto &N : Ns) {
+        std::vector<sort_data_t> source_vector(N, 0), working_vector(N, 0), sorted_vector(N, 0);
+
+        // Generate some test data
+        std::generate(source_vector.begin(), source_vector.end(), [=]() { return rand() % (2 * N); });
+
+        // Generate reference data
+        std::copy(source_vector.begin(), source_vector.end(), sorted_vector.begin());
+        std::sort(sorted_vector.begin(), sorted_vector.end());
+
+        // Test the insertion sort function
+        res += test_sort_function(working_vector, source_vector, sorted_vector, sort_insertion);
+        // [...]
+    }
+
+    return res;
+}
+```
+* Testing the library is done through a special Makefile rule, so we can just run `make test`:
+```make
+# [...]
+
+test: $(BUILDDIR)/main
+	@echo $(BUILDDIR)/main
+	@$(BUILDDIR)/main ; \
+	RET=$$? ; \
+	if [ $$RET -eq 0 ]; then \
+		echo -e "\e[0;32mTests succeeded\e[0m" ; \
+	else \
+		echo -e "\e[0;31mTests failed with $$RET\e[0m" ; \
+		exit $$RET ; \
+	fi
+
+# [...]
+```
+
+We obtain this output when testing our initial version:
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">make test</span>
+<span style="color:gray;"># Output omitted</span>
+build/main
+<span style="color:green;">Tests succeeded</span>
+{{</ aha >}}
+
+With this perfect development setup in place, we can iteratively improve our library:
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">git log --oneline</span>
+<span style="color:olive;">a4ecb0d</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:teal;">HEAD -&gt; </span><span style="font-weight:bold;color:green;">master</span><span style="color:olive;">, </span><span style="font-weight:bold;color:red;">origin/master</span><span style="color:olive;">)</span> Update ColumnLimit
+<span style="color:olive;">4096d3d</span> Add N=20000 test
+<span style="color:olive;">01770f7</span> Change IndentWidth to 4
+<span style="color:olive;">9eaf4e6</span> Print failing test names and highlight differences
+<span style="color:olive;">5889f58</span> Update sorting logic
+<span style="color:olive;">25a6e64</span> Add N=10000 test
+<span style="color:olive;">10930d8</span> Add N=1000 test
+<span style="color:olive;">0f0ff63</span> Add N=100 test
+<span style="color:olive;">65defb0</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:olive;">tag: r-initial</span><span style="color:olive;">)</span> Initial commit
+{{</ aha >}}
+
+Satisfied with our changes, we check that tests still pass and...
+
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">make test</span>
+<span style="color:gray;"># Output omitted</span>
+sort_insertion: error at index 0
+sort_insertion: error at index 0
+sort_insertion: error at index 0
+sort_insertion: error at index 0
+sort_insertion: error at index 0
+<span style="color:red;">Tests failed with 5</span>
+make: *** [Makefile:14 : test] Erreur 5
+{{</ aha >}}
+<!-- ** -->
+
+Where did we go wrong? Let's answer this question using Git.
+
+# Finding trivial bugs with `git blame` and `git log`
+
+Our test harness revealed the `sort_insertion` function is broken. Thus, we might want to look into who changed the
+corresponding `src/insertion.cpp` file. The `git log --oneline -- src/insertion.cpp` shows us the history of that file
+(commits that do not change this file are omitted):
+
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">git log --oneline -- src/insertion.cpp</span>
+<span style="color:olive;">01770f7</span> Change IndentWidth to 4
+<span style="color:olive;">5889f58</span> Update sorting logic
+<span style="color:olive;">65defb0</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:olive;">tag: r-initial</span><span style="color:olive;">)</span> Initial commit
+{{</ aha >}}
+
+Only 3 commits (out of the 9 commits in our repository) changed that file. This greatly narrows our search space, which
+we can further refine using `git blame`. This command outputs which commit changed each line in a given file:
+
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">git blame src/insertion.cpp</span>
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  2) 
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  4) 
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  5) void sort_insertion(sort_data_t *data, size_t length) {
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100  6)     size_t i = 1;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  7) 
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100  8)     while (i &lt; length) {
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100  9)         size_t j = i;
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 10)         while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 11)             std::swap(data[j], data[j - 1]);
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 12)             j--;
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 13)         }
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 14)         i++;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 15)     }
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }
+{{</ aha >}}
+<!-- * -->
+
+If we cross-reference this with the output of `git log` we notice that most of the file was changed by one single
+commit... Which is just formatting changes, and is probably not the culprit (`01770f7a Change IndentWidth to 4`). If we
+know this commit indeed doesn't change anything, we can ask Git to ignore it in the blame:
+
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">git blame --ignore-rev 01770f7 src/insertion.cpp</span>
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  2) 
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  4) 
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  5) void sort_insertion(sort_data_t *data, size_t length) {
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  6)     size_t i = 1;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  7) 
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  8)     while (i &lt; length) {
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  9)         size_t j = i;
+<span style="font-weight:bold">5889f58f (Vincent Tavernier 2021-01-24 03:17:12 +0100 10)         while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {</span>
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 11)             std::swap(data[j], data[j - 1]);
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 12)             j--;
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 13)         }
+01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 14)         i++;
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 15)     }
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }
+{{</ aha >}}
+<!-- * -->
+
+From this output, we can deduce:
+* Most of the code comes from the initial commit, `65defb0`. We know this passed the tests before.
+* One line of our sorting logic was changed by commit `5889f58f`. We can show this change in more detail:
+{{< aha >}}
+$ <span style="font-weight:bold;color:white;">git show 5889f58f</span>
+<span style="color:olive;">commit 5889f58fd7ec438b5e45ddab97611f6d34e916de</span>
+Author: Vincent Tavernier &lt;vince.tavernier@gmail.com&gt;
+Date:   Sun Jan 24 03:17:12 2021 +0100
+
+    Update sorting logic
+
+<span style="font-weight:bold;">diff --git a/src/insertion.cpp b/src/insertion.cpp</span>
+<span style="font-weight:bold;">index 8785fad..571e6c6 100644</span>
+<span style="font-weight:bold;">--- a/src/insertion.cpp</span>
+<span style="font-weight:bold;">+++ b/src/insertion.cpp</span>
+<span style="color:teal;">@@ -7,7 +7,7 @@</span> void sort_insertion(sort_data_t *data, size_t length) {
+ 
+   while (i &lt; length) {
+     size_t j = i;
+<span style="color:red;">-    while (j &gt; 0 &amp;&amp; data[j - 1] &gt; data[j]) {</span>
+<span style="color:green;">+</span><span style="color:green;">    while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {</span>
+       std::swap(data[j], data[j - 1]);
+       j--;
+     }
+{{</ aha >}}
+<!-- * -->
+
+This changes seems dubious. To confirm this indeed broke our library, we need to test the code before *and* after this
+change was introduced. As we are using Git, this is easy to do:
+{{< aha >}}
+<span style="color:gray"># Before the changes, check that the tests do pass</span>
+$ <span style="font-weight:bold;color:white;">git checkout 5889f58f^ && make test</span>
+HEAD is now at 25a6e64 Add N=10000 test
+<span style="color:gray;"># Output omitted</span>
+build/main
+<span style="color:green;">Tests succeeded</span>
+
+<span style="color:gray"># After the changes, check that the tests do not pass</span>
+$ <span style="font-weight:bold;color:white;">git checkout 5889f58f && make test</span>
+HEAD is now at 5889f58 Update sorting logic
+<span style="color:gray;"># Output omitted</span>
+build/main
+<span style="color:red;">Tests failed with 4</span>
+make: *** [Makefile:14: test] Error 4
+{{</ aha >}}
+<!-- ** -->
+
+Thus, we confirmed commit `5889f58` broke the library!
+
+However, to come to that conclusion we needed to:
+* Find which file was the source of the bug (sometimes it could be multiple files, or this could be non-trivial)
+* Identify commits bringing relevant changes to the file in question (there could be a lot of irrelevant commits)
+* Among relevant commits, find the first one that breaks the build (a lot of commits may have to be checked for that)
+
+This is where the `git bisect` command comes in: a faster, automated way to find bugs.
+
+# Finding any kind of bug with `git bisect`
+
+`git bisect` works under the assumption that:
+* You have a *last known good* commit, referred to as **good**, where the bug was not present
+* You have a *known bad* commit, referred to as **bad**, following the *good* commit, and where the bug is present
+
+Under this assumption, Git is able to deduce which is the first bad commit in $O(\log N)$ steps, where $N$ is the number
+of commits between **good** and **bad**. This uses the same idea as [dichotomic
+search](https://en.wikipedia.org/wiki/Dichotomic_search):
+* Pick the middle commit between **good** and **bad**, **middle**
+* Run the tests. If they pass, **good** becomes **middle** and repeat. Else, **bad** becomes **middle** and repeat.
+* Stop when **bad** is the commit immediately following **good**
+
+If you are testing manually, or tests are slow to run, the gains from $N$ to $\log N$ can add up very quickly, hence the
+importance of this feature. Let's start bisecting our repository:
+{{< aha >}}
+<span style="color:gray"># git bisect start [good [bad]]</span>
+<span style="color:gray"># Additionally, you can mark commits with `git bisect good` and `git bisect bad`</span>
+$ <span style="font-weight:bold;color:white">git bisect start HEAD master~8</span>
+Bisecting: 3 revisions left to test after this (roughly 2 steps)
+[5889f58fd7ec438b5e45ddab97611f6d34e916de] Update sorting logic
+{{</ aha >}}
+
+Git estimates the number of revisions to test to 3, which is already much less than our repository's history (9). In
+order to locate the first bad commit, we can then run the automated bisection with `git bisect run`:
+{{< aha >}}
+<span style="color:gray"># git bisect run command</span>
+$ <span style="font-weight:bold;color:white">git bisect run make test</span>
+running make test
+<span style="color:gray;"># Output omitted</span>
+build/main
+<span style="color:red;">Tests failed with 4</span>
+make: *** [Makefile:14: test] Error 4
+Bisecting: 1 revision left to test after this (roughly 1 step)
+[10930d83612b9a6eebae3d69be758bc6296a28c0] Add N=1000 test
+running make test
+<span style="color:gray;"># Output omitted</span>
+build/main
+<span style="color:green;">Tests succeeded</span>
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[25a6e647594e810104b9ae5d7350f6dc88e41512] Add N=10000 test
+running make test
+<span style="color:gray;"># Output omitted</span>
+build/main
+<span style="color:green;">Tests succeeded</span>
+5889f58fd7ec438b5e45ddab97611f6d34e916de is the first bad commit
+commit 5889f58fd7ec438b5e45ddab97611f6d34e916de
+Author: Vincent Tavernier &lt;vince.tavernier@gmail.com&gt;
+Date:   Sun Jan 24 03:17:12 2021 +0100
+
+    Update sorting logic
+
+ src/insertion.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+bisect run success
+{{</ aha >}}
+<!-- ** -->
+
+Thus, with only two commands (`start` and `run`), Git identified the first bad commit in our target range, and checked
+it out for us to inspect. When we're done inspecting the bad changes, we can return to the state of the repository
+before the bisection with `git bisect reset`.
+
+## Bisecting without automated tests
+
+In our little test project, we already had a test harness set up to find the offending commit. However, this may not
+always be the case:
+* Some complex issues might require setup outside the repository
+* The tests for a given bug might have only been added later
+
+In those cases, you can either:
+* Write a script to do the testing, preferably outside the repository folder (so it doesn't conflict with Git checking
+  out revisions). Then run it using `git bisect run ../script.sh`
+* Test manually. After starting the bisection, check if the current state of the repository is good or bad (Git will
+  have checked out the next revision for you), and then mark it as **good** with `git bisect good`, or **bad** with `git
+  bisect bad`. Git will then advance to the next revision to be tested.
+
+In any case, you will still benefit from the $O(\log N)$ complexity of the bisection.
+
+## Closing thoughts
+
+When submitting an issue to an open-source project, you will usually have to describe properties of the host system, the
+exact version being tested, reproduction instructions, etc...
+
+If you are able to, include the result of `git bisect` in your bug report. Pointing to a relevant changes in the
+repository's history will greatly help the maintainers diagnose the issue and work on a fix.
 
 # Conclusion
 
 With this tutorial series, we looked at how to maintain a sane Git history as well as your own sanity. Armed with this
-knowledge, you may now use your newly-acquired advanced Git skills such as bisecting to ~~flex on your colleagues~~ solve
-issues faster in your code.
+knowledge and carefully crafted Git repository histories, you may now use your newly-acquired advanced Git skills like
+bisecting to ~~flex on your colleagues~~ solve issues faster in your code.
 
 # More useful resources
 
-* Relation between staging, committing, local and remote repositories: [Git
-  Cheatsheet](http://ndpsoftware.com/git-cheatsheet.html) I screwed up, can I get my work back? [Oh Shit,
-* Git!?!](https://ohshitgit.com/)
+* Relation between staging, committing, local and remote repositories:
+  [Git Cheatsheet](http://ndpsoftware.com/git-cheatsheet.html)
+* I screwed up, can I get my work back? [Oh Shit, Git!?!](https://ohshitgit.com/)
 * Official manual: [Git Documentation](https://git-scm.com/doc)
