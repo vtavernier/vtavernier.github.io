@@ -1,79 +1,61 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="en"><meta name=author content="Vincent Tavernier"><meta name=description content="hyperion.rs          hyperion.rs is a Rust implementation of the Hyperion open-source ambient lighting software.
- hyperiond/ : daemon program and usage instructions hyperion/ : core functionality implementation  Requirements  Rust stable  protobuf compiler , protobuf-compiler on Debian distributions  Usage Get the source for the project:
-git clone https://github.com/vtavernier/hyperion.rs.git cd hyperion.rs Assuming the following config.yml:
-devices: - name: Raw UDP device frequency: 30 # Hz idle: delay: 5s # Consider device idle after 5s holds: true # This device holds the last command forever retries: 3 # Unreliable device, retry sending packets 3 times during idle updates endpoint: type: udp address: 192."><meta name=keywords content="blog,developer,personal,research,graphics"><meta name=twitter:card content="summary"><meta name=twitter:title content="hyperion.rs"><meta name=twitter:description content="hyperion.rs          hyperion.rs is a Rust implementation of the Hyperion open-source ambient lighting software.
- hyperiond/ : daemon program and usage instructions hyperion/ : core functionality implementation  Requirements  Rust stable  protobuf compiler , protobuf-compiler on Debian distributions  Usage Get the source for the project:
-git clone https://github.com/vtavernier/hyperion.rs.git cd hyperion.rs Assuming the following config.yml:
-devices: - name: Raw UDP device frequency: 30 # Hz idle: delay: 5s # Consider device idle after 5s holds: true # This device holds the last command forever retries: 3 # Unreliable device, retry sending packets 3 times during idle updates endpoint: type: udp address: 192."><meta property="og:title" content="hyperion.rs"><meta property="og:description" content="hyperion.rs          hyperion.rs is a Rust implementation of the Hyperion open-source ambient lighting software.
- hyperiond/ : daemon program and usage instructions hyperion/ : core functionality implementation  Requirements  Rust stable  protobuf compiler , protobuf-compiler on Debian distributions  Usage Get the source for the project:
-git clone https://github.com/vtavernier/hyperion.rs.git cd hyperion.rs Assuming the following config.yml:
-devices: - name: Raw UDP device frequency: 30 # Hz idle: delay: 5s # Consider device idle after 5s holds: true # This device holds the last command forever retries: 3 # Unreliable device, retry sending packets 3 times during idle updates endpoint: type: udp address: 192."><meta property="og:type" content="article"><meta property="og:url" content="https://vtavernier.github.io/projects/hyperion.rs/"><title>hyperion.rs · The Tavern</title><link rel=canonical href=https://vtavernier.github.io/projects/hyperion.rs/><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8/normalize.min.css><link rel=stylesheet href=/css/coder.min.f01c647a0d25b40da992a37c3376291185eed8a50ced8c26cc2c0bcfe38c97df.css integrity="sha256-8Bxkeg0ltA2pkqN8M3YpEYXu2KUM7YwmzCwLz+OMl98=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/coder-dark.min.126ad3988d46bdae6217a11105b53c9662bca05f39d42d3c0fb366919d334620.css integrity="sha256-EmrTmI1Gva5iF6ERBbU8lmK8oF851C08D7NmkZ0zRiA=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/main.css><link rel=icon type=image/png href=/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png><script defer src=https://twemoji.maxcdn.com/v/13.0.1/twemoji.min.js integrity=sha384-5f4X0lBluNY/Ib4VhGx0Pf6iDCF99VGXJIyYy7dDLY5QlEd7Ap0hICSSZA1XYbc4 crossorigin=anonymous></script><meta name=generator content="Hugo 0.75.1"></head><body class=colorscheme-dark onload=twemoji.parse(document.body);><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=/>The Tavern</a>
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="en"><meta name=author content="Vincent Tavernier"><meta name=description content="hyperion.rs      hyperion.rs is a rewrite of hyperion.ng in the Rust Programming Language. This version features:
+ Very low resource requirements (can be run on a single thread, useful for the Raspberry Pi Zero for example) No memory leaks (most allocations are static anyways) Easy to compile and cross-compile  Disclaimer: this is an early work-in-progress:
+ A lot of internals may still change, in case you would like to contribute please contact me beforehand."><meta name=keywords content="blog,developer,personal,research,graphics"><meta name=twitter:card content="summary"><meta name=twitter:title content="hyperion.rs"><meta name=twitter:description content="hyperion.rs      hyperion.rs is a rewrite of hyperion.ng in the Rust Programming Language. This version features:
+ Very low resource requirements (can be run on a single thread, useful for the Raspberry Pi Zero for example) No memory leaks (most allocations are static anyways) Easy to compile and cross-compile  Disclaimer: this is an early work-in-progress:
+ A lot of internals may still change, in case you would like to contribute please contact me beforehand."><meta property="og:title" content="hyperion.rs"><meta property="og:description" content="hyperion.rs      hyperion.rs is a rewrite of hyperion.ng in the Rust Programming Language. This version features:
+ Very low resource requirements (can be run on a single thread, useful for the Raspberry Pi Zero for example) No memory leaks (most allocations are static anyways) Easy to compile and cross-compile  Disclaimer: this is an early work-in-progress:
+ A lot of internals may still change, in case you would like to contribute please contact me beforehand."><meta property="og:type" content="article"><meta property="og:url" content="https://vtavernier.github.io/projects/hyperion.rs/"><title>hyperion.rs · The Tavern</title><link rel=canonical href=https://vtavernier.github.io/projects/hyperion.rs/><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css integrity="sha256-gsmEoJAws/Kd3CjuOQzLie5Q3yshhvmo7YNtBG7aaEY=" crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8/normalize.min.css><link rel=stylesheet href=/css/coder.min.f01c647a0d25b40da992a37c3376291185eed8a50ced8c26cc2c0bcfe38c97df.css integrity="sha256-8Bxkeg0ltA2pkqN8M3YpEYXu2KUM7YwmzCwLz+OMl98=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/coder-dark.min.126ad3988d46bdae6217a11105b53c9662bca05f39d42d3c0fb366919d334620.css integrity="sha256-EmrTmI1Gva5iF6ERBbU8lmK8oF851C08D7NmkZ0zRiA=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/main.css><link rel=icon type=image/png href=/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png><script defer src=https://twemoji.maxcdn.com/v/13.0.1/twemoji.min.js integrity=sha384-5f4X0lBluNY/Ib4VhGx0Pf6iDCF99VGXJIyYy7dDLY5QlEd7Ap0hICSSZA1XYbc4 crossorigin=anonymous></script><meta name=generator content="Hugo 0.75.1"></head><body class=colorscheme-dark onload=twemoji.parse(document.body);><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=/>The Tavern</a>
 <input type=checkbox id=menu-toggle>
-<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=/projects/>Projects</a></li><li class=navigation-item><a class=navigation-link href=/research/>Research</a></li></ul></section></nav><div class=content><section class="container page"><article><header><h1><a href=https://github.com/vtavernier/hyperion.rs>hyperion.rs</a></h1></header><p><a href=http://travis-ci.com/vtavernier/hyperion.rs target=_blank rel=noopener><img src=https://travis-ci.com/vtavernier/hyperion.rs.svg alt="Build Status"></a>
-<a href=https://github.com/vtavernier/hyperion.rs/releases target=_blank rel=noopener><img src=https://img.shields.io/github/release/vtavernier/hyperion.rs alt="GitHub release"></a>
-<a href="https://www.codacy.com/app/vtavernier/hyperion.rs?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=vtavernier/hyperion.rs&amp;amp;utm_campaign=Badge_Grade" target=_blank rel=noopener><img src=https://api.codacy.com/project/badge/Grade/9a0bff1adfc84e1d8c72fcc136328629 alt="Codacy Badge"></a>
-<a href=https://vtavernier.github.io/hyperion.rs/ target=_blank rel=noopener><img src=https://img.shields.io/badge/docs-master-blue.svg alt=Documentation></a>
-<a href=https://opensource.org/licenses/MIT target=_blank rel=noopener><img src=https://img.shields.io/badge/License-MIT-blue.svg alt="License: MIT"></a>
-<a href=https://libraries.io/github/vtavernier/hyperion.rs target=_blank rel=noopener><img src=https://img.shields.io/librariesio/github/vtavernier/hyperion.rs.svg alt="Libraries.io for GitHub"></a>
-<a href=https://sagiegurari.github.io/cargo-make target=_blank rel=noopener><img src=https://sagiegurari.github.io/cargo-make/assets/badges/cargo-make.svg alt="Built with cargo-make"></a></p><p><code>hyperion.rs</code> is a Rust implementation of the
-<a href=https://github.com/hyperion-project/hyperion target=_blank rel=noopener>Hyperion</a>
-open-source ambient
-lighting software.</p><ul><li><a href=https://github.com/vtavernier/hyperion.rs/blob/master/hyperiond target=_blank rel=noopener><code>hyperiond/</code></a>
-: daemon program and usage instructions</li><li><a href=https://github.com/vtavernier/hyperion.rs/blob/master/hyperion target=_blank rel=noopener><code>hyperion/</code></a>
-: core functionality implementation</li></ul><h2 id=requirements>Requirements</h2><ul><li><a href=https://rustup.rs/ target=_blank rel=noopener>Rust stable</a></li><li><a href=https://github.com/protocolbuffers/protobuf/releases target=_blank rel=noopener>protobuf compiler</a>
-, <code>protobuf-compiler</code> on Debian distributions</li></ul><h2 id=usage>Usage</h2><p>Get the source for the project:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git clone https://github.com/vtavernier/hyperion.rs.git
-<span style=color:#8be9fd;font-style:italic>cd</span> hyperion.rs
-</code></pre></div><p>Assuming the following <code>config.yml</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ff79c6>devices</span>:
-  - <span style=color:#ff79c6>name</span>: Raw UDP device
-    <span style=color:#ff79c6>frequency</span>: <span style=color:#bd93f9>30</span> <span style=color:#6272a4># Hz</span>
-    <span style=color:#ff79c6>idle</span>:
-      <span style=color:#ff79c6>delay</span>: 5s   # Consider device idle after 5s
-      <span style=color:#ff79c6>holds</span>: <span style=color:#ff79c6>true</span> <span style=color:#6272a4># This device holds the last command forever</span>
-      <span style=color:#ff79c6>retries</span>: <span style=color:#bd93f9>3</span>  <span style=color:#6272a4># Unreliable device, retry sending packets 3 times during idle updates</span>
-    <span style=color:#ff79c6>endpoint</span>:
-      <span style=color:#ff79c6>type</span>: udp
-      <span style=color:#ff79c6>address</span>: <span style=color:#bd93f9>192.168.0.27</span>:<span style=color:#bd93f9>19446</span> <span style=color:#6272a4># Can also use hostnames, e.g. device.local:19446</span>
-    <span style=color:#ff79c6>leds</span>:
-      <span style=color:#6272a4># When facing the screen</span>
-      <span style=color:#6272a4>#  * hscan ranges from 0 (left) to 1 (right)</span>
-      <span style=color:#6272a4>#  * vscan ranges from 0 (top) to 1 (bottom)</span>
-      - <span style=color:#ff79c6>hscan</span>: { <span style=color:#ff79c6>min: 0.8, max</span>: <span style=color:#bd93f9>1.0</span> }
-        <span style=color:#ff79c6>vscan</span>: { <span style=color:#ff79c6>min: 0.0, max</span>: <span style=color:#bd93f9>1.0</span> }
-      - <span style=color:#ff79c6>hscan</span>: { <span style=color:#ff79c6>min: 0.5, max</span>: <span style=color:#bd93f9>1.0</span> }
-        <span style=color:#ff79c6>vscan</span>: { <span style=color:#ff79c6>min: 0.0, max</span>: <span style=color:#bd93f9>0.2</span> }
-      - <span style=color:#ff79c6>hscan</span>: { <span style=color:#ff79c6>min: 0.0, max</span>: <span style=color:#bd93f9>0.5</span> }
-        <span style=color:#ff79c6>vscan</span>: { <span style=color:#ff79c6>min: 0.0, max</span>: <span style=color:#bd93f9>0.2</span> }
-      - <span style=color:#ff79c6>hscan</span>: { <span style=color:#ff79c6>min: 0.0, max</span>: <span style=color:#bd93f9>0.2</span> }
-        <span style=color:#ff79c6>vscan</span>: { <span style=color:#ff79c6>min: 0.0, max</span>: <span style=color:#bd93f9>1.0</span> }
-</code></pre></div><p>You can run the daemon using the following commands:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Build and run</span>
-<span style=color:#8be9fd;font-style:italic>HYPERION_LOG</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>hyperion</span><span style=color:#ff79c6>=</span>debug cargo run -- -c config.yml s --bind 0.0.0.0
-<p><span style=color:#6272a4># Run release version (without cargo)</span>
-<span style=color:#8be9fd;font-style:italic>HYPERION_LOG</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>hyperion</span><span style=color:#ff79c6>=</span>debug ./target/release/hyperiond -c config.yml s &ndash;bind 0.0.0.0
-</code></pre></div><p>The Android app can be used to send commands to this server, which should result
-in updated colors in the output of the daemon.</p></p><p>If you have <a href=https://github.com/sagiegurari/cargo-make target=_blank rel=noopener>cargo-make</a>
-installed,
-you can use this command to build a deployable archive of hyperion.rs:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Build hyperion.rs-release.tar.gz</span>
-cargo make --no-workspace package-release
-</code></pre></div><h2 id=status>Status</h2><p>This is still early work: the crate interface will probably change a lot and the
-configuration format might be updated in breaking ways.</p><p>Not implemented yet:</p><ul><li>Effects</li><li>Other LED device types</li></ul><h3 id=supported-devices>Supported devices</h3><p>This list details which devices are supported currently for outputting color data.</p><ul><li>Raw 8-bit RGB UDP</li><li>Stdout (for debugging)</li></ul><p>Currently, both RGB and RGB+W LED arrangements are supported. The white component
-is computed from the RGB commands sent to the daemon, based on the white point
-(color temperature) of both the devices' RGB and W LEDs. This means that the W
-LED will be used to produce as much as possible of its &ldquo;target&rdquo; white, while the
-RGB LED will be used for colors, while also having its white point corrected.
-This requires estimating (or getting from the specs) the color temperature of
-the various LEDs in the device.</p><p>RGBCW (RGB + Cold white + Warm white) is not supported yet and only the RGB LED
-will be used.</p><h3 id=endpoint-command-status>Endpoint command status</h3><p>This table summarizes the commands supported by the JSON and Protobuf interfaces
-to the Hyperion server.</p><table><thead><tr><th>Command</th><th>JSON</th><th>Protobuf</th></tr></thead><tbody><tr><td>Adjustment</td><td>❌</td><td>N.A.</td></tr><tr><td>Clear</td><td>✔</td><td>✔</td></tr><tr><td>ClearAll</td><td>✔</td><td>✔</td></tr><tr><td>Color</td><td>✔</td><td>✔</td></tr><tr><td>Correction</td><td>❌</td><td>N.A.</td></tr><tr><td>Effect</td><td>❌</td><td>N.A.</td></tr><tr><td>Image</td><td>✔</td><td>✔</td></tr><tr><td>ServerInfo</td><td>❌</td><td>N.A.</td></tr><tr><td>Temperature</td><td>❌</td><td>N.A.</td></tr><tr><td>Transform</td><td>❌</td><td>N.A.</td></tr></tbody></table><ul><li>N.A.: not defined for the protocol</li></ul><h3 id=image-processing>Image processing</h3><p>The black border detector has not been implemented yet.</p><h3 id=color-processing>Color processing</h3><p>The Hyperion daemon is responsible for processing the incoming image data into
-LED colors. This requires processing and transforming colors. The following parts
-of the color processing pipeline have been implemented:</p><p><em>(none)</em></p><p>The following parts have to be implemented (they are listed in order of application
-in the computation):</p><ul><li>Transform (saturation gain, luminance gain, luminance minimum + RGB per-channel
-threshold and gamma)</li><li>Adjustment (RGB -> RGB mapping matrix)</li><li>Temperature (RGB per-channel multiplication)</li></ul><h3 id=effects>Effects</h3><p>Effects in hyperion.rs will be implemented as Lua scripts with a specific API to
-interact with hyperiond. This project uses the Lua interpreter as it is lighter
-to embed than the Python interpreter, and the language differences should not
-matter much for writing effect code.</p><p>Effect support is under development.</p><h3 id=smoothing>Smoothing</h3><p>The following temporal filters are available:</p><ul><li><code>nearest</code>: no filtering. The latest image sample is used as current color.
-Lowest image to LED latency, but sensitive to noise.</li><li><code>linear</code>: linear filtering. The LED color reaches the latest image sample
-linearly in <code>1/f</code> seconds (where <code>f</code> is the filter frequency). Introduces
-latency proportional to the filter period.</li></ul><h3 id=grabbing>Grabbing</h3><p>Grabbing is not planned yet for hyperion.rs.</p><h3 id=web-configuration>Web configuration</h3><p>Web configuration of the hyperion.rs is outside of the scope of this project.</p><h2 id=authors>Authors</h2><ul><li><a href=https://github.com/vtavernier target=_blank rel=noopener>Vincent Tavernier</a></li></ul><h2 id=license>License</h2><p>This source code is released under the <a href=https://opensource.org/licenses/MIT target=_blank rel=noopener>MIT-License</a></p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
+<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=/projects/>Projects</a></li><li class=navigation-item><a class=navigation-link href=/research/>Research</a></li></ul></section></nav><div class=content><section class="container page"><article><header><h1><a href=https://github.com/vtavernier/hyperion.rs>hyperion.rs</a></h1></header><p><a href=https://github.com/vtavernier/hyperion.rs/actions target=_blank rel=noopener><img src=https://github.com/vtavernier/hyperion.rs/workflows/build/badge.svg alt=Build></a>
+<a href=https://vtavernier.github.io/hyperion.rs/hyperion/ target=_blank rel=noopener><img src=https://img.shields.io/badge/docs-master-blue alt=Docs></a>
+<a href=https://github.com/vtavernier/hyperion.rs/blob/master/LICENSE target=_blank rel=noopener><img src=https://img.shields.io/github/license/vtavernier/hyperion.rs alt=GitHub></a></p><p>hyperion.rs is a rewrite of
+<a href=https://github.com/hyperion-project/hyperion.ng target=_blank rel=noopener>hyperion.ng</a>
+in the Rust
+Programming Language. This version features:</p><ul><li>Very low resource requirements (can be run on a single thread, useful for the
+Raspberry Pi Zero for example)</li><li>No memory leaks (most allocations are static anyways)</li><li>Easy to compile <em>and</em> cross-compile</li></ul><p><em><strong>Disclaimer: this is an early work-in-progress</strong></em>:</p><ul><li>A lot of internals may still change, in case you would like to contribute
+please contact me beforehand.</li><li>Only a small subset of the original project&rsquo;s features are currently
+supported. This means that unless you&rsquo;re using it in the exact same context as
+I am (Android TV Grabber + Raspberry Pi Zero W + WS2815 LED strip), this might
+not be for you.</li></ul><h2 id=compatibility>Compatibility</h2><p>Currently implemented features:</p><ul><li>Loading settings from the hyperion.ng database</li><li>Basic WS2812SPI device (no invert, no latch time)</li><li>JSON, Protobuf and Flatbuffers server</li></ul><h2 id=migrating-your-settings>Migrating your settings</h2><p>Due to the ORM being used in this project, we need the settings database to have
+primary keys setup. This doesn&rsquo;t change the schema, but to ensure compatibility,
+it is best to use a separate database for hyperion.ng and hyperion.rs.</p><p>This process will be more streamlined in the future, but for testing purposes
+you can follow these instructions: assuming you have the sqlite3 client
+installed, and you are in your home directory, with hyperion.rs being a clone of
+this repository:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Create config directory for hyperion.rs</span>
+$ mkdir -p .config/hyperion.rs/
+<p><span style=color:#6272a4># (if not done already) Install the ORM client diesel</span>
+$ cargo install &ndash;force diesel_cli</p>
+<p><span style=color:#6272a4># Setup the database</span>
+$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> hyperion.rs <span style=color:#ff79c6>&amp;&amp;</span> <span style=color:#8be9fd;font-style:italic>DATABASE_URL</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>$HOME</span>/.config/hyperion.rs/hyperion.db diesel setup<span style=color:#ff79c6>)</span></p>
+<p><span style=color:#6272a4># Open sqlite3</span>
+$ sqlite3
+&gt; ATTACH <span style=color:#f1fa8c>&quot;.hyperion/db/hyperion.db&quot;</span> AS db1;        &ndash; Attach the original hyperion.ng database
+&gt; ATTACH <span style=color:#f1fa8c>&quot;.config/hyperion.rs/hyperion.db&quot;</span> AS db2; &ndash; Attach the new hyperion.rs database
+&gt; &ndash; Copy the tables
+&gt; BEGIN TRANSACTION;
+&gt; 	INSERT INTO db2.instances SELECT * FROM db1.instances;
+&gt; 	INSERT INTO db2.auth SELECT * FROM db1.auth;
+&gt; 	INSERT INTO db2.meta SELECT * FROM db1.meta;
+&gt; 	INSERT INTO db2.settings SELECT * FROM db1.settings;
+&gt; COMMIT;
+</code></pre></div><h2 id=running-hyperionrs>Running hyperion.rs</h2></p><p>Once your settings database has been migrated, you can run hyperion.rs using
+<code>cargo</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cargo run
+</code></pre></div><p>If running from a release archive, invoke the <code>hyperiond-rs</code> binary directly.</p><h2 id=cross-compiling>Cross-compiling</h2><p>Cross-compiling is done using <a href=https://github.com/rustembedded/cross target=_blank rel=noopener>cross</a>
+. As
+hyperion.rs has native dependencies, we first need to prepare a Docker image
+with the required dependencies, and then build using the resulting image.</p><p><em>Note: these images will be published on dockerhub as the project stabilizes.</em></p><p>Let&rsquo;s say we are building for the Raspberry Pi Zero, which corresponds to the
+Rust target arm-unknown-linux-gnueabihf.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>TARGET</span><span style=color:#ff79c6>=</span>arm-unknown-linux-gnueabihf
+<p><span style=color:#6272a4># Build the Docker image</span>
+$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> docker <span style=color:#ff79c6>&amp;&amp;</span> docker build . -f Dockerfile.<span style=color:#8be9fd;font-style:italic>$TARGET</span> -t vtavernier/cross-hyperion:<span style=color:#8be9fd;font-style:italic>$TARGET</span><span style=color:#ff79c6>)</span></p>
+<p><span style=color:#6272a4># (if not done already) Install cross</span>
+$ cargo install &ndash;force cross</p>
+<p><span style=color:#6272a4># Build the project</span>
+$ cross build &ndash;release &ndash;target <span style=color:#8be9fd;font-style:italic>$TARGET</span></p>
+<p><span style=color:#6272a4># The resulting binaries will be in target/$TARGET/release</span>
+</code></pre></div><h2 id=license>License</h2></p><p>This work is licensed under the <a href=https://github.com/vtavernier/hyperion.rs/blob/master/LICENSE target=_blank rel=noopener>MIT License</a>
+.</p><h2 id=author>Author</h2><p>Vincent Tavernier <a href=mailto:vince.tavernier@gmail.com>vince.tavernier@gmail.com</a>. Original project and protocol
+source files by <a href=https://github.com/hyperion-project target=_blank rel=noopener>hyperion-project</a>
+.</p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
 2019 -
 2021
 Vincent Tavernier
