@@ -254,15 +254,15 @@ This is where the `git bisect` command comes in: a faster, automated way to find
 * You have a *last known good* commit, referred to as **good**, where the bug was not present
 * You have a *known bad* commit, referred to as **bad**, following the *good* commit, and where the bug is present
 
-Under this assumption, Git is able to deduce which is the first bad commit in $O(\log N)$ steps, where $N$ is the number
-of commits between **good** and **bad**. This uses the same idea as [dichotomic
+Under this assumption, Git is able to deduce which is the first bad commit in $O(\log_2 N)$ steps, where $N$ is the
+number of commits between **good** and **bad**. This uses the same idea as [dichotomic
 search](https://en.wikipedia.org/wiki/Dichotomic_search):
 * Pick the middle commit between **good** and **bad**, **middle**
 * Run the tests. If they pass, **good** becomes **middle** and repeat. Else, **bad** becomes **middle** and repeat.
 * Stop when **bad** is the commit immediately following **good**
 
-If you are testing manually, or tests are slow to run, the gains from $N$ to $\log N$ can add up very quickly, hence the
-importance of this feature. Let's start bisecting our repository:
+If you are testing manually, or tests are slow to run, the gains from $N$ to $\log_2 N$ can add up very quickly, hence
+the importance of this feature. Let's start bisecting our repository:
 {{< aha >}}
 <span style="color:gray"># git bisect start [good [bad]]</span>
 <span style="color:gray"># Additionally, you can mark commits with `git bisect good` and `git bisect bad`</span>
@@ -324,7 +324,7 @@ In those cases, you can either:
   have checked out the next revision for you), and then mark it as **good** with `git bisect good`, or **bad** with `git
   bisect bad`. Git will then advance to the next revision to be tested.
 
-In any case, you will still benefit from the $O(\log N)$ complexity of the bisection.
+In any case, you will still benefit from the $O(\log_2 N)$ complexity of the bisection.
 
 ## Closing thoughts
 
