@@ -20,18 +20,21 @@ below) also installs the corresponding <code>glsltcc</code> binary.</p><p>Altern
 compiler installed:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Fetch the source</span>
 git clone https://github.com/vtavernier/glslt.git
 <span style=color:#8be9fd;font-style:italic>cd</span> glslt
-<p><span style=color:#6272a4># Run the program directly</span>
-cargo run &ndash; test.glsl</p>
-<p><span style=color:#6272a4># Or, install the glsltcc binary permanently</span>
-cargo install &ndash;force .
+
+<span style=color:#6272a4># Run the program directly</span>
+cargo run -- test.glsl
+
+<span style=color:#6272a4># Or, install the glsltcc binary permanently</span>
+cargo install --force .
 glsltcc test.glsl
-</code></pre></div><p>To install the Python module for the latest stable version, you can use <code>pip</code>:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install glslt
+</code></pre></div><p>To install the Python module for the latest stable version, you can use <code>pip</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install glslt
 </code></pre></div><p>If you downloaded the source and want to build the latest version of the Python
 module, use <code>maturin</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Install maturin (only needed once)</span>
 pip install maturin
-<p><span style=color:#6272a4># Assuming you are in a virtualenv</span>
-<span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> glslt <span style=color:#ff79c6>&amp;&amp;</span> maturin develop &ndash;cargo-extra-args<span style=color:#ff79c6>=</span><span style=color:#f1fa8c>'&ndash;features python'</span> -b pyo3<span style=color:#ff79c6>)</span>
-</code></pre></div><h2 id=usage>Usage</h2></p><h3 id=static-template-function-parameters>Static template function parameters</h3><p><code>glslt</code> supports <em>static template function parameters</em>. This means, passing the
+
+<span style=color:#6272a4># Assuming you are in a virtualenv</span>
+<span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> glslt <span style=color:#ff79c6>&amp;&amp;</span> maturin develop --cargo-extra-args<span style=color:#ff79c6>=</span><span style=color:#f1fa8c>&#39;--features python&#39;</span> -b pyo3<span style=color:#ff79c6>)</span>
+</code></pre></div><h2 id=usage>Usage</h2><h3 id=static-template-function-parameters>Static template function parameters</h3><p><code>glslt</code> supports <em>static template function parameters</em>. This means, passing the
 name of an already-declared function as a parameter for a templated function.
 Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#6272a4>// A pointer to a function that has no args and returns an int</span>
 <span style=color:#6272a4>//</span>
@@ -39,11 +42,14 @@ Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-
 <span style=color:#6272a4>// basically useless in GLSL. Since there can be no indirect</span>
 <span style=color:#6272a4>// recursion, there is no need for function pre-declarations.</span>
 <span style=color:#ff79c6>int</span> intfn();
-<p><span style=color:#6272a4>// A first function that could be an intfn</span>
-<span style=color:#ff79c6>int</span> fnReturnsOne() { <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>1</span>; }</p>
-<p><span style=color:#6272a4>// A second function that could be an intfn</span>
-<span style=color:#ff79c6>int</span> fnReturnsTwo() { <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>2</span>; }</p>
-<p><span style=color:#6272a4>// A template function. It's recognized as a template because it uses intfn</span>
+
+<span style=color:#6272a4>// A first function that could be an intfn</span>
+<span style=color:#ff79c6>int</span> fnReturnsOne() { <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>1</span>; }
+
+<span style=color:#6272a4>// A second function that could be an intfn</span>
+<span style=color:#ff79c6>int</span> fnReturnsTwo() { <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>2</span>; }
+
+<span style=color:#6272a4>// A template function. It&#39;s recognized as a template because it uses intfn</span>
 <span style=color:#6272a4>// which has been declared as a function pointer.</span>
 <span style=color:#6272a4>//</span>
 <span style=color:#6272a4>// In the generated code, there will be no function called fnTemplate, as all</span>
@@ -51,15 +57,16 @@ Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-
 <span style=color:#6272a4>//</span>
 <span style=color:#6272a4>// Thus, callback can only be an identifier of an existing function, which</span>
 <span style=color:#6272a4>// should (later: must with type-checking) match the pointer type</span>
-<span style=color:#ff79c6>int</span> fnTemplate(<span style=color:#ff79c6>in</span> intfn callback) { <span style=color:#ff79c6>return</span> callback(); }</p>
-<p><span style=color:#ff79c6>void</span> main() {
-<span style=color:#6272a4>// Calling fnTemplate with function pointers</span>
-gl_FragColor <span style=color:#ff79c6>=</span>
-<span style=color:#ff79c6>vec4</span>(fnTemplate(fnReturnsOne), fnTemplate(fnReturnsTwo), <span style=color:#bd93f9>0.</span>, <span style=color:#bd93f9>1.</span>);
+<span style=color:#ff79c6>int</span> fnTemplate(<span style=color:#ff79c6>in</span> intfn callback) { <span style=color:#ff79c6>return</span> callback(); }
+
+<span style=color:#ff79c6>void</span> main() {
+    <span style=color:#6272a4>// Calling fnTemplate with function pointers</span>
+    gl_FragColor <span style=color:#ff79c6>=</span>
+        <span style=color:#ff79c6>vec4</span>(fnTemplate(fnReturnsOne), fnTemplate(fnReturnsTwo), <span style=color:#bd93f9>0.</span>, <span style=color:#bd93f9>1.</span>);
 }
 </code></pre></div><p>Note that we do not define a new syntax. Instead, we use the function
 pre-declaration syntax which is rarely used to declare function pointers. Thus,
-all your existing tooling still works with <code>glslt</code>.</p></p><p>In order to run this code on your GPU, you need to process it so function
+all your existing tooling still works with <code>glslt</code>.</p><p>In order to run this code on your GPU, you need to process it so function
 templates are <em>instantiated</em> with their actual template parameters. This is
 where this tool comes in:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Assuming you installed the pre-built glsltcc binary, if running from source use `cargo run --` instead.</span>
 <span style=color:#6272a4>#</span>
@@ -68,103 +75,122 @@ glsltcc -o output.glsl test.glsl
 </code></pre></div><p>The resulting code will look like this:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>int</span> fnReturnsOne() {
     <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>1</span>;
 }
-<p><span style=color:#ff79c6>int</span> fnReturnsTwo() {
-<span style=color:#ff79c6>return</span> <span style=color:#bd93f9>2</span>;
-}</p>
-<p><span style=color:#ff79c6>int</span> _glslt_fnTemplate_dd5173() {
-<span style=color:#ff79c6>return</span> fnReturnsOne();
-}</p>
-<p><span style=color:#ff79c6>int</span> _glslt_fnTemplate_4314fd() {
-<span style=color:#ff79c6>return</span> fnReturnsTwo();
-}</p>
-<p><span style=color:#ff79c6>void</span> main() {
-gl_FragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(_glslt_fnTemplate_dd5173(), _glslt_fnTemplate_4314fd(), <span style=color:#bd93f9>0.</span>, <span style=color:#bd93f9>1.</span>);
+
+<span style=color:#ff79c6>int</span> fnReturnsTwo() {
+    <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>2</span>;
+}
+
+<span style=color:#ff79c6>int</span> _glslt_fnTemplate_dd5173() {
+    <span style=color:#ff79c6>return</span> fnReturnsOne();
+}
+
+<span style=color:#ff79c6>int</span> _glslt_fnTemplate_4314fd() {
+    <span style=color:#ff79c6>return</span> fnReturnsTwo();
+}
+
+<span style=color:#ff79c6>void</span> main() {
+    gl_FragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(_glslt_fnTemplate_dd5173(), _glslt_fnTemplate_4314fd(), <span style=color:#bd93f9>0.</span>, <span style=color:#bd93f9>1.</span>);
 }
 </code></pre></div><p>Note how the template function calls have been replaced by regular GLSL
-functions. This code can be directly used in an OpenGL application.</p></p><h3 id=lambda-template-function-parameters>Lambda template function parameters</h3><p><code>glslt</code> also supports <em>lambda template function parameters</em>. Instead of passing
+functions. This code can be directly used in an OpenGL application.</p><h3 id=lambda-template-function-parameters>Lambda template function parameters</h3><p><code>glslt</code> also supports <em>lambda template function parameters</em>. Instead of passing
 a function name as a parameter to the templated function, you may pass an
 expression. This expression may capture local variables and parameters, which
 will be taken into account when instantiating the template. Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdf3d(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p);
-<p><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
-<span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
-}</p>
-<p><span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
-<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
-<span style=color:#ff79c6>return</span> primitive(q);
-}</p>
-<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
-fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_1, <span style=color:#bd93f9>4.</span>), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
+
+<span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+    <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}
+
+<span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+    <span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+    <span style=color:#ff79c6>return</span> primitive(q);
+}
+
+<span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+    fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_1, <span style=color:#bd93f9>4.</span>), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
 }
 </code></pre></div><p>Note how instead of just passing <code>sdSphere</code> as a template parameter, we pass
 <code>sdSphere(_1, 4.)</code>. This translates to calling <code>sdSphere</code> with the first
 parameter given by the template function <code>opElongate</code>, while the second
-parameter is the constant <code>4.</code>. This results in the following code:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+parameter is the constant <code>4.</code>. This results in the following code:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
     <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
 }
-<p><span style=color:#ff79c6>float</span> _glslt_opElongate_d20939(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
-<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
-<span style=color:#ff79c6>return</span> sdSphere(q, <span style=color:#bd93f9>4.</span>);
-}</p>
-<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
-fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_d20939(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.</span>);
+
+<span style=color:#ff79c6>float</span> _glslt_opElongate_d20939(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+    <span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+    <span style=color:#ff79c6>return</span> sdSphere(q, <span style=color:#bd93f9>4.</span>);
+}
+
+<span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+    fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_d20939(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.</span>);
 }
 </code></pre></div><p>Since captures are supported, this example may have been written with the
-sphere diameter being a parameter:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdf3d(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p);
-<p><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
-<span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
-}</p>
-<p><span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
-<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
-<span style=color:#ff79c6>return</span> primitive(q);
-}</p>
-<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
-<span style=color:#ff79c6>float</span> sz <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>5.</span>;
-fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_1, sz), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
-<span style=color:#6272a4>//                                            ^^</span>
-<span style=color:#6272a4>// Using a local variable in the template argument</span>
-}
-</code></pre></div><p>The variable is properly captured in the generated code:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+sphere diameter being a parameter:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdf3d(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p);
+
+<span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
     <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
 }
-<p><span style=color:#6272a4>// _glslt_lp2 is the captured variable input</span>
-<span style=color:#ff79c6>float</span> _glslt_opElongate_d9170f(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h, <span style=color:#ff79c6>float</span> _glslt_lp2) {
-<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
-<span style=color:#ff79c6>return</span> sdSphere(q, _glslt_lp2);
-}</p>
-<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
-<span style=color:#ff79c6>float</span> sz <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>5.</span>;
-fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_d9170f(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>), sz)), <span style=color:#bd93f9>1.</span>);
-<span style=color:#6272a4>//                                                                 Captured variable: ^^</span>
+
+<span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+    <span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+    <span style=color:#ff79c6>return</span> primitive(q);
 }
-</code></pre></div><h4 id=named-placeholders>Named placeholders</h4></p><p>When passing a lambda expression to a template function, you may use the
+
+<span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+    <span style=color:#ff79c6>float</span> sz <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>5.</span>;
+    fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_1, sz), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
+    <span style=color:#6272a4>//                                            ^^</span>
+    <span style=color:#6272a4>// Using a local variable in the template argument</span>
+}
+</code></pre></div><p>The variable is properly captured in the generated code:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+    <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}
+
+<span style=color:#6272a4>// _glslt_lp2 is the captured variable input</span>
+<span style=color:#ff79c6>float</span> _glslt_opElongate_d9170f(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h, <span style=color:#ff79c6>float</span> _glslt_lp2) {
+    <span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+    <span style=color:#ff79c6>return</span> sdSphere(q, _glslt_lp2);
+}
+
+<span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+    <span style=color:#ff79c6>float</span> sz <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>5.</span>;
+    fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_d9170f(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>), sz)), <span style=color:#bd93f9>1.</span>);
+    <span style=color:#6272a4>//                                                                 Captured variable: ^^</span>
+}
+</code></pre></div><h4 id=named-placeholders>Named placeholders</h4><p>When passing a lambda expression to a template function, you may use the
 unnamed placeholders <code>_1</code>, <code>_2</code>, etc. to refer to the first, second, etc.
 arguments to the template function call. You may also use the parameter names
 as declared in the function prototype. The previous example could be written as
 follows:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#6272a4>// In sdf3d template parameters, `p` is the first parameter name</span>
 <span style=color:#ff79c6>float</span> sdf3d(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p);
-<p><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
-<span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
-}</p>
-<p><span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
-<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
-<span style=color:#ff79c6>return</span> primitive(q);
-}</p>
-<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
-fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_p, <span style=color:#bd93f9>1.0</span>), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
-<span style=color:#6272a4>//                                        ^^</span>
-<span style=color:#6272a4>// Named placeholder parameter in a template instead of _1</span>
-}
-</code></pre></div><p>The generated code will look like this:</p></p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+
+<span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
     <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
 }
-<p><span style=color:#ff79c6>float</span> _glslt_opElongate_784a47(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
-<span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
-<span style=color:#ff79c6>return</span> sdSphere(q, <span style=color:#bd93f9>1.</span>);
-}</p>
-<p><span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
-fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_784a47(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.</span>);
+
+<span style=color:#ff79c6>float</span> opElongate(<span style=color:#ff79c6>in</span> sdf3d primitive, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+    <span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+    <span style=color:#ff79c6>return</span> primitive(q);
 }
-</code></pre></div><h3 id=nested-lambda-expressions>Nested lambda expressions</h3></p><p>Nested lambda expressions are supported, however due to the syntax being used,
+
+<span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+    fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(opElongate(sdSphere(_p, <span style=color:#bd93f9>1.0</span>), <span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.0</span>);
+    <span style=color:#6272a4>//                                        ^^</span>
+    <span style=color:#6272a4>// Named placeholder parameter in a template instead of _1</span>
+}
+</code></pre></div><p>The generated code will look like this:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>float</span> sdSphere(<span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>float</span> r) {
+    <span style=color:#ff79c6>return</span> length(p) <span style=color:#ff79c6>-</span> r;
+}
+
+<span style=color:#ff79c6>float</span> _glslt_opElongate_784a47(<span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> p, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec3</span> h) {
+    <span style=color:#ff79c6>vec3</span> q <span style=color:#ff79c6>=</span> p <span style=color:#ff79c6>-</span> clamp(p, <span style=color:#ff79c6>-</span>h, h);
+    <span style=color:#ff79c6>return</span> sdSphere(q, <span style=color:#bd93f9>1.</span>);
+}
+
+<span style=color:#ff79c6>void</span> mainImage(<span style=color:#ff79c6>out</span> <span style=color:#ff79c6>vec4</span> fragColor, <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>vec2</span> fragCoord) {
+    fragColor <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>vec4</span>(<span style=color:#ff79c6>vec3</span>(_glslt_opElongate_784a47(<span style=color:#ff79c6>vec3</span>(fragCoord, <span style=color:#bd93f9>0.</span>), <span style=color:#ff79c6>vec3</span>(<span style=color:#bd93f9>1.</span>, <span style=color:#bd93f9>2.</span>, <span style=color:#bd93f9>3.</span>))), <span style=color:#bd93f9>1.</span>);
+}
+</code></pre></div><h3 id=nested-lambda-expressions>Nested lambda expressions</h3><p>Nested lambda expressions are supported, however due to the syntax being used,
 we have to make a decision on how to resolve the anonymous placeholders to
 their corresponding lambda. The current algorithm transforms innermost lambdas
 first, so the placeholders will resolve to the most nested expression first.</p><p>This may be circumvented by using named placeholders (as long as there is no
@@ -191,9 +217,10 @@ to
 build and develop the Python module, inside a virtualenv.</p><p>In order to build the Python package, you have to enable the <code>python</code> feature
 and have <code>python3-dev</code> installed. See the documentation for <a href=https://github.com/vtavernier/glslt/blob/master/glslt/ target=_blank rel=noopener>glslt</a>
 for
-an example.</p><h2 id=limitations>Limitations</h2><p>This program is based on the excellent <a href=https://github.com/phaazon/glsl target=_blank rel=noopener>glsl</a><p>crate for parsing and manipulating the GLSL AST in Rust. However, since it’s
+an example.</p><h2 id=limitations>Limitations</h2><p>This program is based on the excellent <a href=https://github.com/phaazon/glsl target=_blank rel=noopener>glsl</a>
+crate for parsing and manipulating the GLSL AST in Rust. However, since it&rsquo;s
 only an AST and not a full parse tree, we have currently no way of preserving
-comments or original formatting.</p></p><p>Furthermore, since pre-processor directives have to be passed through to the
+comments or original formatting.</p><p>Furthermore, since pre-processor directives have to be passed through to the
 GPU for accurate execution, shaders which are syntactically invalid without
 pre-processing are not supported.</p><h2 id=author>Author</h2><p>Vincent Tavernier <a href=mailto:vince.tavernier@gmail.com>vince.tavernier@gmail.com</a></p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
 2019 -

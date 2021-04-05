@@ -23,36 +23,43 @@ you can follow these instructions: assuming you have the sqlite3 client
 installed, and you are in your home directory, with hyperion.rs being a clone of
 this repository:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Create config directory for hyperion.rs</span>
 $ mkdir -p .config/hyperion.rs/
-<p><span style=color:#6272a4># (if not done already) Install the ORM client diesel</span>
-$ cargo install &ndash;force diesel_cli</p>
-<p><span style=color:#6272a4># Setup the database</span>
-$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> hyperion.rs <span style=color:#ff79c6>&amp;&amp;</span> <span style=color:#8be9fd;font-style:italic>DATABASE_URL</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>$HOME</span>/.config/hyperion.rs/hyperion.db diesel setup<span style=color:#ff79c6>)</span></p>
-<p><span style=color:#6272a4># Open sqlite3</span>
+
+<span style=color:#6272a4># (if not done already) Install the ORM client diesel</span>
+$ cargo install --force diesel_cli
+
+<span style=color:#6272a4># Setup the database</span>
+$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> hyperion.rs <span style=color:#ff79c6>&amp;&amp;</span> <span style=color:#8be9fd;font-style:italic>DATABASE_URL</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>$HOME</span>/.config/hyperion.rs/hyperion.db diesel setup<span style=color:#ff79c6>)</span>
+
+<span style=color:#6272a4># Open sqlite3</span>
 $ sqlite3
-&gt; ATTACH <span style=color:#f1fa8c>&quot;.hyperion/db/hyperion.db&quot;</span> AS db1;        &ndash; Attach the original hyperion.ng database
-&gt; ATTACH <span style=color:#f1fa8c>&quot;.config/hyperion.rs/hyperion.db&quot;</span> AS db2; &ndash; Attach the new hyperion.rs database
-&gt; &ndash; Copy the tables
+&gt; ATTACH <span style=color:#f1fa8c>&#34;.hyperion/db/hyperion.db&#34;</span> AS db1;        -- Attach the original hyperion.ng database
+&gt; ATTACH <span style=color:#f1fa8c>&#34;.config/hyperion.rs/hyperion.db&#34;</span> AS db2; -- Attach the new hyperion.rs database
+&gt; -- Copy the tables
 &gt; BEGIN TRANSACTION;
 &gt; 	INSERT INTO db2.instances SELECT * FROM db1.instances;
 &gt; 	INSERT INTO db2.auth SELECT * FROM db1.auth;
 &gt; 	INSERT INTO db2.meta SELECT * FROM db1.meta;
 &gt; 	INSERT INTO db2.settings SELECT * FROM db1.settings;
 &gt; COMMIT;
-</code></pre></div><h2 id=running-hyperionrs>Running hyperion.rs</h2></p><p>Once your settings database has been migrated, you can run hyperion.rs using
+</code></pre></div><h2 id=running-hyperionrs>Running hyperion.rs</h2><p>Once your settings database has been migrated, you can run hyperion.rs using
 <code>cargo</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cargo run
 </code></pre></div><p>If running from a release archive, invoke the <code>hyperiond-rs</code> binary directly.</p><h2 id=cross-compiling>Cross-compiling</h2><p>Cross-compiling is done using <a href=https://github.com/rustembedded/cross target=_blank rel=noopener>cross</a>
 . As
 hyperion.rs has native dependencies, we first need to prepare a Docker image
 with the required dependencies, and then build using the resulting image.</p><p><em>Note: these images will be published on dockerhub as the project stabilizes.</em></p><p>Let&rsquo;s say we are building for the Raspberry Pi Zero, which corresponds to the
 Rust target arm-unknown-linux-gnueabihf.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>TARGET</span><span style=color:#ff79c6>=</span>arm-unknown-linux-gnueabihf
-<p><span style=color:#6272a4># Build the Docker image</span>
-$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> docker <span style=color:#ff79c6>&amp;&amp;</span> docker build . -f Dockerfile.<span style=color:#8be9fd;font-style:italic>$TARGET</span> -t vtavernier/cross-hyperion:<span style=color:#8be9fd;font-style:italic>$TARGET</span><span style=color:#ff79c6>)</span></p>
-<p><span style=color:#6272a4># (if not done already) Install cross</span>
-$ cargo install &ndash;force cross</p>
-<p><span style=color:#6272a4># Build the project</span>
-$ cross build &ndash;release &ndash;target <span style=color:#8be9fd;font-style:italic>$TARGET</span></p>
-<p><span style=color:#6272a4># The resulting binaries will be in target/$TARGET/release</span>
-</code></pre></div><h2 id=license>License</h2></p><p>This work is licensed under the <a href=https://github.com/vtavernier/hyperion.rs/blob/master/LICENSE target=_blank rel=noopener>MIT License</a>
+
+<span style=color:#6272a4># Build the Docker image</span>
+$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> docker <span style=color:#ff79c6>&amp;&amp;</span> docker build . -f Dockerfile.<span style=color:#8be9fd;font-style:italic>$TARGET</span> -t vtavernier/cross-hyperion:<span style=color:#8be9fd;font-style:italic>$TARGET</span><span style=color:#ff79c6>)</span>
+
+<span style=color:#6272a4># (if not done already) Install cross</span>
+$ cargo install --force cross
+
+<span style=color:#6272a4># Build the project</span>
+$ cross build --release --target <span style=color:#8be9fd;font-style:italic>$TARGET</span>
+
+<span style=color:#6272a4># The resulting binaries will be in target/$TARGET/release</span>
+</code></pre></div><h2 id=license>License</h2><p>This work is licensed under the <a href=https://github.com/vtavernier/hyperion.rs/blob/master/LICENSE target=_blank rel=noopener>MIT License</a>
 .</p><h2 id=author>Author</h2><p>Vincent Tavernier <a href=mailto:vince.tavernier@gmail.com>vince.tavernier@gmail.com</a>. Original project and protocol
 source files by <a href=https://github.com/hyperion-project target=_blank rel=noopener>hyperion-project</a>
 .</p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
