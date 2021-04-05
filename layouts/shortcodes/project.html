@@ -5,4 +5,4 @@
     <a href="https://github.com/vtavernier/{{ $repo }}">{{ .Page.Title }}</a>
   </h1>
 </header>
-{{ $json.content | base64Decode | replaceRE "^#.*" "" | replaceRE "\\)\\n\\[!\\[" ") [![" | .Page.RenderString }}
+{{ $json.content | base64Decode | replaceRE "^#.*" "" | replaceRE "\\)\\n\\[!\\[" ") [![" | safeHTML }}
