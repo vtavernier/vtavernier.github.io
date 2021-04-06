@@ -219,7 +219,7 @@ Date:   Sun Jan 24 03:17:12 2021 +0100
 {{</ aha >}}
 <!-- * -->
 
-This changes seems dubious. To confirm this indeed broke our library, we need to test the code before *and* after this
+This change seems dubious. To confirm this indeed broke our library, we need to test the code before *and* after this
 change was introduced. As we are using Git, this is easy to do:
 {{< aha >}}
 <span style="color:gray"># Before the changes, check that the tests do pass</span>
