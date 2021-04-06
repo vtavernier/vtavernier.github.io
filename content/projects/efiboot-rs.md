@@ -1,6 +1,6 @@
 ---
 title: efiboot-rs
-weight: 50
+weight: 55
 repo: efiboot-rs
 ---
 
