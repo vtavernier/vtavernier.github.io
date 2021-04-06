@@ -68,6 +68,12 @@ icon = "fa fa-linkedin fa-2x"
 weight = 4
 url = "https://www.linkedin.com/in/vincent-tavernier-707b5012a/"
 
+[[params.social]]
+name   = "crates.io"
+icon   = "fa fa-cubes fa-2x"
+weight = 5
+url    = "https://crates.io/users/vtavernier/"
+
 # Menu links
 [[menu.main]]
 name   = "Blog"
