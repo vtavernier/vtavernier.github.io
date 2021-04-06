@@ -17,15 +17,19 @@ for
 pre-compiled binaries for stable versions. Installing the Python module (see
 below) also installs the corresponding <code>glsltcc</code> binary.</p><p>Alternatively, you may compile <code>glslt</code> from source, assuming you have the
 <a href=https://rustup.rs/ target=_blank rel=noopener>Rust</a>
-compiler installed:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Fetch the source</span>
+compiler installed:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># From crates.io</span>
+cargo install --force glslt_cli
+
+<span style=color:#6272a4># From the repository</span>
+<span style=color:#6272a4>## Fetch the source</span>
 git clone https://github.com/vtavernier/glslt.git
 <span style=color:#8be9fd;font-style:italic>cd</span> glslt
 
-<span style=color:#6272a4># Run the program directly</span>
+<span style=color:#6272a4>## Run the program directly</span>
 cargo run -- test.glsl
 
-<span style=color:#6272a4># Or, install the glsltcc binary permanently</span>
-cargo install --force .
+<span style=color:#6272a4>## Or, install the glsltcc binary permanently</span>
+cargo install --force --path .
 glsltcc test.glsl
 </code></pre></div><p>To install the Python module for the latest stable version, you can use <code>pip</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install glslt
 </code></pre></div><p>If you downloaded the source and want to build the latest version of the Python
@@ -217,10 +221,11 @@ to
 build and develop the Python module, inside a virtualenv.</p><p>In order to build the Python package, you have to enable the <code>python</code> feature
 and have <code>python3-dev</code> installed. See the documentation for <a href=https://github.com/vtavernier/glslt/blob/master/glslt/ target=_blank rel=noopener>glslt</a>
 for
-an example.</p><h2 id=limitations>Limitations</h2><p>This program is based on the excellent <a href=https://github.com/phaazon/glsl target=_blank rel=noopener>glsl</a>
+an example.</p><h2 id=limitations>Limitations</h2><p>This program is based on the <a href=https://github.com/vtavernier/glsl-lang target=_blank rel=noopener>glsl-lang</a>
 crate for parsing and manipulating the GLSL AST in Rust. However, since it&rsquo;s
 only an AST and not a full parse tree, we have currently no way of preserving
-comments or original formatting.</p><p>Furthermore, since pre-processor directives have to be passed through to the
+original formatting. Comments are still parsed and are available to library
+users, but they are not currently included in the output.</p><p>Furthermore, since pre-processor directives have to be passed through to the
 GPU for accurate execution, shaders which are syntactically invalid without
 pre-processing are not supported.</p><h2 id=author>Author</h2><p>Vincent Tavernier <a href=mailto:vince.tavernier@gmail.com>vince.tavernier@gmail.com</a></p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
 2019 -
