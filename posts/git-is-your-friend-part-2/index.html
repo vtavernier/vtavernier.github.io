@@ -4,8 +4,7 @@
 <span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>16-minute read</span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i><a href=/tags/tutorial/>tutorial</a>
 <span class=separator>•</span>
 <a href=/tags/git/>git</a></div></div></header><div><blockquote><p>This post is the second part of a tutorial series on how to use Git to its full potential. Read the first part
-<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-1/>here</a>
-.</p></blockquote><p>We ended the previous part of this tutorial on merging local changes with remote changes. That last part assumed there
+<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-1/>here</a>.</p></blockquote><p>We ended the previous part of this tutorial on merging local changes with remote changes. That last part assumed there
 was no merge conflict &mdash; a situation you may have already encountered in the wild. We will now look at how to solve
 those conflicts efficiently, which becomes critical for the next part, maintaining a clean Git history using interactive
 rebasing.</p><h1 id=solving-merge-conflicts-with-a-merge-tool>Solving merge conflicts with a merge tool</h1><p>Let us start with the following situation:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt>    C origin/master
@@ -84,15 +83,13 @@ hard to fix for future maintainers. Especially if you don&rsquo;t have continuou
 early&mldr;</p><p>Since this process has multiple points of failure, we should try to find a <em>better</em> method, which does not have this
 many pitfalls. Thankfully, Git has us covered.</p><h2 id=the-automated-good-way>The automated (good) way</h2><p>In order to automate the conflict resolution process, Git supports so-called <em>merge tools</em>: programs that will be run by
 Git in order to help the user fix conflicts by picking the right options on every conflicted region. First, we need to
-configure a <em>merge tool</em>. We will use the graphical tool <a href=https://meldmerge.org/ target=_blank rel=noopener>Meld</a>
-, although many others are
+configure a <em>merge tool</em>. We will use the graphical tool <a href=https://meldmerge.org/ target=_blank rel=noopener>Meld</a>, although many others are
 available<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>.</p><p>First, install Meld using your distribution&rsquo;s package manager:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Debian/Ubuntu</span>
 $ sudo apt install meld
 <span style=color:#6272a4># Fedora</span>
 $ sudo dnf install meld
 </code></pre></div><p>Then, we need to indicate to Git we want to use Meld as our merge tool:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git config --global merge.tool meld
-</code></pre></div><p>We are now ready to go! Let&rsquo;s go back to the <a href=#conflicted-state-1>conflicted state</a>
-. Then, instead of fixing the
+</code></pre></div><p>We are now ready to go! Let&rsquo;s go back to the <a href=#conflicted-state-1>conflicted state</a>. Then, instead of fixing the
 conflicts manually, we run the following command:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git mergetool
 </code></pre></div><p>The main window of Meld opens:</p><p><img src=meld-initial-conflict.png alt="Meld initial window"></p><p>As indicated in the headers of the panels:</p><ul><li>The left panel represents the state of the file after local changes: this is our <code>master</code> branch we are merging into</li><li>The middle panel is the current state of the file we are building (where conflicts are solved).</li><li>The right panel represents the state of the file after remote changes: this is the <code>origin/master</code> branch we are
 merging into the <code>master</code> branch.</li></ul><p>Clicking on the arrows between the left (resp. right) panel will bring in the changes from the local (resp. remote)
@@ -252,11 +249,8 @@ you are preparing to push your work to the remote, run <code>git rebase -i</code
 properly integrated!</p><h2 id=bonus-round-making-your-shell-smarter>Bonus round: making your shell smarter</h2><p>Editing the history of a Git repository often requires looking up previous commit identifiers, which can quickly become
 tedious. Thankfully, modern shells support completion plugins tailored for Git, and by understanding which commands you
 are about to run, are able to suggest appropriate completions, such as references and commit SHAs. For example, here&rsquo;s
-<a href=https://github.com/sorin-ionescu/prezto target=_blank rel=noopener>Prezto</a>
-&rsquo;s Git plugin at work, completing a <code>git commit --fixup</code> command
-(<code>&lt;TAB></code> will cycle through all the options in this menu):</p><p><img src=zprezto-git-completion.png alt="Prezto Git completion"></p><p>These tools are huge time savers, so I highly recommend spending the time setting one up for your shell of choice:</p><ul><li><a href=https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash target=_blank rel=noopener>Bash, from the official Git Book</a></li><li><a href=https://github.com/sorin-ionescu/prezto target=_blank rel=noopener>Zsh, Prezto</a>
-. Enable the <code>git</code> plugin in <code>zpreztorc</code>.</li><li><a href=https://ohmyz.sh/ target=_blank rel=noopener>Zsh, oh-my-zsh</a>
-. Also look for the <code>git</code> plugin.</li></ul><p>Git GUIs can also help with those features, as well as editor plugins for your editor of choice.</p><h1 id=final-warning-do-not-rebase-pushed-commits>Final warning: do not rebase pushed commits</h1><p>I mentioned this multiple times, it is also mentioned in the Git manual pages, but <em><strong>do not rebase pushed commits</strong></em>.
+<a href=https://github.com/sorin-ionescu/prezto target=_blank rel=noopener>Prezto</a>&rsquo;s Git plugin at work, completing a <code>git commit --fixup</code> command
+(<code>&lt;TAB></code> will cycle through all the options in this menu):</p><p><img src=zprezto-git-completion.png alt="Prezto Git completion"></p><p>These tools are huge time savers, so I highly recommend spending the time setting one up for your shell of choice:</p><ul><li><a href=https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash target=_blank rel=noopener>Bash, from the official Git Book</a></li><li><a href=https://github.com/sorin-ionescu/prezto target=_blank rel=noopener>Zsh, Prezto</a>. Enable the <code>git</code> plugin in <code>zpreztorc</code>.</li><li><a href=https://ohmyz.sh/ target=_blank rel=noopener>Zsh, oh-my-zsh</a>. Also look for the <code>git</code> plugin.</li></ul><p>Git GUIs can also help with those features, as well as editor plugins for your editor of choice.</p><h1 id=final-warning-do-not-rebase-pushed-commits>Final warning: do not rebase pushed commits</h1><p>I mentioned this multiple times, it is also mentioned in the Git manual pages, but <em><strong>do not rebase pushed commits</strong></em>.
 As rebasing changes the commit data, this effectively creates a fork in the history. Since this fork will prevent
 fast-forwarding the remote branch label when running <code>git push</code>, you will have to run <code>git push --force[-with-lease]</code>.
 This might:</p><ul><li>Destroy work pushed on the remote server (unless using <code>--force-with-lease</code> and making sure you didn&rsquo;t discard it
@@ -265,10 +259,8 @@ reset their local copies to the new history you rebased (discarding the local st
 making the history human-readable, we&rsquo;ll see this plays a big role in some advanced uses of Git, such as <code>git bisect</code>,
 and how to fix our history-editing mistakes using the <em>reflog</em>; which we&rsquo;ll see in the last part of this series.</p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>Aside from dedicated merge tools, most editors also support merge conflict resolution, either
 built-in or through plugins. Look online for instructions on how to set them up, for example for
-<a href=https://www.grzegorowski.com/using-vim-or-neovim-nvim-as-a-git-mergetool target=_blank rel=noopener>Vim/Neovim</a>
-and
-<a href=http://blog.binchen.org/posts/emacs-is-the-best-merge-tool-for-git.html target=_blank rel=noopener>Emacs</a>
-. <a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>If you want to keep the first commit message and save yourself one step, you can use the
+<a href=https://www.grzegorowski.com/using-vim-or-neovim-nvim-as-a-git-mergetool target=_blank rel=noopener>Vim/Neovim</a> and
+<a href=http://blog.binchen.org/posts/emacs-is-the-best-merge-tool-for-git.html target=_blank rel=noopener>Emacs</a>. <a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>If you want to keep the first commit message and save yourself one step, you can use the
 <code>fixup</code> command, which does specifically that: squash commits, and keep the first message. <a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>If you just want to change the message of a given commit, use the <code>reword</code> command to save you a
 few steps: this will drop you directly in an editor to change the message instead of having to use <code>git commit --amend</code>. <a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote><p>You may also use symbolic references (HEAD, branch names) or ancestry references such as <code>HEAD^</code> (the
 first parent of <code>HEAD</code>), or <code>HEAD~2</code> (the first parent of the first parent of <code>HEAD</code>). See

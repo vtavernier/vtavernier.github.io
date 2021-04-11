@@ -39,8 +39,7 @@ $ git push
 </code></pre></div><p>And honestly, no one would use Git if it was this hard every time you make a single change inside a file. Especially if
 the only thing this enables is &ldquo;you can now use <code>git checkout</code> to manually copy and paste previous versions of your
 file, provided you know when the changes happened&rdquo;.</p><p>But 87.2% of developers use Git (<a href=https://insights.stackoverflow.com/survey/2018#work-_-version-control target=_blank rel=noopener>Stack Overflow Developer Survey
-2018</a>
-) for many very valid reasons, so let&rsquo;s
+2018</a>) for many very valid reasons, so let&rsquo;s
 debunk some myths about Git and start using its more powerful features!</p><h1 id=first-properly-configure-git>First: properly configure Git</h1><p>The behavior of most Git commands is controlled by <em>Git configuration files</em>. The defaults are set at the system level,
 and are then overridden by the user-level file, <code>~/.gitconfig</code>. Here is a typical <code>~/.gitconfig</code> file to get started:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#ff79c6>[user]</span>
 	<span style=color:#6272a4># Your full name</span>
@@ -187,17 +186,14 @@ If it is made up of several changes (such as the 3rd and 4th hunks in the previo
 smaller hunks using <code>s</code> and then decide on the fate of individual changes. <code>a</code> and <code>d</code> are the file-level equivalent of
 <code>y</code> and <code>n</code> if you know all hunks in the current file should be staged or not. <code>e</code> is an advanced feature that allows
 you to stage a different change to what Git detected, but you should first be familiar with
-<a href=https://en.wikipedia.org/wiki/Patch_%28Unix%29 target=_blank rel=noopener>patch files</a>
-in order to use it.</p><p>If you staged a hunk by mistake, don&rsquo;t worry: <code>git reset</code>, the command to un-stage changes also supports the <code>-p</code>
+<a href=https://en.wikipedia.org/wiki/Patch_%28Unix%29 target=_blank rel=noopener>patch files</a> in order to use it.</p><p>If you staged a hunk by mistake, don&rsquo;t worry: <code>git reset</code>, the command to un-stage changes also supports the <code>-p</code>
 option. Note that the logic is reversed in that case (<code>y</code> will <em>reset</em> the hunk being shown, thus un-staging it, while
 <code>n</code> does nothing and leaves it staged). <code>git checkout</code> also supports <code>-p</code> in case you need it.</p><h2 id=writing-a-good-commit-message>Writing a good commit message</h2><p>Once you selected all changes you want to include in your commit, you can commit them to the repository with <code>git commit</code>. Commit messages should be made of:</p><ol><li>A subject line: a short (&lt;50 characters) summary of what the commit changes. This is the reason mentioned earlier in
 this article.</li><li>A blank line to end the subject line.</li><li>An extended description of the commit (optional): if your commit is non-trivial, include a short write-up of your
 thought process through the making of that change. This will serve as future reference for you and your
 collaborators, and <em>bonus</em> if you&rsquo;re using GitHub, this will automatically be used as the description of the pull
-request if you are using those in your workflow.</li></ol><p>There are a lot of <a href=https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html target=_blank rel=noopener>resources</a>
-and conventions
-available on how to write good commit messages, some of them even using <a href=https://gitmoji.carloscuesta.me/ target=_blank rel=noopener>emoji</a>
-. What
+request if you are using those in your workflow.</li></ol><p>There are a lot of <a href=https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html target=_blank rel=noopener>resources</a> and conventions
+available on how to write good commit messages, some of them even using <a href=https://gitmoji.carloscuesta.me/ target=_blank rel=noopener>emoji</a>. What
 is important is to be consistent: pick a way to write your commit messages, and stick to it <em><strong>every</strong></em> time you commit.</p><h1 id=sharing-your-work-with-others>Sharing your work with others</h1><p>Chances are that you are using Git to work with other people on the same project. When starting out with Git this is
 usually the hard part, but it doesn&rsquo;t have to be. Let&rsquo;s see how Git handles those situations.</p><h2 id=repositories-and-remotes>Repositories and remotes</h2><p>Everyone working on a project using Git has a full copy of the repository. This means the current state of the branches,
 as well as their entire history. Thus, most git commands work on locally stored state and don&rsquo;t need network access;

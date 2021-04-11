@@ -4,19 +4,15 @@
 <span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>10-minute read</span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i><a href=/tags/tutorial/>tutorial</a>
 <span class=separator>•</span>
 <a href=/tags/git/>git</a></div></div></header><div><blockquote><p>This post is the third part of a tutorial series on how to use Git to its full potential. You may want to read the
-<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-1/>first part</a>
-and the
-<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-2/>second part</a>
-before proceeding.</p></blockquote><h1 id=finding-bugs-with-git-problem-statement>Finding bugs with Git: problem statement</h1><p>You are working on a large-ish project which is &mdash; thankfully &mdash; under version control. This could be a project with a
+<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-1/>first part</a> and the
+<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-2/>second part</a> before proceeding.</p></blockquote><h1 id=finding-bugs-with-git-problem-statement>Finding bugs with Git: problem statement</h1><p>You are working on a large-ish project which is &mdash; thankfully &mdash; under version control. This could be a project with a
 large amount of code, with many contributors and thus a lot of activity, or maybe some software you are using that you
 decided to contribute to by fixing some bugs. What we will learn today applies to all those cases where you just can&rsquo;t
 manually review every single line of code searching for bugs.</p><p>Although in the case of this article, we will study a very stripped down example to just learn the essentials of one of
 Git&rsquo;s most advanced features: <em>bisection</em>. Our example will be a library implementing some sorting algorithms as they
-are described on their respective <a href=https://en.wikipedia.org/wiki/Sorting_algorithm target=_blank rel=noopener>Wikipedia pages</a>
-.</p><p>While developing this library, we shall follow good software development practices, especially ensuring our library has
+are described on their respective <a href=https://en.wikipedia.org/wiki/Sorting_algorithm target=_blank rel=noopener>Wikipedia pages</a>.</p><p>While developing this library, we shall follow good software development practices, especially ensuring our library has
 proper automated testing. Here is the <a href=https://github.com/vtavernier/blog-git-libsort/tree/r-initial target=_blank rel=noopener>initial
-scaffolding</a>
-for our library:</p><ul><li>The following functions will be provided by our library:</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#ff79c6>#ifndef _SORT_H_
+scaffolding</a> for our library:</p><ul><li>The following functions will be provided by our library:</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#ff79c6>#ifndef _SORT_H_
 </span><span style=color:#ff79c6>#define _SORT_H_
 </span><span style=color:#ff79c6></span>
 <span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;cstddef&gt;</span><span style=color:#ff79c6>
@@ -148,7 +144,7 @@ Date:   Sun Jan 24 03:17:12 2021 +0100
 <span style=color:green>+</span><span style=color:green>    while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {</span>
        std::swap(data[j], data[j - 1]);
        j--;
-     }</code></pre></div></li></ul><p>This changes seems dubious. To confirm this indeed broke our library, we need to test the code before <em>and</em> after this
+     }</code></pre></div></li></ul><p>This change seems dubious. To confirm this indeed broke our library, we need to test the code before <em>and</em> after this
 change was introduced. As we are using Git, this is easy to do:<div class="highlight highlight-manual"><pre><code><span style=color:gray># Before the changes, check that the tests do pass</span>
 $ <span style=font-weight:700;color:#fff>git checkout 5889f58f^ && make test</span>
 HEAD is now at 25a6e64 Add N=10000 test
@@ -164,8 +160,7 @@ build/main
 <span style=color:red>Tests failed with 4</span>
 make: *** [Makefile:14: test] Error 4</code></pre></div></p><p>Thus, we confirmed commit <code>5889f58</code> broke the library!</p><p>However, to come to that conclusion we needed to:</p><ul><li>Find which file was the source of the bug (sometimes it could be multiple files, or this could be non-trivial)</li><li>Identify commits bringing relevant changes to the file in question (there could be a lot of irrelevant commits)</li><li>Among relevant commits, find the first one that breaks the build (a lot of commits may have to be checked for that)</li></ul><p>This is where the <code>git bisect</code> command comes in: a faster, automated way to find bugs.</p><h1 id=finding-any-kind-of-bug-with-git-bisect>Finding any kind of bug with <code>git bisect</code></h1><p><code>git bisect</code> works under the assumption that:</p><ul><li>You have a <em>last known good</em> commit, referred to as <strong>good</strong>, where the bug was not present</li><li>You have a <em>known bad</em> commit, referred to as <strong>bad</strong>, following the <em>good</em> commit, and where the bug is present</li></ul><p>Under this assumption, Git is able to deduce which is the first bad commit in $O(\log_2 N)$ steps, where $N$ is the
 number of commits between <strong>good</strong> and <strong>bad</strong>. This uses the same idea as <a href=https://en.wikipedia.org/wiki/Dichotomic_search target=_blank rel=noopener>dichotomic
-search</a>
-:</p><ul><li>Pick the middle commit between <strong>good</strong> and <strong>bad</strong>, <strong>middle</strong></li><li>Run the tests. If they pass, <strong>good</strong> becomes <strong>middle</strong> and repeat. Else, <strong>bad</strong> becomes <strong>middle</strong> and repeat.</li><li>Stop when <strong>bad</strong> is the commit immediately following <strong>good</strong></li></ul><p>If you are testing manually, or tests are slow to run, the gains from $N$ to $\log_2 N$ can add up very quickly, hence
+search</a>:</p><ul><li>Pick the middle commit between <strong>good</strong> and <strong>bad</strong>, <strong>middle</strong></li><li>Run the tests. If they pass, <strong>good</strong> becomes <strong>middle</strong> and repeat. Else, <strong>bad</strong> becomes <strong>middle</strong> and repeat.</li><li>Stop when <strong>bad</strong> is the commit immediately following <strong>good</strong></li></ul><p>If you are testing manually, or tests are slow to run, the gains from $N$ to $\log_2 N$ can add up very quickly, hence
 the importance of this feature. Let&rsquo;s start bisecting our repository:<div class="highlight highlight-manual"><pre><code><span style=color:gray># git bisect start [good [bad]]</span>
 <span style=color:gray># Additionally, you can mark commits with `git bisect good` and `git bisect bad`</span>
 $ <span style=font-weight:700;color:#fff>git bisect start HEAD master~8</span>
