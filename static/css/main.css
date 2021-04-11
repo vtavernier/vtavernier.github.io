@@ -75,3 +75,7 @@
 	font-size: 1.25rem;
 	margin: 1.5rem 3rem 8rem 3rem;
 }
+
+figcaption {
+	color: #888;
+}
