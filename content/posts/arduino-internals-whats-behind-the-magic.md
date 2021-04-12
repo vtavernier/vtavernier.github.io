@@ -139,12 +139,12 @@ open `Arduino.h` and look at its definitions.
 Given a standard PlatformIO installation, this will bring up
 [`~/.platformio/packages/framework-arduino-avr/cores/arduino/Arduino.h`](https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h),
 which already has a lot of interesting features:
-* All the constants in the documentation, as `#define`s
-* `min` and `max` are macros? But the reference described them as functions. Moving on...
+* All the constants in the documentation, as `#define`s, and some functions which are actually implemented as macros
+  (e.g. `min` and `max`).
 * Gated behind `__cplusplus`, includes for some types defined by Wiring, the predecessor of the Arduino framework,
   itself based on Processing. The main one being `WString.h`, defining the `String` type.
 * Some board-specific stuff, like including USB API support or hardware serial support depending on preprocessor
-  definitions
+  definitions.
 * A final include for `pins_arduino.h`, which contains a bunch of mappings from Arduino pin numbers (13 for
   `LED_BUILTIN` for example) to physical microcontroller pins (`digital_pin_to_port_PGM` and others). This one is stored
   in the `variants` folder, and contains definitions for the various boards based on this platform, which may have
@@ -160,8 +160,8 @@ https://github.com/arduino/ArduinoCore-avr. Let's explore it a bit more.
 
 Browsing through this repository, among the files we already discovered, we notice some metadata (`boards.txt`) which
 reference the documentation for the... Arduino CLI? More specifically for this file, the [platform
-specification](https://arduino.github.io/arduino-cli/latest/platform-specification/) which explains a tiny bit more what
-we're looking for:
+specification](https://arduino.github.io/arduino-cli/latest/platform-specification/) explains a tiny bit more what we're
+looking for:
 
 > Platforms add support for new boards to the Arduino development software. They are installable either via Boards
 > Manager or manual installation to the hardware folder of Arduino's sketchbook folder (AKA "user directory").
@@ -207,11 +207,14 @@ So `digitalWrite` actually does the following:
 * Disable hardware interrupts, set the target value, and then re-enable them
 
 For a microcontroller running at 16MHz, `digitalWrite` is a noticeably expensive operation. Indeed, it does:
-* 3 `PROGMEM` reads (`digitalPinTo*` function calls).
+* 3 `PROGMEM` reads (`digitalPinTo*` function calls) for `timer`, `bit` and `port`.
 * 2 branches to validate the pin values. Note that the function fails silently for wrong pin values.
-* 1 more `PROGMEM` read for getting the port's output register.
-* Compute a bit-mask from those memory reads.
-* Clear interrupts.
+* 1 more `PROGMEM` read for getting the port's output register from its port number `port`.<br>
+  > *Note: by this point, all the values in the data flow are returned from reading constant arrays in program memory with
+  > `pgm_read_byte`. Even though these values should be constant folded if `pin` and `val` are themselves constants, the
+  > compiler can't reason enough yet to perform this optimization. Which means the rest of the operations can't be
+  > optimized for constants.*
+* Disable interrupts.
 * One last branch to determine if a bit should be cleared or set.
 * Apply the bitmask: this is a read-modify-write operation, and thus non-atomic, which requires disabled interrupts for
   correctness.
@@ -235,46 +238,46 @@ Compiles to the following assembly[^arduino-platformio-optimization]:
 
 ```s
 000000e0 <digitalWrite.constprop.0>:
-  ; [truncated: 54 instructions for figuring computing timer, bit, port and the other checks]
-  ; uint8_t oldSREG = SREG;
- 158:	9f b7       	in	r25, 0x3f	; 63
-  ; cli();
+  # [truncated: 54 instructions for computing timer, bit, port and other checks]
+  #   uint8_t oldSREG = SREG;
+ 158:	9f b7       	in	r25, 0x3f	# 63
+  #   cli();
  15a:	f8 94       	cli
-  ; if (val == LOW) {
+  #   if (val == LOW) {
  15c:	81 11       	cpse	r24, r1
- 15e:	04 c0       	rjmp	.+8      	; 0x168 <digitalWrite.constprop.0+0x88>
-  ; *out &= ~bit;
+ 15e:	04 c0       	rjmp	.+8      	# 0x168 <digitalWrite.constprop.0+0x88>
+  #     *out &= ~bit;
  160:	8c 91       	ld	r24, X
  162:	20 95       	com	r18
  164:	28 23       	and	r18, r24
-  ; } else {
- 166:	02 c0       	rjmp	.+4      	; 0x16c <digitalWrite.constprop.0+0x8c>
-  ; *out |= bit;
+  #   } else {
+ 166:	02 c0       	rjmp	.+4      	# 0x16c <digitalWrite.constprop.0+0x8c>
+  #     *out |= bit;
  168:	ec 91       	ld	r30, X
  16a:	2e 2b       	or	r18, r30
  16c:	2c 93       	st	X, r18
-  ; }
-  ; SREG = oldSREG;
- 16e:	9f bf       	out	0x3f, r25	; 63
-  ; }
+  #   }
+  #   SREG = oldSREG;
+ 16e:	9f bf       	out	0x3f, r25	# 63
+  # }
  170:	08 95       	ret
 
 00000206 <main>:
- ; [truncated: Arduino framework initialization]
- ; [truncated: inlined call to pinMode(...) ]
+ # [truncated: Arduino framework initialization]
+ # [truncated: inlined call to pinMode(...) ]
 
- ; Note: loop is inlined since it's only called from Arduino's main
- ; digitalWrite(LED_BUILTIN, HIGH);
- 2c6:	81 e0       	ldi	r24, 0x01	; 1
- 2c8:	0e 94 70 00 	call	0xe0	; 0xe0 <digitalWrite.constprop.0>
- ; digitalWrite(LED_BUILTIN, LOW);
- 2cc:	80 e0       	ldi	r24, 0x00	; 0
- 2ce:	0e 94 70 00 	call	0xe0	; 0xe0 <digitalWrite.constprop.0>
- ; Note: the following is the Arduino's while loop around calling loop()
- 2d2:	20 97       	sbiw	r28, 0x00	; 0
- 2d4:	c1 f3       	breq	.-16     	; 0x2c6 <main+0xc0>
+ # Note: loop is inlined since it's only called from Arduino's main
+ # digitalWrite(LED_BUILTIN, HIGH);
+ 2c6:	81 e0       	ldi	r24, 0x01	# 1
+ 2c8:	0e 94 70 00 	call	0xe0	# 0xe0 <digitalWrite.constprop.0>
+ # digitalWrite(LED_BUILTIN, LOW);
+ 2cc:	80 e0       	ldi	r24, 0x00	# 0
+ 2ce:	0e 94 70 00 	call	0xe0	# 0xe0 <digitalWrite.constprop.0>
+ # Note: the following is the Arduino's while loop around calling loop()
+ 2d2:	20 97       	sbiw	r28, 0x00	# 0
+ 2d4:	c1 f3       	breq	.-16     	# 0x2c6 <main+0xc0>
 
- ; [truncated: more main code]
+ # [truncated: more main code]
 ```
 
 While its equivalent pure-AVR code:
@@ -292,19 +295,19 @@ int main() {
 }
 ```
 
-Compiles to the optimal assembly below (`sbi` sets a specific bit in a port register):
+Compiles to the optimal assembly below (`sbi` sets a specific bit in a port register, and `cbi` clears it):
 
 ```s
 00000080 <main>:
-  ; DDRB |= (1 << PB5);
-  80:	25 9a       	sbi	0x04, 5	; 4
-  ; while (1) {
-  ; PORTB |= (1 << PB5);
-  82:	2d 9a       	sbi	0x05, 5	; 5
-  ; PORTB &= ~(1 << PB5);
-  84:	2d 98       	cbi	0x05, 5	; 5
-  ; }
-  86:	fd cf       	rjmp	.-6      	; 0x82 <main+0x2>
+  # DDRB |= (1 << PB5);
+  80:	25 9a       	sbi	0x04, 5	# 4
+  # while (1) {
+  # PORTB |= (1 << PB5);
+  82:	2d 9a       	sbi	0x05, 5	# 5
+  # PORTB &= ~(1 << PB5);
+  84:	2d 98       	cbi	0x05, 5	# 5
+  # }
+  86:	fd cf       	rjmp	.-6      	# 0x82 <main+0x2>
 ```
 
 Which brings us to the essential question: **is the Arduino framework's implementation right?**
@@ -320,13 +323,17 @@ in C++. A language with more robust compile-time guarantees could reason more ef
 could also compile to the optimal version --- but [the Rust backend isn't there
 yet](https://github.com/rust-lang/rust/issues/78260).
 
-I think these limitations should be highlighted in the reference documentation. This wouldn't overload beginners
-browsing the function reference for the first time, as long as it's hidden in an expandable "For advanced users"
-section. This function isn't the only one with caveats (does this call for a part 2 🤔?), and it is likely that large
-projects using the Arduino platform will encounter more of those -- undocumented -- limitations and
-performance/readability trade-offs.
+More details about this assembly comparison are available on [this
+page](https://vtavernier.github.io/blog-arduino-internals/). As an extra comparison point, a proof of concept for a
+template-based hardware abstraction is included, which compiles to the same optimal assembly as raw AVR code. Please
+note that the Arduino version also has timer interrupts for maintaining a clock, which explains most of the program size
+difference --- outside of the actual `digialWrite` calls.
 
-## ESP-based boards
+Personally, I think these limitations should *at least* be mentioned in the reference documentation. This wouldn't
+overload beginners browsing the function reference for the first time, as long as it's hidden in an expandable "For
+advanced users" section. This function <span class="tooltip" title="Does this call for a part 2 🤔?">isn't the only one
+with caveats</span>, and it is likely that large projects using the Arduino platform will encounter more of those --
+undocumented -- limitations and performance/readability trade-offs.
 
 ## nrf/Mbed based boards
 
@@ -336,7 +343,8 @@ performance/readability trade-offs.
 
 # Conclusion
 
-[^arduino-reference-no-signature]: https://www.arduino.cc/reference/en/language/functions/digital-io/digitalwrite/
+[^arduino-reference-no-signature]: See "Syntax" and "Parameters" in
+  https://www.arduino.cc/reference/en/language/functions/digital-io/digitalwrite/
 [^cpp-minefield]: Using this [digest version](https://en.cppreference.com/w/cpp/language/implicit_conversion) of the C++
   standard for implicit conversions, try predicting what passing an `int` to a function that expects a `byte`
   (Arduino-specific definition). Bonus points if you can describe what happens on overflow on the various architectures
@@ -345,8 +353,7 @@ performance/readability trade-offs.
   target platform and are basically free to create. This isn't the case of the `String` type, which allocates memory, an
   expensive and error-prone operation (running out of heap space overwrites your program's stack --- a "technicality"
   not mentioned in the documentation).
-[^vim-platformio-ccls]: Creating a project with `pio init -b uno --ide vim` will create the necessary files for the
-  `ccls` language server to provide completion and go-to definition for Arduino code. This what I mainly used for this
-  work.
+[^vim-platformio-ccls]: Creating a project with `pio init --ide vim` will create the necessary files for the `ccls`
+  language server to provide completion and go-to definition for Arduino code. This what I mainly used for this work.
 [^arduino-platformio-optimization]: PlatformIO uses `-flto -Os` as the default optimization level, but changing those
   settings didn't influence the result significantly.
