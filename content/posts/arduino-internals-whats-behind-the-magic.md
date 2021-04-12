@@ -29,11 +29,11 @@ across the entire official product range. The "hello world" of electronics, the 
 
 int main() {
   // Set the LED's pin to output
-  DDRB |= (1 << PB0);
+  DDRB |= (1 << PB5);
 
   while (1) {
     // Toggle the LED pin state
-    PORTB ^= (1 << PB0);
+    PORTB ^= (1 << PB5);
     // Wait
     _delay_ms(1000);
   }
@@ -142,11 +142,13 @@ which already has a lot of interesting features:
 * All the constants in the documentation, as `#define`s
 * `min` and `max` are macros? But the reference described them as functions. Moving on...
 * Gated behind `__cplusplus`, includes for some types defined by Wiring, the predecessor of the Arduino framework,
-  itself based on Processing. These are `WString.h` (defining the `String` type).
+  itself based on Processing. The main one being `WString.h`, defining the `String` type.
 * Some board-specific stuff, like including USB API support or hardware serial support depending on preprocessor
   definitions
 * A final include for `pins_arduino.h`, which contains a bunch of mappings from Arduino pin numbers (13 for
-  `LED_BUILTIN` for example) to physical microcontroller pins (`digital_pin_to_port_PGM` and others).
+  `LED_BUILTIN` for example) to physical microcontroller pins (`digital_pin_to_port_PGM` and others). This one is stored
+  in the `variants` folder, and contains definitions for the various boards based on this platform, which may have
+  different pin mappings or enabled features, like the Arduino Mega vs. the Arduino Uno.
 
 **Conclusion**: `Arduino.h` is already hardware-specific. Its definitions follow what we can see in the reference
 documentation, but it is definitely **not** portable. It is part of what the Arduino platform calls a *core*, which is
@@ -221,27 +223,58 @@ Arduino sketch (which only uses constants for both the pin and value):
 ```cpp
 #include <Arduino.h>
 
-void setup() {
-  digitalWrite(13, HIGH);
-}
+void setup() { pinMode(LED_BUILTIN, OUTPUT); }
 
-void loop() {}
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(LED_BUILTIN, LOW);
+}
 ```
 
-Compiles to the following assembly (regardless of the optimization level, `-Os` or `-O3`):
+Compiles to the following assembly[^arduino-platformio-optimization]:
 
 ```s
-0000016a <main>:
-main():
- ; [a lot of truncated output, including all the PROGMEM accesses]
- 266:	8f b7       	in	r24, 0x3f	; oldSREG = SREG
- 268:	f8 94       	cli	        	; cli()
- 26a:	ec 91       	ld	r30, X		;
- 26c:	e9 2b       	or	r30, r25	;
- 26e:	ec 93       	st	X, r30		; *out |= ~bit
- 270:	8f bf       	out	0x3f, r24	; SREG = oldSREG
- ; [more truncated output]
- ; [main function epilogue]
+000000e0 <digitalWrite.constprop.0>:
+  ; [truncated: 54 instructions for figuring computing timer, bit, port and the other checks]
+  ; uint8_t oldSREG = SREG;
+ 158:	9f b7       	in	r25, 0x3f	; 63
+  ; cli();
+ 15a:	f8 94       	cli
+  ; if (val == LOW) {
+ 15c:	81 11       	cpse	r24, r1
+ 15e:	04 c0       	rjmp	.+8      	; 0x168 <digitalWrite.constprop.0+0x88>
+  ; *out &= ~bit;
+ 160:	8c 91       	ld	r24, X
+ 162:	20 95       	com	r18
+ 164:	28 23       	and	r18, r24
+  ; } else {
+ 166:	02 c0       	rjmp	.+4      	; 0x16c <digitalWrite.constprop.0+0x8c>
+  ; *out |= bit;
+ 168:	ec 91       	ld	r30, X
+ 16a:	2e 2b       	or	r18, r30
+ 16c:	2c 93       	st	X, r18
+  ; }
+  ; SREG = oldSREG;
+ 16e:	9f bf       	out	0x3f, r25	; 63
+  ; }
+ 170:	08 95       	ret
+
+00000206 <main>:
+ ; [truncated: Arduino framework initialization]
+ ; [truncated: inlined call to pinMode(...) ]
+
+ ; Note: loop is inlined since it's only called from Arduino's main
+ ; digitalWrite(LED_BUILTIN, HIGH);
+ 2c6:	81 e0       	ldi	r24, 0x01	; 1
+ 2c8:	0e 94 70 00 	call	0xe0	; 0xe0 <digitalWrite.constprop.0>
+ ; digitalWrite(LED_BUILTIN, LOW);
+ 2cc:	80 e0       	ldi	r24, 0x00	; 0
+ 2ce:	0e 94 70 00 	call	0xe0	; 0xe0 <digitalWrite.constprop.0>
+ ; Note: the following is the Arduino's while loop around calling loop()
+ 2d2:	20 97       	sbiw	r28, 0x00	; 0
+ 2d4:	c1 f3       	breq	.-16     	; 0x2c6 <main+0xc0>
+
+ ; [truncated: more main code]
 ```
 
 While its equivalent pure-AVR code:
@@ -250,7 +283,12 @@ While its equivalent pure-AVR code:
 #include <avr/io.h>
 
 int main() {
-  PORTB |= (1 << PB0);
+  DDRB |= (1 << PB5);
+
+  while (1) {
+    PORTB |= (1 << PB5);
+    PORTB &= ~(1 << PB5);
+  }
 }
 ```
 
@@ -258,18 +296,24 @@ Compiles to the optimal assembly below (`sbi` sets a specific bit in a port regi
 
 ```s
 00000080 <main>:
-main():
-  80:	28 9a       	sbi	0x05, 0	; PORTB |= (1 << PB0)
-  ; [main function epilogue]
+  ; DDRB |= (1 << PB5);
+  80:	25 9a       	sbi	0x04, 5	; 4
+  ; while (1) {
+  ; PORTB |= (1 << PB5);
+  82:	2d 9a       	sbi	0x05, 5	; 5
+  ; PORTB &= ~(1 << PB5);
+  84:	2d 98       	cbi	0x05, 5	; 5
+  ; }
+  86:	fd cf       	rjmp	.-6      	; 0x82 <main+0x2>
 ```
 
 Which brings us to the essential question: **is the Arduino framework's implementation right?**
 
 In a sense, **yes**: it translates user-facing Arduino board pin identifiers to hardware pins under the hood, ensures
 there are no conflicts with PWM settings, and does update the output register in a correct (atomic) way. **But**, this
-is a very costly abstraction. If your code does some high-frequency bit banging (every few clock cycles), you won't be
-able to use `digitalWrite`, which is orders of magnitude slower, and has side effects (disabling interrupts
-temporarily).
+is a very costly abstraction (67 instructions + function call compared to one *single-cycle* instruction). If your code
+does some high-frequency bit banging (every few clock cycles), you won't be able to use `digitalWrite`, which is orders
+of magnitude slower, and has side effects (disabling interrupts temporarily).
 
 Of course, these abstractions are what make Arduino beginner-friendly, but are limited because of their implementation
 in C++. A language with more robust compile-time guarantees could reason more efficiently about hardware port usage, and
@@ -304,3 +348,5 @@ performance/readability trade-offs.
 [^vim-platformio-ccls]: Creating a project with `pio init -b uno --ide vim` will create the necessary files for the
   `ccls` language server to provide completion and go-to definition for Arduino code. This what I mainly used for this
   work.
+[^arduino-platformio-optimization]: PlatformIO uses `-flto -Os` as the default optimization level, but changing those
+  settings didn't influence the result significantly.
