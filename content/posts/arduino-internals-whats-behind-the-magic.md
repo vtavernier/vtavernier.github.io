@@ -1,7 +1,7 @@
 ---
 title: Arduino Internals — What's behind the magic?
 tags: [arduino, software, electronics]
-date: 2021-04-19
+date: 2021-04-12
 draft: true
 description: The Arduino ecosystem changed the world of DIY electronics, let's take a look under the hood to figure out
   how that happened.
