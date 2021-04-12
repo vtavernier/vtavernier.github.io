@@ -79,3 +79,7 @@
 figcaption {
 	color: #888;
 }
+
+.tooltip {
+	text-decoration: underline dashed #888;
+}
