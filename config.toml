@@ -32,7 +32,7 @@ hidecolorschemetoggle = true
 
 customCSS = ["css/main.css"]
 #customSCSS = ["scss/custom.scss"]
-#customJS = ["js/custom.js"]
+customJS = ["main.js"]
 
 [taxonomies]
 category = "categories"
