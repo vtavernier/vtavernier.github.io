@@ -132,42 +132,85 @@ get started!
 
 ## What's `Arduino.h` exactly?
 
-All Arduino code should `#include` this header to access the standard library functions described in the reference
-documentation. Thankfully, when using an IDE with code completion[^vim-platformio-ccls], we can just ask the editor to
-open `Arduino.h` and look at its definitions.
+Using a new board in the Arduino IDE is as simple as downloading the right *core* through the *board manager*. We can
+look around starting from a basic sketch to peak at the internals of what this *core* really is. Starting with
+`Arduino.h`, which all Arduino code should `#include` to access the standard library functions described in the
+reference documentation, using an IDE with code completion[^vim-platformio-ccls], we can just ask the editor to open
+the header file under our cursor and follow the include graph.
 
-Given a standard PlatformIO installation, this will bring up
-[`~/.platformio/packages/framework-arduino-avr/cores/arduino/Arduino.h`](https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h),
-which already has a lot of interesting features:
-* All the constants in the documentation, as `#define`s, and some functions which are actually implemented as macros
-  (e.g. `min` and `max`).
+This will bring up this version of `Arduino.h` from the core installation path,
+[`$AVR_CORE/cores/arduino/Arduino.h`](https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h),
+which already teaches us a lot:
+* There's all the constants in the documentation, as `#define`s, and some functions which are actually implemented as
+  macros (e.g. `min` and `max`).
 * Gated behind `__cplusplus`, includes for some types defined by Wiring, the predecessor of the Arduino framework,
   itself based on Processing. The main one being `WString.h`, defining the `String` type.
 * Some board-specific stuff, like including USB API support or hardware serial support depending on preprocessor
   definitions.
-* A final include for `pins_arduino.h`, which contains a bunch of mappings from Arduino pin numbers (13 for
-  `LED_BUILTIN` for example) to physical microcontroller pins (`digital_pin_to_port_PGM` and others). This one is stored
-  in the `variants` folder, and contains definitions for the various boards based on this platform, which may have
-  different pin mappings or enabled features, like the Arduino Mega vs. the Arduino Uno.
+* A final include for `pins_arduino.h`, which contains mappings from Arduino pin numbers (0-13 as what's passed to
+  `digitalWrite`) to physical microcontroller pins (`PORTB`, `PORTC` registers and others). This one is stored in the
+  `$AVR_CORE/variants/$VARIANT` folder: depending on the current board, the right `-I` flag will be passed to the
+  compiler to include mappings for the target, for example the Arduino Mega (`$VARIANT = mega`), or Uno (`$VARIANT =
+  standard`).
 
-**Conclusion**: `Arduino.h` is already hardware-specific. Its definitions follow what we can see in the reference
-documentation, but it is definitely **not** portable. It is part of what the Arduino platform calls a *core*, which is
-an implementation of the Arduino *specification* for a set of boards that share the same architecture. In this case,
-this is the original AVR core, and it's even available on GitHub, in a sensible location:
-https://github.com/arduino/ArduinoCore-avr. Let's explore it a bit more.
+Noting the dependencies while following along, we can draw a (partial so it fits in a blog post) include graph between
+the different components of this core:
 
-### Arduino, for Atmel's AVR platform
+<figure>
+{{<mermaid>}}
+flowchart TB
+  sketch[Blink.ino] --> arduino_h
 
-Browsing through this repository, among the files we already discovered, we notice some metadata (`boards.txt`) which
-reference the documentation for the... Arduino CLI? More specifically for this file, the [platform
-specification](https://arduino.github.io/arduino-cli/latest/platform-specification/) explains a tiny bit more what we're
-looking for:
+  subgraph avr_std[AVR Toolchain]
+    avr_io[avr/io.h]
+    avr_pgmspace[avr/pgmspace.h]
+    avr_stdio[stdio.h]
+  end
 
-> Platforms add support for new boards to the Arduino development software. They are installable either via Boards
-> Manager or manual installation to the hardware folder of Arduino's sketchbook folder (AKA "user directory").
+  subgraph avr_core[Arduino AVR Core]
+    subgraph cores/arduino
+      arduino_h[Arduino.h]
+      arduino_h --> wstring_h[WString.h]
+      arduino_h --> print_h[Print.h]
 
-Well then those cores should contain the definition for all those built-in functions, in order to translate them to
-actual microcontroller hardware operations. And sure enough, in
+      arduino_h --> avr_pgmspace
+      print_h --> avr_stdio
+      wstring_h --> avr_pgmspace
+    end
+
+    arduino_h -- -I flag --> arduino_pins_h_standard
+    arduino_h -.-> arduino_pins_h_others
+
+    arduino_h --> avr_io
+
+    subgraph variants
+      subgraph standard
+        arduino_pins_h_standard[arduino_pins.h] ---> avr_io
+        arduino_pins_h_standard ---> avr_pgmspace
+      end
+
+      subgraph others[...]
+        arduino_pins_h_others[arduino_pins.h] ---> avr_io
+        arduino_pins_h_others ---> avr_pgmspace
+      end
+    end
+  end
+{{</mermaid>}}
+<figcaption>Arduino AVR partial include graph</figcaption>
+</figure>
+
+This `Arduino.h` is already hardware-specific, even if most of it is hardware-independent. Its definitions follow what
+we can see in the reference documentation, but it is definitely **not** portable. It is however shared for all boards
+using the same architecture, and maintained by the same entity. In this case, this is the original AVR core, and it's
+even available on GitHub, in a sensible location: https://github.com/arduino/ArduinoCore-avr.
+
+Let's explore it a bit more: the core also contains the actual implementations of functions from the Arduino framework,
+which is what we're after. To keep this short, we will look at `digitalWrite`, about which there is already a lot to
+say.
+
+### Arduino's `digitalWrite` on Atmel's AVR platform
+
+Using our trusty editor and it's *go to implementation* feature, we can quickly find it in
 [`wiring_digital.c`](https://github.com/arduino/ArduinoCore-avr/blob/9f8d27f09f3bbd1da1374b5549a82bda55d45d44/cores/arduino/wiring_digital.c#L138),
 in all its microcontroller-programming-simplifying glory:
 
@@ -200,10 +243,10 @@ void digitalWrite(uint8_t pin, uint8_t val)
 }
 ```
 
-So `digitalWrite` actually does the following:
+To set the logic level of an output pin, `digitalWrite` actually does the following:
 * Check that the given pin is suitable for digital output (the `digitalPinTo*` family of functions will return `NOT_*`
   sentinel values otherwise)
-* Disable PWM on the target pin if it was enabled
+* Disable hardware PWM on the target pin if it was enabled
 * Disable hardware interrupts, set the target value, and then re-enable them
 
 For a microcontroller running at 16MHz, `digitalWrite` is a noticeably expensive operation. Indeed, it does:
@@ -214,7 +257,7 @@ For a microcontroller running at 16MHz, `digitalWrite` is a noticeably expensive
   > `pgm_read_byte`. Even though these values should be constant folded if `pin` and `val` are themselves constants, the
   > compiler can't reason enough yet to perform this optimization. Which means the rest of the operations can't be
   > optimized for constants.*
-* Disable interrupts.
+* Disable interrupts[^critical-section].
 * One last branch to determine if a bit should be cleared or set.
 * Apply the bitmask: this is a read-modify-write operation, and thus non-atomic, which requires disabled interrupts for
   correctness.
@@ -355,5 +398,9 @@ undocumented -- limitations and performance/readability trade-offs.
   not mentioned in the documentation).
 [^vim-platformio-ccls]: Creating a project with `pio init --ide vim` will create the necessary files for the `ccls`
   language server to provide completion and go-to definition for Arduino code. This what I mainly used for this work.
+[^critical-section]: On AVR, setting a bit in an output register is an atomic operation (`sbi` instruction). However,
+  `*port |= mask` is a *read-modify-write* operation since `mask` may set more than one bit and/or not be a constant. By
+  being 3 instructions long, there is a chance an interruption could happen between the *read* and *write*, and break
+  the code. Thus, a critical section is required, which equates to temporarily disabling interrupt handling.
 [^arduino-platformio-optimization]: PlatformIO uses `-flto -Os` as the default optimization level, but changing those
   settings didn't influence the result significantly.
