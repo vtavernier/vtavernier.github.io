@@ -84,7 +84,7 @@ differences &mdash; a notable issue when promoting Arduino code as platform-inde
 noticed when working with various boards (ESP8266, Arduino Nano 33 BLE, ATTiny85-based Digispark and others). So let&rsquo;s
 get started!</p><h2 id=whats-behind-arduinoh-exactly>What&rsquo;s behind <code>Arduino.h</code> exactly?
 <a class=heading-link href=#whats-behind-arduinoh-exactly><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Using a new board in the Arduino IDE is as simple as downloading the right <em>core</em> through the <em>board manager</em>. We can
-look around starting from a basic sketch to peak at the internals of what this <em>core</em> really is. Starting with
+look around starting from a basic sketch to peek at the internals of what this <em>core</em> really is. Starting with
 <code>Arduino.h</code>, which all Arduino code should <code>#include</code> to access the standard library functions described in the
 reference documentation, using an IDE with code completion<sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup>, we can just ask the editor to open the
 header file under our cursor and follow the include graph.</p><p>This will bring up this version of <code>Arduino.h</code> from the core installation path. When building for an AVR board such as
