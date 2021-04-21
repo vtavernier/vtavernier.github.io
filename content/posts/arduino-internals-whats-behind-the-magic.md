@@ -133,7 +133,7 @@ get started!
 ## What's behind `Arduino.h` exactly?
 
 Using a new board in the Arduino IDE is as simple as downloading the right *core* through the *board manager*. We can
-look around starting from a basic sketch to peak at the internals of what this *core* really is. Starting with
+look around starting from a basic sketch to peek at the internals of what this *core* really is. Starting with
 `Arduino.h`, which all Arduino code should `#include` to access the standard library functions described in the
 reference documentation, using an IDE with code completion[^vim-platformio-ccls], we can just ask the editor to open the
 header file under our cursor and follow the include graph.
