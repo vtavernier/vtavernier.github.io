@@ -16,8 +16,8 @@ around the world.
 programmed. Source: [Wikipedia](https://commons.wikimedia.org/wiki/File:Arduino_Duemilanove_2009b.jpg)")
 
 What this project actually achieved is simplifying microcontroller programming to the extreme, replacing obscure
-datasheet diving and reference implementation diagrams dissection with intuitive function calls *mostly* portable
-across the entire official product range. The "hello world" of electronics, the blinking LED was simplified from this:
+datasheet diving and reference implementation diagrams dissection with intuitive function calls *mostly* portable across
+the entire official product range. The "hello world" of electronics, the blinking LED was simplified from this:
 
 ```cpp
 // Compile with:       avr-gcc -mmcu=atmega328p -DF_CPU=16000000L
@@ -103,7 +103,7 @@ few select platforms, and why we would need to care about it.
 # Arduino framework architecture
 
 For most software projects, the go-to way for getting information about library internals would be hitting the reference
-manual online. In the case of Arduino, it's located at https://www.arduino.cc/reference/en. However, it's surprisingly
+manual online. In the case of Arduino, it is located at https://www.arduino.cc/reference/en. However, it is surprisingly
 succint: function signatures included in the documentation don't even show the arguments'
 type[^arduino-reference-no-signature].
 
@@ -114,7 +114,7 @@ can lead to many headaches and hours of painful trial and error.
 This reference was also written for the *original* Arduino boards, i.e. the AVR-based ones. The most notable example is
 the [`PROGMEM`](https://www.arduino.cc/reference/en/language/variables/utilities/progmem/) variable modifier, which is
 only available on AVR targets. Trying to use it on non-AVR targets results in a compile-error, unless your code detects
-it's being compiled for a non-AVR target.
+it is being compiled for a non-AVR target.
 
 The reference documentation also mixes [standard library functions](https://www.arduino.cc/reference/en/#functions),
 [plain datatypes and complex ones](https://www.arduino.cc/reference/en/#variables)[^string-datatype], [Arduino program
@@ -130,15 +130,16 @@ My goal when writing this article was to share with the world the process I went
 noticed when working with various boards (ESP8266, Arduino Nano 33 BLE, ATTiny85-based Digispark and others). So let's
 get started!
 
-## What's `Arduino.h` exactly?
+## What's behind `Arduino.h` exactly?
 
 Using a new board in the Arduino IDE is as simple as downloading the right *core* through the *board manager*. We can
 look around starting from a basic sketch to peak at the internals of what this *core* really is. Starting with
 `Arduino.h`, which all Arduino code should `#include` to access the standard library functions described in the
-reference documentation, using an IDE with code completion[^vim-platformio-ccls], we can just ask the editor to open
-the header file under our cursor and follow the include graph.
+reference documentation, using an IDE with code completion[^vim-platformio-ccls], we can just ask the editor to open the
+header file under our cursor and follow the include graph.
 
-This will bring up this version of `Arduino.h` from the core installation path,
+This will bring up this version of `Arduino.h` from the core installation path. When building for an AVR board such as
+the Arduino Uno, this will bring up
 [`$AVR_CORE/cores/arduino/Arduino.h`](https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h),
 which already teaches us a lot:
 * There's all the constants in the documentation, as `#define`s, and some functions which are actually implemented as
@@ -185,13 +186,13 @@ flowchart TB
 
     subgraph variants
       subgraph standard
-        arduino_pins_h_standard[arduino_pins.h] ---> avr_io
-        arduino_pins_h_standard ---> avr_pgmspace
+	arduino_pins_h_standard[arduino_pins.h] ---> avr_io
+	arduino_pins_h_standard ---> avr_pgmspace
       end
 
       subgraph others[...]
-        arduino_pins_h_others[arduino_pins.h] ---> avr_io
-        arduino_pins_h_others ---> avr_pgmspace
+	arduino_pins_h_others[arduino_pins.h] ---> avr_io
+	arduino_pins_h_others ---> avr_pgmspace
       end
     end
   end
@@ -201,7 +202,7 @@ flowchart TB
 
 This `Arduino.h` is already hardware-specific, even if most of it is hardware-independent. Its definitions follow what
 we can see in the reference documentation, but it is definitely **not** portable. It is however shared for all boards
-using the same architecture, and maintained by the same entity. In this case, this is the original AVR core, and it's
+using the same architecture, and maintained by the same entity. In this case, this is the original AVR core, and it is
 even available on GitHub, in a sensible location: https://github.com/arduino/ArduinoCore-avr.
 
 Let's explore it a bit more: the core also contains the actual implementations of functions from the Arduino framework,
@@ -210,7 +211,7 @@ say.
 
 ### Arduino's `digitalWrite` on Atmel's AVR platform
 
-Using our trusty editor and it's *go to implementation* feature, we can quickly find it in
+Using our trusty editor and it is *go to implementation* feature, we can quickly find it in
 [`wiring_digital.c`](https://github.com/arduino/ArduinoCore-avr/blob/9f8d27f09f3bbd1da1374b5549a82bda55d45d44/cores/arduino/wiring_digital.c#L138),
 in all its microcontroller-programming-simplifying glory:
 
@@ -253,10 +254,10 @@ For a microcontroller running at 16MHz, `digitalWrite` is a noticeably expensive
 * 3 `PROGMEM` reads (`digitalPinTo*` function calls) for `timer`, `bit` and `port`.
 * 2 branches to validate the pin values. Note that the function fails silently for wrong pin values.
 * 1 more `PROGMEM` read for getting the port's output register from its port number `port`.<br>
-  > *Note: by this point, all the values in the data flow are returned from reading constant arrays in program memory with
-  > `pgm_read_byte`. Even though these values should be constant folded if `pin` and `val` are themselves constants, the
-  > compiler can't reason enough yet to perform this optimization. Which means the rest of the operations can't be
-  > optimized for constants.*
+  > *Note: by this point, all the values in the data flow are returned from reading constant arrays in program memory
+  > with `pgm_read_byte`. Even though these values should be constant folded if `pin` and `val` are themselves
+  > constants, the compiler can't reason enough yet to perform this optimization. Which means the rest of the operations
+  > can't be optimized for constants.*
 * Disable interrupts[^critical-section].
 * One last branch to determine if a bit should be cleared or set.
 * Apply the bitmask: this is a read-modify-write operation, and thus non-atomic, which requires disabled interrupts for
@@ -309,7 +310,7 @@ Compiles to the following assembly[^arduino-platformio-optimization]:
  # [truncated: Arduino framework initialization]
  # [truncated: inlined call to pinMode(...) ]
 
- # Note: loop is inlined since it's only called from Arduino's main
+ # Note: loop is inlined since it is only called from Arduino's main
  # digitalWrite(LED_BUILTIN, HIGH);
  2c6:	81 e0       	ldi	r24, 0x01	# 1
  2c8:	0e 94 70 00 	call	0xe0	# 0xe0 <digitalWrite.constprop.0>
@@ -370,21 +371,363 @@ More details about this assembly comparison are available on [this
 page](https://vtavernier.github.io/blog-arduino-internals/). As an extra comparison point, a proof of concept for a
 template-based hardware abstraction is included, which compiles to the same optimal assembly as raw AVR code. Please
 note that the Arduino version also has timer interrupts for maintaining a clock, which explains most of the program size
-difference --- outside of the actual `digialWrite` calls.
+difference --- aside from the actual `digitalWrite` calls.
 
 Personally, I think these limitations should *at least* be mentioned in the reference documentation. This wouldn't
-overload beginners browsing the function reference for the first time, as long as it's hidden in an expandable "For
+overload beginners browsing the function reference for the first time, as long as it is hidden in an expandable "For
 advanced users" section. This function <span class="tooltip" title="Does this call for a part 2 🤔?">isn't the only one
 with caveats</span>, and it is likely that large projects using the Arduino platform will encounter more of those --
 undocumented -- limitations and performance/readability trade-offs.
 
-## nrf/Mbed based boards
+### Arduino's `analogWrite` on the Mbed framework
 
-# Discussion: pros and cons of the Arduino ecosystem
+Backtracking a bit, we can look at a core's implementation for another platform. In this case, the [ARM Mbed
+core](https://github.com/arduino/ArduinoCore-mbed) for Mbed enabled devices. [Mbed](https://os.mbed.com/) is an
+open-source operating system for IoT applications running on the ARM architecture. The goal of this kind of *operating
+systems* is to simplify embedded development for the supported platforms, the same way the Arduino framework simplifies
+development for the Arduino-enabled boards.
 
-# Case study: PWM dimming the Arduino 33 BLE's RGB LED
+The [Arduino Nano 33 BLE](https://store.arduino.cc/arduino-nano-33-ble) is one example of such a board. Its nRF52840 SoC
+contains a 32-bit ARM Cortex-M4 CPU running at 64MHz as well as a Bluetooth chip which supports BLE. This is the board
+we will be using as a target for looking under the hood.
+
+![Arduino Nano 33 BLE](Arduino_Nano_33_BLE.jpg "Arduino Nano 33 BLE. Source: [arduino.cc](https://arduino.cc)")
+
+The `Arduino.h` header is located in the same directory, relative to the Mbed core root, and corresponds roughly to what
+we saw before for the AVR core: generic Arduino definitions and "hardware"-specific. "Hardware" in quotes since the Mbed
+framework is already an abstraction layer over the actual processor:
+
+<figure>
+{{<mermaid>}}
+graph LR
+  sketch[Blink.ino] --> arduino_h
+
+  subgraph arm_mbed[Arm Mbed]
+    subgraph mbed_target_nrf5x[nrf5X SDK]
+      nrfx_h[nrfx.h]
+    end
+
+    mbed_h[mbed.h] -.-> nrfx_h
+  end
+
+  subgraph mbed_core[Arduino Mbed Core]
+    arduino_h[Arduino.h] --> mbed_h
+  end
+{{</mermaid>}}
+<figcaption>Arduino Mbed partial include graph</figcaption>
+</figure>
+
+In this case, the Arduino core provides:
+* An abstraction over the Mbed API, for platform-independence of Arduino code, and to simplify it for beginners
+* The hardware pin mappings for the various boards (*variants*), since Mbed is only responsible for interacting with the
+  CPU
+
+This can easily be seen by looking at the implementation of, let's say `analogWrite` in
+[`cores/arduino/wiring_analog.cpp`](https://github.com/arduino/ArduinoCore-mbed/blob/e50ec8aa1b1cd3079566b66b22bf8ded5e253cbb/cores/arduino/wiring_analog.cpp#L45):
+
+```cpp
+static int write_resolution = 8;
+// [...]
+void analogWrite(PinName pin, int val)
+{
+  pin_size_t idx = PinNameToIndex(pin);
+  if (idx != NOT_A_PIN) {
+    analogWrite(idx, val);
+  } else {
+    mbed::PwmOut* pwm = new mbed::PwmOut(pin);
+    pwm->period_ms(2); //500Hz
+    float percent = (float)val/(float)(1 << write_resolution);
+    pwm->write(percent);
+  }
+}
+
+void analogWrite(pin_size_t pin, int val)
+{
+  if (pin >= PINS_COUNT) {
+    return;
+  }
+#ifdef DAC
+    if (pin == DAC) {
+      analogWriteDAC(digitalPinToPinName(pin), val);
+      return;
+    }
+#endif
+  float percent = (float)val/(float)(1 << write_resolution);
+  mbed::PwmOut* pwm = digitalPinToPwm(pin);
+  if (pwm == NULL) {
+    pwm = new mbed::PwmOut(digitalPinToPinName(pin));
+    digitalPinToPwm(pin) = pwm;
+    pwm->period_ms(2); //500Hz
+  }
+  pwm->write(percent);
+}
+// [...]
+```
+
+Looking at this implementation:
+* The first overload is called if you pass a `PinName` for the pin number, which is an `enum` declared by Mbed's
+  abstraction layer. If the pin exists in the Arduino's mapping (`PinNameToIndex`), it is forwarded to the second
+  overload. Otherwise, writing the PWM parameters is delegated to an `mbed::PwmOut` which is subsequently leaked.
+* The second overload is called when passing a raw pin number, which is what Arduino sketches typically do. Skipping
+  over the DAC part, this function sets up a singleton `mbed::PwmOut` for this pin in a global array somewhere whose
+  mapping is resolved by the `digitalPinToPwm` macro. This allocation only happens once, the `PwmOut` object being
+  reused on a subsequent call to `analogWrite` for the same pin.
+
+This implementation is correct: since invoking the constructor for a `mbed::PwmOut` object actually initializes the PWM
+hardware for the given pin[^mbed-pwmout-constructor], this side effect only appears when the first `analogWrite` call is
+issued. Being able to change the PWM frequency would be nice, but it is currently not possible on other platforms
+either. At least, not through the official Arduino API[^change-pwm-frequency].
+
+However, both the [Mbed documentation](https://os.mbed.com/docs/mbed-os/v6.9/apis/pwmout.html) **and** the [Arduino
+documentation](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/) fail to mention one major
+limitation. The Arduino 33 BLE is equipped with a RGB LED connected to pins 22, 23, and 24 for its R, G and B channels
+respectively. It's a perfect candidate for PWM to dim the various channels:
+
+```cpp
+#include <Arduino.h>
+
+void setup() {}
+
+void loop() {
+  auto now = millis();
+
+  // Set the RGB LED color
+  analogWrite(LEDR, (now + 100) % 255);
+  analogWrite(LEDG, (now + 200) % 255);
+  analogWrite(LEDB, (now + 300) % 255);
+}
+```
+
+This sketch works perfectly fine, but is rather limited. In an actual project, you might also be controlling other
+devices using PWM, which the Arduino Nano 33 BLE is perfectly able to do, since PWM is supported on [all digital
+pins](https://store.arduino.cc/arduino-nano-33-ble), according to its technical specifications. Maybe we could control
+some extra pins:
+
+```cpp
+#include <Arduino.h>
+
+void setup() {}
+
+void loop() {
+  auto now = millis();
+
+  // Set the RGB LED color
+  analogWrite(LEDR, (now + 100) % 255);
+  analogWrite(LEDG, (now + 200) % 255);
+  analogWrite(LEDB, (now + 300) % 255);
+
+  // Added: a red LED on 11, and a green one on 12?
+  analogWrite(11, (now + 400) % 255);
+  analogWrite(12, (now + 500) % 255);
+}
+```
+
+When compiled and uploaded to the board, you don't get five PWM pins but instead a board that disappears from the USB
+devices on your computer, blinking its builtin LED in a --- rather ominous the first time --- Morse code SOS pattern.
+Before assuming the board burnt-out, I tried the following steps:
+* Googling the issue: no significant results at the time to help[^google-sos-blink].
+* Re-uploading the previous code after resetting: works.
+* Replacing `analogWrite` calls with `mbed::PwmOut` objects: doesn't work.
+
+This rules out hardware issues, as well as the Arduino abstraction layer over Mbed. Off to the Mbed source code we go!
+Note that the core downloaded by the board manager or PlatformIO does not contain the Mbed source code. It's a rather
+large project, and as such is distributed in a pre-compiled version:
+
+{{<aha>}}
+$ <span style="font-weight:bold">find -name *.a</span>
+./variants/ARDUINO_NANO33BLE/libs/libmbed.a
+./variants/ARDUINO_NANO33BLE/libs/libcc_310_core.a
+./variants/ARDUINO_NANO33BLE/libs/libcc_310_trng.a
+./variants/ARDUINO_NANO33BLE/libs/libcc_310_ext.a
+./variants/PORTENTA_H7_M4/libs/libmbed.a
+./variants/PORTENTA_H7_M4/libs/libopenamp.a
+./variants/PORTENTA_H7_M7/libs/libmbed.a
+{{</aha>}}
+<!-- * -->
+
+Thankfully, the Mbed source code is available on [GitHub](https://github.com/ARMmbed/mbed-os). Following the dependency
+chain, we can find the source of our issue:
+* `mbed::PwmOut` is declared in
+  [`drivers/include/drivers/PwmOut.h`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/include/drivers/PwmOut.h).
+  It references `hal/pwmout_api.h` which, as the name indicates, is an Hardware Abstraction Layer (HAL) for the `PwmOut`
+  API.
+* The implementation of `mbed::PwmOut` in
+  [`drivers/source/PwmOut.cpp`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/source/PwmOut.cpp)
+  confirms this: the class methods call methods from this HAL API in order to change the actual hardware state.
+* Looking at
+  [`hal/include/hal/pwmout_api.h`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/hal/include/hal/pwmout_api.h),
+  the comments mention that the target should implement the methods declared in this file in order to provide PWM output
+  capabilities to the user.
+* The CPU on the Arduino Nano 33 BLE is a Nordic nRF52840. The Mbed source code does indeed contain a target for this
+  architecture, in
+  [`targets/TARGET_NORDIC/TARGET_NRF5x`](https://github.com/ARMmbed/mbed-os/tree/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x).
+* A quick `find targets/TARGET_NORDIC/TARGET_NRF5x -name pwmout_api.*` reveals the PWM HAL implementation for this
+  target resides in
+  [`targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c).
+  Bingo!
+
+Skimming through this implementation, the first interesting thing is the `nordic_pwm_init` function:
+
+```cpp
+static void nordic_pwm_init(pwmout_t *obj)
+{
+    MBED_ASSERT(obj);
+
+    /* Default configuration:
+     * 1 pin per instance, otherwise they would share base count.
+     * 1 MHz clock source to match the 1 us resolution.
+     */
+    nrfx_pwm_config_t config = {
+	.output_pins  = {
+	    obj->pin,
+	    NRFX_PWM_PIN_NOT_USED,
+	    NRFX_PWM_PIN_NOT_USED,
+	    NRFX_PWM_PIN_NOT_USED,
+	},
+	.irq_priority = PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
+	.base_clock   = NRF_PWM_CLK_1MHz,
+	.count_mode   = NRF_PWM_MODE_UP,
+	.top_value    = obj->period,
+	.load_mode    = NRF_PWM_LOAD_COMMON,
+	.step_mode    = NRF_PWM_STEP_AUTO,
+    };
+
+    /* Initialize instance with new configuration. */
+    ret_code_t result = nrfx_pwm_init(&nordic_nrf5_pwm_instance[obj->instance],
+				      &config,
+				      NULL);
+
+    MBED_ASSERT(result == NRFX_SUCCESS);
+}
+```
+
+A couple of things worth noting:
+* It only uses one pin out of four in what looks like a configuration structure for PWM
+  (`nrfx_pwm_config_t.output_pins`).
+* Initializing a PWM instance an fail, and is thus checked by the `MBED_ASSERT` macro. This macro is used multiple times
+  through this implementation. Would this assertion failing trigger the blinking SOS behavior we have encountered?
+
+Finding out the behavior of this macro is left as an exercise to the reader. But since you are still reading this, you
+probably quickly found out that a failed assertion leads to an eventual call to
+[`mbed_die`](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/platform/source/mbed_board.c#L26)
+which blinks `LED1` in an SOS pattern indefinitely. Our hypothesis is confirmed!
+
+If you somehow managed to follow this source-digging carefully, you might have noticed `nordic_pwm_init` is a `static`
+function: it is only a helper function for implementing the HAL, which is later defined in the file. Namely,
+[`pwmout_init`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c#L137):
+
+```cpp
+void pwmout_init(pwmout_t *obj, PinName pin)
+{
+    DEBUG_PRINTF("pwmout_init: %d\r\n", pin);
+
+    MBED_ASSERT(obj);
+
+    /* Get hardware instance from pinmap. */
+    int instance = pin_instance_pwm(pin);
+
+    MBED_ASSERT(instance < (int)(sizeof(nordic_nrf5_pwm_instance) / sizeof(nrfx_pwm_t)));
+
+    /* Populate PWM object with default values. */
+    obj->instance = instance;
+    obj->pin = pin;
+    obj->pulse = 0;
+    obj->period = MAX_PWM_COUNTERTOP;
+    obj->percent = 0;
+    obj->sequence.values.p_common = &obj->pulse;
+    obj->sequence.length = NRF_PWM_VALUES_LENGTH(obj->pulse);
+    obj->sequence.repeats = 0;
+    obj->sequence.end_delay = 0;
+
+    /* Set active low logic. */
+    obj->pulse |= SEQ_POLARITY_BIT;
+
+    /* Initialize PWM instance. */
+    nordic_pwm_init(obj);
+}
+```
+
+Interestingly enough, this code is very similar to the Arduino implementation of `analogWrite`. The pin number is mapped
+to an *instance* number:
+
+```cpp
+    /* Get hardware instance from pinmap. */
+    int instance = pin_instance_pwm(pin);
+```
+
+[`pin_instance_pwm`](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pinmap_ex.c#L307)
+actually allocates hardware PWM instance numbers for the given pin. If no more instances are available, it will return
+the `NC` constant to indicate no such instance is available:
+
+```cpp
+/**
+ * Brief       Find hardware instance for the provided PWM pin.
+ *
+ *             The function will search the PeripheralPin map for a pre-allocated
+ *             assignment. If none is found the allocation map will be searched
+ *             to see if the same pins have been assigned an instance before.
+ *
+ *             If no assignement is found and there is an empty slot left in the
+ *             map, the pins are stored in the map and the hardware instance is
+ *             returned.
+ *
+ *             If no free instances are available, the default instance is returned.
+ *
+ * Parameter   pwm   pwm pin.
+ *
+ * Return      Hardware instance associated with provided pins.
+ */
+int pin_instance_pwm(PinName pwm)
+```
+
+Thus, how many instances are there? [**four**, according to the declaration preceding
+`pin_instance_pwm`](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pinmap_ex.c#L281).
+This means that when `pwmout_init` runs out of hardware PWM instances, the [following
+assertion](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c#L146)
+will fail:
+
+```cpp
+    MBED_ASSERT(instance < (int)(sizeof(nordic_nrf5_pwm_instance) / sizeof(nrfx_pwm_t)));
+```
+
+Which in turn, stops the CPU and blinks the builtin LED in an SOS pattern. **Mystery solved! 🎉**
+
+> But **hold on**. Why say PWM output is supported on all digital pins if we can only use four of them at the same time?
+
+Well, according to the [product
+specification](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fstruct_nrf52%2Fstruct%2Fnrf52840.html), the nRF52840
+does feature *4x four channel pulse width modulator (PWM) unit with EasyDMA*. What this actually means is that there are
+four fully-independent PWM modules (the *hardware instances* in the code we just studied), each of which can drive four
+pins. This brings the total of PWM pins to 16, which is much more reasonable as long as you can group them into the four
+PWM modules available.
+
+If you spend more time digging through the [Nordic SDK documentation for
+PWM](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.0.0%2Fgroup__nrf__pwm.html&cp=7_5_3_6_9_0_12),
+you will find out that the 4 pins of a single instance will share the same PWM frequency, but you can still set
+different duty cycles. ARMed with this knowledge, you may now implement an nRF-specific PWM port that can drive 4 pins
+at the same time, but only using one hardware instance. See my implementation which resulted from this
+reverse-engineering at
+[nrf_pwm_port.hpp](https://github.com/vtavernier/smart-tps/blob/master/include/nano33ble/nrf_pwm_port.hpp) and
+[nrf_pwm_port.cpp](https://github.com/vtavernier/smart-tps/blob/master/src/nano33ble/nrf_pwm_port.cpp).
+
+This leaves us with a fully-dimmable RGB LED and 3 possible `analogWrite`-controllable pins. **Problem solved!**
 
 # Conclusion
+
+I wanted to share this reverse-engineering adventure as I think it could be useful for other developers working with the
+Arduino ecosystem. Most of the discoveries mentioned here are to my knowledge, at the time of writing this article, not
+documented anywhere.
+
+To me, even with those hidden caveats, Arduinos are still an excellent platform for beginners and hobbyists. These
+limitations should not be encountered in *most* cases, and more experienced developers should be able to work around
+these issues by reaching for the hardware SDKs directly.
+
+The only major pain point I had working with Arduino libraries is the strong coupling with the hardware. If you wish to
+test some of your code on your computer instead of the target board (PlatformIO has a `native` target just for this),
+you have to design your code around the fact that `Arduino.h` is not available for desktop targets, even if most of it
+is hardware-independent. But we shall go down this rabbit hole another time.
+
+Until then, happy hacking!
 
 [^arduino-reference-no-signature]: See "Syntax" and "Parameters" in
   https://www.arduino.cc/reference/en/language/functions/digital-io/digitalwrite/
@@ -404,3 +747,17 @@ undocumented -- limitations and performance/readability trade-offs.
   the code. Thus, a critical section is required, which equates to temporarily disabling interrupt handling.
 [^arduino-platformio-optimization]: PlatformIO uses `-flto -Os` as the default optimization level, but changing those
   settings didn't influence the result significantly.
+[^mbed-pwmout-constructor]: The [official documentation for
+  `mbed::PwmOut`](https://os.mbed.com/docs/mbed-os/v6.9/mbed-os-api-doxy/classmbed_1_1_pwm_out.html#ae90809b159b1af641a257b3505c56c41)
+  does not mention it, but looking through the [source
+  code](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/drivers/source/PwmOut.cpp#L162)
+  you can find that `PwmOut::init` invokes `pwmout_init` from the hardware abstraction layer, which does indeed
+  initialize the PWM hardware.
+[^change-pwm-frequency]: If you pick the right PWM pins on an AVR board, you can access the registers directly and set
+  the PWM frequency, as described on the [Arduino
+  Wiki](https://www.arduino.cc/en/pmwiki.php?n=Tutorial/SecretsOfArduinoPWM). On an Mbed board, you can just use the
+  `mbed::PwmOut` class directly.
+[^google-sos-blink]: Google's indexing of pages changes all the time, and today you might find out [this forum
+  post](https://forum.arduino.cc/t/arduino-nano-33-ble-damaged/639669/2), where the first answer mentions that's what
+  Mbed does when it crashes, which could be for various reasons. This answer also includes a vague reference to the
+  issue we're encountering here.
