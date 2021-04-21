@@ -383,24 +383,24 @@ Bingo!</li></ul><p>Skimming through this implementation, the first interesting t
 </span><span style=color:#6272a4>     * 1 MHz clock source to match the 1 us resolution.
 </span><span style=color:#6272a4>     */</span>
     nrfx_pwm_config_t config <span style=color:#ff79c6>=</span> {
-	.output_pins  <span style=color:#ff79c6>=</span> {
-	    obj<span style=color:#ff79c6>-&gt;</span>pin,
-	    NRFX_PWM_PIN_NOT_USED,
-	    NRFX_PWM_PIN_NOT_USED,
-	    NRFX_PWM_PIN_NOT_USED,
-	},
-	.irq_priority <span style=color:#ff79c6>=</span> PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
-	.base_clock   <span style=color:#ff79c6>=</span> NRF_PWM_CLK_1MHz,
-	.count_mode   <span style=color:#ff79c6>=</span> NRF_PWM_MODE_UP,
-	.top_value    <span style=color:#ff79c6>=</span> obj<span style=color:#ff79c6>-&gt;</span>period,
-	.load_mode    <span style=color:#ff79c6>=</span> NRF_PWM_LOAD_COMMON,
-	.step_mode    <span style=color:#ff79c6>=</span> NRF_PWM_STEP_AUTO,
+        .output_pins  <span style=color:#ff79c6>=</span> {
+            obj<span style=color:#ff79c6>-&gt;</span>pin,
+            NRFX_PWM_PIN_NOT_USED,
+            NRFX_PWM_PIN_NOT_USED,
+            NRFX_PWM_PIN_NOT_USED,
+        },
+        .irq_priority <span style=color:#ff79c6>=</span> PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
+        .base_clock   <span style=color:#ff79c6>=</span> NRF_PWM_CLK_1MHz,
+        .count_mode   <span style=color:#ff79c6>=</span> NRF_PWM_MODE_UP,
+        .top_value    <span style=color:#ff79c6>=</span> obj<span style=color:#ff79c6>-&gt;</span>period,
+        .load_mode    <span style=color:#ff79c6>=</span> NRF_PWM_LOAD_COMMON,
+        .step_mode    <span style=color:#ff79c6>=</span> NRF_PWM_STEP_AUTO,
     };
 
     <span style=color:#6272a4>/* Initialize instance with new configuration. */</span>
     ret_code_t result <span style=color:#ff79c6>=</span> nrfx_pwm_init(<span style=color:#ff79c6>&amp;</span>nordic_nrf5_pwm_instance[obj<span style=color:#ff79c6>-&gt;</span>instance],
-				      <span style=color:#ff79c6>&amp;</span>config,
-				      <span style=color:#8be9fd;font-style:italic>NULL</span>);
+                                      <span style=color:#ff79c6>&amp;</span>config,
+                                      <span style=color:#8be9fd;font-style:italic>NULL</span>);
 
     MBED_ASSERT(result <span style=color:#ff79c6>==</span> NRFX_SUCCESS);
 }
