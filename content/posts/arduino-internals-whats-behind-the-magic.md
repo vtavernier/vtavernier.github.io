@@ -578,24 +578,24 @@ static void nordic_pwm_init(pwmout_t *obj)
      * 1 MHz clock source to match the 1 us resolution.
      */
     nrfx_pwm_config_t config = {
-	.output_pins  = {
-	    obj->pin,
-	    NRFX_PWM_PIN_NOT_USED,
-	    NRFX_PWM_PIN_NOT_USED,
-	    NRFX_PWM_PIN_NOT_USED,
-	},
-	.irq_priority = PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
-	.base_clock   = NRF_PWM_CLK_1MHz,
-	.count_mode   = NRF_PWM_MODE_UP,
-	.top_value    = obj->period,
-	.load_mode    = NRF_PWM_LOAD_COMMON,
-	.step_mode    = NRF_PWM_STEP_AUTO,
+        .output_pins  = {
+            obj->pin,
+            NRFX_PWM_PIN_NOT_USED,
+            NRFX_PWM_PIN_NOT_USED,
+            NRFX_PWM_PIN_NOT_USED,
+        },
+        .irq_priority = PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
+        .base_clock   = NRF_PWM_CLK_1MHz,
+        .count_mode   = NRF_PWM_MODE_UP,
+        .top_value    = obj->period,
+        .load_mode    = NRF_PWM_LOAD_COMMON,
+        .step_mode    = NRF_PWM_STEP_AUTO,
     };
 
     /* Initialize instance with new configuration. */
     ret_code_t result = nrfx_pwm_init(&nordic_nrf5_pwm_instance[obj->instance],
-				      &config,
-				      NULL);
+                                      &config,
+                                      NULL);
 
     MBED_ASSERT(result == NRFX_SUCCESS);
 }
