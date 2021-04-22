@@ -1,8 +1,7 @@
 ---
 title: Arduino Internals — What's behind the magic?
 tags: [arduino, software, electronics]
-date: 2021-04-12
-draft: true
+date: 2021-04-26
 description: The Arduino ecosystem changed the world of DIY electronics, let's take a look under the hood to figure out
   how that happened.
 ---
@@ -112,7 +111,7 @@ support debugging (and where buffer overflows result in usually very funny looki
 can lead to many headaches and hours of painful trial and error.
 
 This reference was also written for the *original* Arduino boards, i.e. the AVR-based ones. The most notable example is
-the [`PROGMEM`](https://www.arduino.cc/reference/en/language/variables/utilities/progmem/) variable modifier, which is
+the [PROGMEM](https://www.arduino.cc/reference/en/language/variables/utilities/progmem/) variable modifier, which is
 only available on AVR targets. Trying to use it on non-AVR targets results in a compile-error, unless your code detects
 it is being compiled for a non-AVR target.
 
@@ -140,7 +139,7 @@ header file under our cursor and follow the include graph.
 
 This will bring up this version of `Arduino.h` from the core installation path. When building for an AVR board such as
 the Arduino Uno, this will bring up
-[`$AVR_CORE/cores/arduino/Arduino.h`](https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h),
+[$AVR_CORE/cores/arduino/Arduino.h](https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h),
 which already teaches us a lot:
 * There's all the constants in the documentation, as `#define`s, and some functions which are actually implemented as
   macros (e.g. `min` and `max`).
@@ -212,7 +211,7 @@ say.
 ### Arduino's `digitalWrite` on Atmel's AVR platform
 
 Using our trusty editor and it is *go to implementation* feature, we can quickly find it in
-[`wiring_digital.c`](https://github.com/arduino/ArduinoCore-avr/blob/9f8d27f09f3bbd1da1374b5549a82bda55d45d44/cores/arduino/wiring_digital.c#L138),
+[wiring_digital.c](https://github.com/arduino/ArduinoCore-avr/blob/9f8d27f09f3bbd1da1374b5549a82bda55d45d44/cores/arduino/wiring_digital.c#L138),
 in all its microcontroller-programming-simplifying glory:
 
 ```cpp
@@ -423,7 +422,7 @@ In this case, the Arduino core provides:
   CPU
 
 This can easily be seen by looking at the implementation of, let's say `analogWrite` in
-[`cores/arduino/wiring_analog.cpp`](https://github.com/arduino/ArduinoCore-mbed/blob/e50ec8aa1b1cd3079566b66b22bf8ded5e253cbb/cores/arduino/wiring_analog.cpp#L45):
+[cores/arduino/wiring_analog.cpp](https://github.com/arduino/ArduinoCore-mbed/blob/e50ec8aa1b1cd3079566b66b22bf8ded5e253cbb/cores/arduino/wiring_analog.cpp#L45):
 
 ```cpp
 static int write_resolution = 8;
@@ -548,22 +547,22 @@ $ <span style="font-weight:bold">find -name *.a</span>
 Thankfully, the Mbed source code is available on [GitHub](https://github.com/ARMmbed/mbed-os). Following the dependency
 chain, we can find the source of our issue:
 * `mbed::PwmOut` is declared in
-  [`drivers/include/drivers/PwmOut.h`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/include/drivers/PwmOut.h).
+  [drivers/include/drivers/PwmOut.h](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/include/drivers/PwmOut.h).
   It references `hal/pwmout_api.h` which, as the name indicates, is an Hardware Abstraction Layer (HAL) for the `PwmOut`
   API.
 * The implementation of `mbed::PwmOut` in
-  [`drivers/source/PwmOut.cpp`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/source/PwmOut.cpp)
+  [drivers/source/PwmOut.cpp](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/source/PwmOut.cpp)
   confirms this: the class methods call methods from this HAL API in order to change the actual hardware state.
 * Looking at
-  [`hal/include/hal/pwmout_api.h`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/hal/include/hal/pwmout_api.h),
+  [hal/include/hal/pwmout_api.h](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/hal/include/hal/pwmout_api.h),
   the comments mention that the target should implement the methods declared in this file in order to provide PWM output
   capabilities to the user.
 * The CPU on the Arduino Nano 33 BLE is a Nordic nRF52840. The Mbed source code does indeed contain a target for this
   architecture, in
-  [`targets/TARGET_NORDIC/TARGET_NRF5x`](https://github.com/ARMmbed/mbed-os/tree/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x).
+  [targets/TARGET_NORDIC/TARGET_NRF5x](https://github.com/ARMmbed/mbed-os/tree/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x).
 * A quick `find targets/TARGET_NORDIC/TARGET_NRF5x -name pwmout_api.*` reveals the PWM HAL implementation for this
   target resides in
-  [`targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c).
+  [targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c).
   Bingo!
 
 Skimming through this implementation, the first interesting thing is the `nordic_pwm_init` function:
@@ -609,12 +608,12 @@ A couple of things worth noting:
 
 Finding out the behavior of this macro is left as an exercise to the reader. But since you are still reading this, you
 probably quickly found out that a failed assertion leads to an eventual call to
-[`mbed_die`](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/platform/source/mbed_board.c#L26)
+[mbed_die](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/platform/source/mbed_board.c#L26)
 which blinks `LED1` in an SOS pattern indefinitely. Our hypothesis is confirmed!
 
 If you somehow managed to follow this source-digging carefully, you might have noticed `nordic_pwm_init` is a `static`
 function: it is only a helper function for implementing the HAL, which is later defined in the file. Namely,
-[`pwmout_init`](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c#L137):
+[pwmout_init](https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c#L137):
 
 ```cpp
 void pwmout_init(pwmout_t *obj, PinName pin)
@@ -655,7 +654,7 @@ to an *instance* number:
     int instance = pin_instance_pwm(pin);
 ```
 
-[`pin_instance_pwm`](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pinmap_ex.c#L307)
+[pin_instance_pwm](https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pinmap_ex.c#L307)
 actually allocates hardware PWM instance numbers for the given pin. If no more instances are available, it will return
 the `NC` constant to indicate no such instance is available:
 
