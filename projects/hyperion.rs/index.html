@@ -17,32 +17,14 @@ please contact me beforehand.</li><li>Only a small subset of the original projec
 supported. This means that unless you&rsquo;re using it in the exact same context as
 I am (Android TV Grabber + Raspberry Pi Zero W + WS2815 LED strip), this might
 not be for you.</li></ul><h2 id=compatibility>Compatibility
-<a class=heading-link href=#compatibility><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Currently implemented features:</p><ul><li>Loading settings from the hyperion.ng database</li><li>Basic WS2812SPI device (no invert, no latch time)</li><li>JSON, Protobuf and Flatbuffers server</li></ul><h2 id=migrating-your-settings>Migrating your settings
-<a class=heading-link href=#migrating-your-settings><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Due to the ORM being used in this project, we need the settings database to have
-primary keys setup. This doesn&rsquo;t change the schema, but to ensure compatibility,
-it is best to use a separate database for hyperion.ng and hyperion.rs.</p><p>This process will be more streamlined in the future, but for testing purposes
-you can follow these instructions: assuming you have the sqlite3 client
-installed, and you are in your home directory, with hyperion.rs being a clone of
-this repository:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Create config directory for hyperion.rs</span>
+<a class=heading-link href=#compatibility><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Currently implemented features:</p><ul><li>Loading settings from the hyperion.ng database</li><li>Basic WS2812SPI device (no invert, no latch time)</li><li>JSON, Protobuf and Flatbuffers server</li><li>Black border detector, color channel adjustments, smoothing</li></ul><h2 id=migrating-your-settings>Migrating your settings
+<a class=heading-link href=#migrating-your-settings><i class="fa fa-link" aria-hidden=true></i></a></h2><p>This rewrite uses the same database format for storing settings. In order to
+load your existing hyperion.ng settings, assuming you are in your home
+directory:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Create config directory for hyperion.rs</span>
 $ mkdir -p .config/hyperion.rs/
 
-<span style=color:#6272a4># (if not done already) Install the ORM client diesel</span>
-$ cargo install --force diesel_cli
-
-<span style=color:#6272a4># Setup the database</span>
-$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> hyperion.rs <span style=color:#ff79c6>&amp;&amp;</span> <span style=color:#8be9fd;font-style:italic>DATABASE_URL</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>$HOME</span>/.config/hyperion.rs/hyperion.db diesel setup<span style=color:#ff79c6>)</span>
-
-<span style=color:#6272a4># Open sqlite3</span>
-$ sqlite3
-&gt; ATTACH <span style=color:#f1fa8c>&#34;.hyperion/db/hyperion.db&#34;</span> AS db1;        -- Attach the original hyperion.ng database
-&gt; ATTACH <span style=color:#f1fa8c>&#34;.config/hyperion.rs/hyperion.db&#34;</span> AS db2; -- Attach the new hyperion.rs database
-&gt; -- Copy the tables
-&gt; BEGIN TRANSACTION;
-&gt; 	INSERT INTO db2.instances SELECT * FROM db1.instances;
-&gt; 	INSERT INTO db2.auth SELECT * FROM db1.auth;
-&gt; 	INSERT INTO db2.meta SELECT * FROM db1.meta;
-&gt; 	INSERT INTO db2.settings SELECT * FROM db1.settings;
-&gt; COMMIT;
+<span style=color:#6272a4># Copy the existing hyperion.ng database to the new location for hyperion.rs</span>
+$ cp .hyperion/db/hyperion.db .config/hyperion.rs/
 </code></pre></div><h2 id=running-hyperionrs>Running hyperion.rs
 <a class=heading-link href=#running-hyperionrs><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Once your settings database has been migrated, you can run hyperion.rs using
 <code>cargo</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cargo run
