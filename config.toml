@@ -74,6 +74,12 @@ icon   = "fa fa-cubes fa-2x"
 weight = 5
 url    = "https://crates.io/users/vtavernier/"
 
+[[params.social]]
+name   = "PGP: 0xF43034F4"
+icon   = "fa fa-gnupg fa-2x"
+weight = 6
+url    = "vtavernier.asc"
+
 # Menu links
 [[menu.main]]
 name   = "Blog"
