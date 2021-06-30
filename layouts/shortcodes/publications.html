@@ -4,17 +4,17 @@
 {{- $url := .uri_s -}}
 {{- $details := getJSON (printf "%s/json" .uri_s) -}}
 {{- with (index $details.response.docs 0) -}}
-<div class="pub">
-<div class="pub-main">
-  <a href="{{ (index .files_s 0) }}" target="blank" rel="noopener"><img src="https://thumb.ccsd.cnrs.fr/{{ int .thumbId_i }}/thumb/little" alt="" class="pub-thumb"></a>
-<div class="pub-right">
-  <h3 class="pub-title"><span class="pub-year">{{ .publicationDateY_i }}</span><a href="{{ $url }}" target="blank" rel="noopener">{{ (index .en_title_s 0) | safeHTML }}</a></h3>
+<div class="publications">
+<div class="publications-main">
+  <a href="{{ (index .files_s 0) }}" target="blank" rel="noopener"><img src="https://thumb.ccsd.cnrs.fr/{{ int .thumbId_i }}/thumb/little" alt="" class="publications-thumb"></a>
+<div class="publications-right">
+  <h3 class="publications-title"><span class="publications-year">{{ .publicationDateY_i }}</span><a href="{{ $url }}" target="blank" rel="noopener">{{ (index .en_title_s 0) | safeHTML }}</a></h3>
 {{ $authors := (len .authFullName_s ) }}
 </div>
 </div>
-  <p class="pub-authors">{{ range $key, $val := .authFullName_s }}{{ $val }}{{ if ne $key (sub $authors 1) }}, {{ end }}{{ end }}</p>
-  <p class="pub-citation">{{ .citationRef_s | safeHTML }}</p>
-<p class="pub-abstract">{{ (index .en_abstract_s 0) }}</p>
+  <p class="publications-authors">{{ range $key, $val := .authFullName_s }}{{ $val }}{{ if ne $key (sub $authors 1) }}, {{ end }}{{ end }}</p>
+  <p class="publications-citation">{{ .citationRef_s | safeHTML }}</p>
+<p class="publications-abstract">{{ (index .en_abstract_s 0) }}</p>
 </div>
 {{- end -}}
 {{- end -}}
