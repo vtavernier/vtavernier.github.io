@@ -31,47 +31,47 @@
 	}
 }
 
-.pub {
+.publications {
 }
 
-.pub-main {
+.publications-main {
 	display: flex;
 }
 
-.pub-right {
+.publications-right {
 	flex: 1;
 }
 
-.pub-thumb {
+.publications-thumb {
 	background: #fff;
 	height: 75px;
 	width: 58px;
 	margin-right: 1.5rem;
 }
 
-.pub-title {
+.publications-title {
 	margin-top: 0;
 }
 
-.pub-title a {
+.publications-title a {
 	color: #dadada !important;
 	font-weight: bold;
 }
 
-.pub-year {
+.publications-year {
 	font-weight: normal;
 	display: block;
 }
 
-.pub-authors {
+.publications-authors {
 	margin: 0;
 }
 
-.pub-citation {
+.publications-citation {
 	margin: 0;
 }
 
-.pub-abstract {
+.publications-abstract {
 	font-size: 1.25rem;
 	margin: 1.5rem 3rem 8rem 3rem;
 }
