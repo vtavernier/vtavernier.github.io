@@ -17,25 +17,31 @@ please contact me beforehand.</li><li>Only a small subset of the original projec
 supported. This means that unless you&rsquo;re using it in the exact same context as
 I am (Android TV Grabber + Raspberry Pi Zero W + WS2815 LED strip), this might
 not be for you.</li></ul><h2 id=compatibility>Compatibility
-<a class=heading-link href=#compatibility><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Currently implemented features:</p><ul><li>Loading settings from the hyperion.ng database</li><li>Basic WS2812SPI device (no invert, no latch time)</li><li>JSON, Protobuf and Flatbuffers server</li><li>Black border detector, color channel adjustments, smoothing</li></ul><h2 id=migrating-your-settings>Migrating your settings
-<a class=heading-link href=#migrating-your-settings><i class="fa fa-link" aria-hidden=true></i></a></h2><p>This rewrite uses the same database format for storing settings. In order to
+<a class=heading-link href=#compatibility><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Currently implemented features:</p><ul><li>Loading settings from the hyperion.ng database</li><li>WS2812SPI device</li><li>JSON, Protobuf, Flatbuffers and Boblight server</li><li>Black border detector, color channel adjustments, smoothing</li></ul><p>Extra features not available in hyperion.ng:</p><ul><li>Hooks (global start, stop, and instance start, stop, activate, deactivate)</li></ul><h2 id=configuration>Configuration
+<a class=heading-link href=#configuration><i class="fa fa-link" aria-hidden=true></i></a></h2><h3 id=migrating-your-settings>Migrating your settings
+<a class=heading-link href=#migrating-your-settings><i class="fa fa-link" aria-hidden=true></i></a></h3><p>This rewrite uses the same database format for storing settings. In order to
 load your existing hyperion.ng settings, assuming you are in your home
 directory:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Create config directory for hyperion.rs</span>
 $ mkdir -p .config/hyperion.rs/
 
 <span style=color:#6272a4># Copy the existing hyperion.ng database to the new location for hyperion.rs</span>
 $ cp .hyperion/db/hyperion.db .config/hyperion.rs/
+</code></pre></div><h3 id=using-a-toml-file>Using a TOML file
+<a class=heading-link href=#using-a-toml-file><i class="fa fa-link" aria-hidden=true></i></a></h3><p>You may also configure hyperion.rs using a TOML representation of the configuration. To generate the initial file, you can use the <code>--dump-config</code> option:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ hyperiond-rs --dump-config &gt;config.toml
+</code></pre></div><p>Then, you can start the daemon using this config file:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ hyperiond-rs --config config.toml
+</code></pre></div><p>The minimal configuration required is as follows:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-toml data-lang=toml>[instances.<span style=color:#bd93f9>0</span>.instance]
+friendlyName = <span style=color:#f1fa8c>&#39;Test instance&#39;</span>
+enabled = <span style=color:#ff79c6>true</span>
+
+[instances.<span style=color:#bd93f9>0</span>.device]
+type = <span style=color:#f1fa8c>&#39;dummy&#39;</span>
 </code></pre></div><h2 id=running-hyperionrs>Running hyperion.rs
 <a class=heading-link href=#running-hyperionrs><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Once your settings database has been migrated, you can run hyperion.rs using
 <code>cargo</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cargo run
 </code></pre></div><p>If running from a release archive, invoke the <code>hyperiond-rs</code> binary directly.</p><h2 id=cross-compiling>Cross-compiling
-<a class=heading-link href=#cross-compiling><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Cross-compiling is done using <a href=https://github.com/rustembedded/cross target=_blank rel=noopener>cross</a>. As
-hyperion.rs has native dependencies, we first need to prepare a Docker image
-with the required dependencies, and then build using the resulting image.</p><p><em>Note: these images will be published on dockerhub as the project stabilizes.</em></p><p>Let&rsquo;s say we are building for the Raspberry Pi Zero, which corresponds to the
+<a class=heading-link href=#cross-compiling><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Cross-compiling is done using <a href=https://github.com/rustembedded/cross target=_blank rel=noopener>cross</a>.
+Let&rsquo;s say we are building for the Raspberry Pi Zero, which corresponds to the
 Rust target arm-unknown-linux-gnueabihf.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>TARGET</span><span style=color:#ff79c6>=</span>arm-unknown-linux-gnueabihf
-
-<span style=color:#6272a4># Build the Docker image</span>
-$ <span style=color:#ff79c6>(</span><span style=color:#8be9fd;font-style:italic>cd</span> docker <span style=color:#ff79c6>&amp;&amp;</span> docker build . -f Dockerfile.<span style=color:#8be9fd;font-style:italic>$TARGET</span> -t vtavernier/cross-hyperion:<span style=color:#8be9fd;font-style:italic>$TARGET</span><span style=color:#ff79c6>)</span>
 
 <span style=color:#6272a4># (if not done already) Install cross</span>
 $ cargo install --force cross
