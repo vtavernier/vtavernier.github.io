@@ -96,6 +96,11 @@ name   = "Research"
 weight = 3
 url    = "research/"
 
+[[menu.main]]
+name    = "About me"
+weight  = 4
+url     = "about/"
+
 [markup.highlight]
 style = "dracula"
 
