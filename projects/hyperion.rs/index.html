@@ -40,24 +40,19 @@ type = <span style=color:#f1fa8c>&#39;dummy&#39;</span>
 <a class=heading-link href=#running-hyperionrs><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Once your settings database has been migrated, you can run hyperion.rs using
 <code>cargo</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cargo run
 </code></pre></div><p>If running from a release archive, invoke the <code>hyperiond-rs</code> binary directly.</p><h2 id=cross-compiling>Cross-compiling
-<a class=heading-link href=#cross-compiling><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Dockerfiles are provided in the <a href=https://github.com/vtavernier/hyperion.rs/blob/master/docker/ target=_blank rel=noopener><code>docker/</code></a> directory for targeting
-various environments and Linux distributions. The current targets are:</p><ul><li>x86_64-bullseye: Debian bullseye on x86_64</li><li>raspberry-pi-bullseye: Debian bullseye on Raspberry Pi 1 / Zero</li></ul><p>To build the release archive using one of these:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>TARGET</span><span style=color:#ff79c6>=</span>x86_64-bullseye
+<a class=heading-link href=#cross-compiling><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Cross-compiling is done using <a href=https://github.com/rustembedded/cross target=_blank rel=noopener>cross</a>.
+Let&rsquo;s say we are building for the Raspberry Pi Zero, which corresponds to the
+Rust target arm-unknown-linux-gnueabihf.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>TARGET</span><span style=color:#ff79c6>=</span>arm-unknown-linux-gnueabihf
+$ <span style=color:#8be9fd;font-style:italic>export</span> <span style=color:#8be9fd;font-style:italic>ENABLE_PYO3</span><span style=color:#ff79c6>=</span><span style=color:#bd93f9>1</span>
 
-<span style=color:#6272a4># Build the Docker image, this will compile hyperion.rs in release mode</span>
-$ docker build -f docker/Dockerfile.<span style=color:#8be9fd;font-style:italic>$TARGET</span> -t vtavernier/cross-hyperion:<span style=color:#8be9fd;font-style:italic>$TARGET</span> .
+<span style=color:#6272a4># (if not done already) Install cross</span>
+$ cargo install --force cross
 
-<span style=color:#6272a4># Export the built image</span>
-$ <span style=color:#8be9fd;font-style:italic>CONTAINER</span><span style=color:#ff79c6>=</span><span style=color:#ff79c6>$(</span>docker create vtavernier/cross-hyperion:<span style=color:#8be9fd;font-style:italic>$TARGET</span><span style=color:#ff79c6>)</span>
-$ docker cp <span style=color:#8be9fd;font-style:italic>$CONTAINER</span>:/src/release .
-$ docker rm <span style=color:#8be9fd;font-style:italic>$CONTAINER</span>
-</code></pre></div><p>The performance of these builds may vary. Notably, the raspberry-pi-bullseye
-image uses qemu-arm-static to emulate running natively on armv6l. This is
-because cross-compiling for the Raspberry Pi 1 / Zero is <em>hard</em>:</p><ol><li>There is no distribution-packaged toolchain that builds Raspbian (only
-third-parties) which makes cross-compiling from x86_64 hard.</li><li><a href=https://github.com/rust-embedded/cross target=_blank rel=noopener>cross</a>&rsquo;s images work as they still
-package a GCC that builds for armv6l by default, but I could not get them to
-work with extra dependencies (python3-dev packages require running some
-native code in their postinst scripts, and can&rsquo;t be updated to Debian
-Bullseye or we fallback to problem 1).</li></ol><h2 id=license>License
+<span style=color:#6272a4># Build the project</span>
+$ cross build --release --target <span style=color:#8be9fd;font-style:italic>$TARGET</span>
+
+<span style=color:#6272a4># The resulting binaries will be in target/$TARGET/release</span>
+</code></pre></div><h2 id=license>License
 <a class=heading-link href=#license><i class="fa fa-link" aria-hidden=true></i></a></h2><p>This work is licensed under the <a href=https://github.com/vtavernier/hyperion.rs/blob/master/LICENSE target=_blank rel=noopener>MIT License</a>.</p><h2 id=author>Author
 <a class=heading-link href=#author><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Vincent Tavernier <a href=mailto:vince.tavernier@gmail.com>vince.tavernier@gmail.com</a>. Original project and protocol
 source files by <a href=https://github.com/hyperion-project target=_blank rel=noopener>hyperion-project</a>.</p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
