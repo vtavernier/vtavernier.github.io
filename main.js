@@ -10,6 +10,6 @@ if (document.querySelector(".mermaid")) {
     };
     mermaid.initialize(config);
   };
-  script.src = "https://unpkg.com/mermaid@8.9.2/dist/mermaid.min.js";
+  script.src = "https://unpkg.com/mermaid@8.13.3/dist/mermaid.min.js";
   document.head.appendChild(script);
 }
