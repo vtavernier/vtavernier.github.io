@@ -6,6 +6,10 @@
 	tab-size: 4
 }
 
+.text-green {
+	color: #00ff00;
+}
+
 .title-inverted {
 	color: #dadada !important;
 	font-weight: bold;
