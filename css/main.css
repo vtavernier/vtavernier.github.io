@@ -1,9 +1,12 @@
 .highlight-manual pre {
-	color: #f8f8f2;
 	background-color: #282a36;
 	-moz-tab-size: 4;
 	-o-tab-size: 4;
 	tab-size: 4
+}
+
+.text-green {
+	color: #00ff00;
 }
 
 .title-inverted {
