@@ -4,4 +4,4 @@ Source repository for my blog.
 
 ## Author
 
-Vincent Tavernier <vince.tavernier@gmail.com>
+Vincent Tavernier <v.tavernier@pm.me>

@@ -112,7 +112,7 @@ However, a *commit* is **not** a version of a file. It is actually a set of chan
 {{< aha >}}
 $ <span style="font-weight:bold;color:white;">git show 1d9a8de</span>
 <span style="color:olive;">commit 1d9a8decc4dd7ee42689149dbd763103075f8422</span>
-Author: Vincent Tavernier &lt;vince.tavernier@gmail.com&gt;
+Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
 Date:   Fri Aug 23 16:25:14 2019 +0200
 
     Fix CMP0077 warnings

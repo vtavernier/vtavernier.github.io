@@ -14,7 +14,7 @@ author = "Vincent Tavernier"
 info = "PhD student in Computer Graphics"
 description = "Programming and research stuff"
 keywords = "blog,developer,personal,research,graphics"
-gravatar = "vince.tavernier@gmail.com"
+gravatar = "v.tavernier@pm.me"
 
 favicon_32 = "/images/favicon-32x32.png"
 favicon_16 = "/images/favicon-16x16.png"
@@ -54,7 +54,7 @@ theme = "github-dark"
 name = "E-mail"
 icon = "fa fa-envelope fa-2x"
 weight = 1
-url = "mailto:vince.tavernier@gmail.com"
+url = "mailto:v.tavernier@pm.me"
 
 [[params.social]]
 name = "Github"

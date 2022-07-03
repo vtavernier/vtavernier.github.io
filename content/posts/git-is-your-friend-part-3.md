@@ -198,7 +198,7 @@ From this output, we can deduce:
 {{< aha >}}
 $ <span style="font-weight:bold;color:white;">git show 5889f58f</span>
 <span style="color:olive;">commit 5889f58fd7ec438b5e45ddab97611f6d34e916de</span>
-Author: Vincent Tavernier &lt;vince.tavernier@gmail.com&gt;
+Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
 Date:   Sun Jan 24 03:17:12 2021 +0100
 
     Update sorting logic
@@ -295,7 +295,7 @@ build/main
 <span style="color:green;">Tests succeeded</span>
 5889f58fd7ec438b5e45ddab97611f6d34e916de is the first bad commit
 commit 5889f58fd7ec438b5e45ddab97611f6d34e916de
-Author: Vincent Tavernier &lt;vince.tavernier@gmail.com&gt;
+Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
 Date:   Sun Jan 24 03:17:12 2021 +0100
 
     Update sorting logic
