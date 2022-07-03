@@ -16,7 +16,7 @@ common interfaces, as function pointers (or callbacks) would provide.</p><h2 id=
 <a class=heading-link href=#table-of-contents><i class="fa fa-link" aria-hidden=true></i></a></h2><ul><li><a href=#installation>Installation</a></li><li><a href=#usage>Usage</a><ul><li><a href=#static-template-function-parameters>Static template function parameters</a></li><li><a href=#lambda-template-function-parameters>Lambda template function parameters</a><ul><li><a href=#named-placeholders>Named placeholders</a></li></ul></li><li><a href=#nested-lambda-expressions>Nested lambda expressions</a></li><li><a href=#support-for-include-directives>Support for include directives</a></li><li><a href=#minifying-mode>Minifying mode</a></li></ul></li><li><a href=#features>Features</a></li><li><a href=#bindings>Bindings</a><ul><li><a href=#rust>Rust</a></li><li><a href=#python>Python</a></li></ul></li><li><a href=#limitations>Limitations</a></li><li><a href=#author>Author</a></li></ul><h2 id=installation>Installation
 <a class=heading-link href=#installation><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Check out the <a href=https://github.com/vtavernier/glslt/releases target=_blank rel=noopener>releases</a> for
 pre-compiled binaries for stable versions. Installing the Python module (see
-below) also installs the corresponding <code>glsltcc</code> binary.</p><p>Alternatively, you may compile <code>glslt</code> from source, assuming you have the
+below) also installs the corresponding <code>glsltc</code> binary.</p><p>Alternatively, you may compile <code>glslt</code> from source, assuming you have the
 <a href=https://rustup.rs/ target=_blank rel=noopener>Rust</a> compiler installed:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># From crates.io</span>
 cargo install --force glslt_cli
 
@@ -28,9 +28,9 @@ git clone https://github.com/vtavernier/glslt.git
 <span style=color:#6272a4>## Run the program directly</span>
 cargo run -- test.glsl
 
-<span style=color:#6272a4>## Or, install the glsltcc binary permanently</span>
+<span style=color:#6272a4>## Or, install the glsltc binary permanently</span>
 cargo install --force --path .
-glsltcc test.glsl
+glsltc test.glsl
 </code></pre></div><p>To install the Python module for the latest stable version, you can use <code>pip</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install glslt
 </code></pre></div><p>If you downloaded the source and want to build the latest version of the Python
 module, use <code>maturin</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Install maturin (only needed once)</span>
@@ -42,7 +42,9 @@ pip install maturin
 <a class=heading-link href=#usage><i class="fa fa-link" aria-hidden=true></i></a></h2><h3 id=static-template-function-parameters>Static template function parameters
 <a class=heading-link href=#static-template-function-parameters><i class="fa fa-link" aria-hidden=true></i></a></h3><p><code>glslt</code> supports <em>static template function parameters</em>. This means, passing the
 name of an already-declared function as a parameter for a templated function.
-Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#6272a4>// A pointer to a function that has no args and returns an int</span>
+Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>#version 460 core</span>
+
+<span style=color:#6272a4>// A pointer to a function that has no args and returns an int</span>
 <span style=color:#6272a4>//</span>
 <span style=color:#6272a4>// We use function prototypes for this matter since they&#39;re</span>
 <span style=color:#6272a4>// basically useless in GLSL. Since there can be no indirect</span>
@@ -74,11 +76,12 @@ Here is an example:</p><div class=highlight><pre style=color:#f8f8f2;background-
 pre-declaration syntax which is rarely used to declare function pointers. Thus,
 all your existing tooling still works with <code>glslt</code>.</p><p>In order to run this code on your GPU, you need to process it so function
 templates are <em>instantiated</em> with their actual template parameters. This is
-where this tool comes in:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Assuming you installed the pre-built glsltcc binary, if running from source use `cargo run --` instead.</span>
+where this tool comes in:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#6272a4># Assuming you installed the pre-built glsltc binary, if running from source use `cargo run --` instead.</span>
 <span style=color:#6272a4>#</span>
 <span style=color:#6272a4># test.glsl is our input example, output.glsl is the generated code.</span>
-glsltcc -o output.glsl test.glsl
-</code></pre></div><p>The resulting code will look like this:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>int</span> fnReturnsOne() {
+glsltc -o output.glsl test.glsl
+</code></pre></div><p>The resulting code will look like this:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-glsl data-lang=glsl><span style=color:#ff79c6>#version 460 core</span>
+<span style=color:#ff79c6>int</span> fnReturnsOne() {
     <span style=color:#ff79c6>return</span> <span style=color:#bd93f9>1</span>;
 }
 
@@ -207,20 +210,17 @@ conflict) since undefined identifiers are passed as-is to the other passes of
 the transformation algorithm, and thus, to outer lambdas.</p><h3 id=support-for-include-directives>Support for include directives
 <a class=heading-link href=#support-for-include-directives><i class="fa fa-link" aria-hidden=true></i></a></h3><p><code>#include</code> directives are supported and will be processed, using the same rules
 as C preprocessors: double-quoted paths will be looked up from the current file
-being parsed, and then fallback to the system include paths. Angle-quoted paths
-will be looked up from the system include paths.</p><p>All files are only included once, as if they all started with <code>#pragma once</code>.</p><p><strong>Warning</strong>: since include directives are processed at the AST level, shaders
-which rely on included files to generate valid syntax are not supported.</p><h3 id=minifying-mode>Minifying mode
+being parsed. Angle-quoted paths will be looked up from the system include
+paths.</p><h3 id=minifying-mode>Minifying mode
 <a class=heading-link href=#minifying-mode><i class="fa fa-link" aria-hidden=true></i></a></h3><p>In its default mode, the GLSLT compiler will copy all input declarations to its
 output (except function prototypes) and insert instantiated templates right
 before they are used.</p><p>However, if you are using the GLSLT compiler with a large template library,
 this will generate a lot of unused code. By using the <code>-K, --keep-fns</code> argument
-to the <code>glsltcc</code> command, GLSLT switches to the minifying mode. In this mode,
-only the functions, types, globals and <code>#define</code> directives that are transitive
-dependencies of the functions specified by the <code>-K</code> argument are kept.</p><p>Note that in this mode, no preprocessor directives (outside of <code>#define</code> and
-their use) are supported. <code>#version</code>, <code>#extension</code> and precision specifiers
-will be included at the top of the generated code.</p><p>As an example, compiling the previous example with <code>glsltcc -K=sdSphere</code> will
-only return the code for the sdSphere function, since it has no dependencies.</p><p>This mode hasn&rsquo;t been tested throughly yet, so some types of declarations may
-not be supported.</p><h2 id=features>Features
+to the <code>glsltc</code> command, GLSLT switches to the minifying mode. In this mode,
+only the functions, types, and globals that are transitive dependencies of the
+functions specified by the <code>-K</code> argument are kept.</p><p><code>#version</code>, <code>#extension</code> and precision specifiers will be included at the top
+of the generated code, if they were present in the input.</p><p>As an example, compiling the previous example with <code>glsltc -K=sdSphere</code> will
+only return the code for the sdSphere function, since it has no dependencies.</p><h2 id=features>Features
 <a class=heading-link href=#features><i class="fa fa-link" aria-hidden=true></i></a></h2><ul><li><input checked disabled type=checkbox> Include support</li><li><input disabled type=checkbox> Preserve comments in original source</li><li><input disabled type=checkbox> Report position in compiler errors</li><li><input checked disabled type=checkbox> Lambda template function parameters</li><li><input checked disabled type=checkbox> Static template function parameters</li></ul><h2 id=bindings>Bindings
 <a class=heading-link href=#bindings><i class="fa fa-link" aria-hidden=true></i></a></h2><h3 id=rust>Rust
 <a class=heading-link href=#rust><i class="fa fa-link" aria-hidden=true></i></a></h3><p>Since this tool is developed in Rust, the <em>native</em> bindings are exposed as the
@@ -234,9 +234,7 @@ an example.</p><h2 id=limitations>Limitations
 crate for parsing and manipulating the GLSL AST in Rust. However, since it&rsquo;s
 only an AST and not a full parse tree, we have currently no way of preserving
 original formatting. Comments are still parsed and are available to library
-users, but they are not currently included in the output.</p><p>Furthermore, since pre-processor directives have to be passed through to the
-GPU for accurate execution, shaders which are syntactically invalid without
-pre-processing are not supported.</p><h2 id=author>Author
+users, but they are not currently included in the output.</p><h2 id=author>Author
 <a class=heading-link href=#author><i class="fa fa-link" aria-hidden=true></i></a></h2><p>Vincent Tavernier <a href=mailto:vince.tavernier@gmail.com>vince.tavernier@gmail.com</a></p></article></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
 2019 -
 2022

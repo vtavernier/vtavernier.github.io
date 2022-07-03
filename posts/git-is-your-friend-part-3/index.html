@@ -129,7 +129,7 @@ know this commit indeed doesn&rsquo;t change anything, we can ask Git to ignore 
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 15)     }
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }</code></pre></div><p>From this output, we can deduce:</p><ul><li>Most of the code comes from the initial commit, <code>65defb0</code>. We know this passed the tests before.</li><li>One line of our sorting logic was changed by commit <code>5889f58f</code>. We can show this change in more detail:<div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>git show 5889f58f</span>
 <span style=color:olive>commit 5889f58fd7ec438b5e45ddab97611f6d34e916de</span>
-Author: Vincent Tavernier &lt;vince.tavernier@gmail.com&gt;
+Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
 Date:   Sun Jan 24 03:17:12 2021 +0100
 
     Update sorting logic
@@ -190,7 +190,7 @@ build/main
 <span style=color:green>Tests succeeded</span>
 5889f58fd7ec438b5e45ddab97611f6d34e916de is the first bad commit
 commit 5889f58fd7ec438b5e45ddab97611f6d34e916de
-Author: Vincent Tavernier &lt;vince.tavernier@gmail.com&gt;
+Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
 Date:   Sun Jan 24 03:17:12 2021 +0100
 
     Update sorting logic
