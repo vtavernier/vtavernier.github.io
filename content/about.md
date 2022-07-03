@@ -7,5 +7,5 @@ open-source software, language theory, electronics and music. I am always learni
 part of my personal projects, and hope to share those discoveries on here when I have the time to write about them. Stay
 tuned!
 
-If you are hiring and reading this, you might be interested in my resume ([french](/cv/cv-fr.pdf),
-[english](/cv/cv-en.pdf)). All my contact info is available on the [homepage](/).
+If you are hiring and reading this, you might be interested in my resume ([english](/cv/cv-en.pdf)). All my contact info
+is available on the [homepage](/).
