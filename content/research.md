@@ -7,4 +7,4 @@ I am currently working in the INRIA team MAVERICK. You can also check out my per
 
 # Publications
 
-{{% publications "vincent-tavernier" %}}
+{{% publications %}}

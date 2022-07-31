@@ -1,0 +1,923 @@
+{
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "maxScore": 5.675334,
+    "numFoundExact": true,
+    "docs": [
+      {
+        "docid": "1613342",
+        "label_s": "Vincent Tavernier. Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements. Graphics [cs.GR]. 2017. &#x27E8;hal-01613342&#x27E9;",
+        "citationRef_s": "Graphics [cs.GR]. 2017",
+        "citationFull_s": "Vincent Tavernier. Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements. Graphics [cs.GR]. 2017. <a target=\"_blank\" href=\"https://hal.inria.fr/hal-01613342\">&#x27E8;hal-01613342&#x27E9;</a>",
+        "label_bibtex": "@mastersthesis{tavernier:hal-01613342,\n  TITLE = {{Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements}},\n  AUTHOR = {Tavernier, Vincent},\n  URL = {https://hal.inria.fr/hal-01613342},\n  PAGES = {70},\n  SCHOOL = {{Grenoble INP, Universit{\\'e} de Grenoble}},\n  YEAR = {2017},\n  MONTH = Jun,\n  KEYWORDS = {procedural textures ; stochastic textures ; procedural noises ; perception ; texturing artifacts ; texture blending},\n  PDF = {https://hal.inria.fr/hal-01613342/file/TAVERNIER_Vincent_2017_MoSIG_300dpi.pdf},\n  HAL_ID = {hal-01613342},\n  HAL_VERSION = {v1},\n}\n",
+        "label_endnote": "%0 Master thesis\n%T Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements\n%+ Models and Algorithms for Visualization and Rendering (MAVERICK )\n%A Tavernier, Vincent\n%C Grenoble\n%P 70\n%I Grenoble INP, Université de Grenoble\n%Y NEYRET Fabrice\n%Y THOLLOT Joelle\n%Y VERGNE Romain\n%Z CROWLEY James\n%Z VAUFREYDAZ Dominique\n%Z BLANCH Renaud\n%Z HETROY-WHEELER Franck\n%8 2017-06-21\n%D 2017\n%K procedural textures\n%K stochastic textures\n%K procedural noises\n%K perception\n%K texturing artifacts\n%K texture blending\n%Z Computer Science [cs]/Graphics [cs.GR]Master thesis\n%X Textures are images widely used by computer graphics artists to add visual detail to their work. Textures may come from different sources, such as pictures of real-world surfaces, manually created images using graphics editors, or algorithmic processes. “Procedural texturing” refers to the creation of textures using algorithmic processes.Procedural textures offer many advantages, including the ability to manipulate their appearance through parameters. Many applications rely on changing those parameters to evolve the look of those textures over time or space. This often introduces requirements contradictory with the structure of the unaltered texture, often resulting in visible rendering artifacts. As an example, to animate a lava flow the rendered texture should be an effective representation of the simulated flow, but features such as rocks floating over should not be distorted, nor brutally appearor disappear thus disrupting the illusion. Informally, we want our lava texture to “change, but stay the same”. This example is an instance of the consistency problem that arises when changing parameters of a texture, resulting in noticeable artifacts in the rendered result.In this project, we seek to classify these artifacts depending on their causes and their effects on textures, but also how we can objectively detect and explain their presence, and so predict their occurrence. Analytical and statistical analysis of procedural texturing processes will be performed, in order to find the relation with the corresponding artifacts.\n%X Les textures sont des images largement utilisées par les artistes infographistes pour ajouter des détails dans leurs rendus. Ces textures peuvent provenir de différentes sources, telles que des images de surfaces réelles, des images créées manuellement dans des logiciels, ou des processus algorithmiques. Ces dernières sont appelées“textures procédurales”.Les textures procédurales offrent beaucoup d’avantages, notamment la possibilité de définir leur apparence à partir de paramètres. Dans de nombreuses situations, ces paramètres évoluent au cours du temps ou dans l’espace. Cela introduit cependant des contraintes contradictoires à l’apparence de la texture originale, introduisant ainsi des artefacts visibles. Par exemple, pour animer un flot de lave, la texture rendue devrait suivre le flot simulé, mais les formes telles que des rochers flottants à la surface ne devraient pas être distordus, ni apparaître ou disparaîtrebrutalement, ce qui casserait l’illusion. Informellement, cette texture de lave doit “changer, mais rester la même”. Cet exemple est une instance du problème de la cohérence temporelle lié à l’évolution de paramètres d’une texture, ce qui introduit des artefacts dans le rendu final.Au cours de ce projet, nous essayons de classer les différents artefacts selon les causes qui les produisent et leurs effets sur les textures. Nous cherchons aussi des méthodes pour décrire objectivement et détecter leur présence, et même prédire leur apparition. Des méthodes analytiques mais aussi statistiques des procédés de texture vont être mis en œuvre, afin de trouver les liens entre artefacts et descripteurs.\n%G English\n%2 https://hal.inria.fr/hal-01613342/document\n%2 https://hal.inria.fr/hal-01613342/file/TAVERNIER_Vincent_2017_MoSIG_300dpi.pdf\n%L hal-01613342\n%U https://hal.inria.fr/hal-01613342\n%~ UGA\n%~ CNRS\n%~ INRIA\n%~ INPG\n%~ INRIA-RHA\n%~ INRIA_TEST\n%~ LJK\n%~ LJK_GI\n%~ LJK_GI_MAVERICK\n%~ TESTALAIN1\n%~ INRIA2\n%~ INRIA2017\n%~ INRIA-RENGRE\n%~ UGA-COMUE\n",
+        "label_coins": "<span class=\"Z3988\" title=\"ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Adc&amp;rft.type=other&amp;rft.identifier=https%3A%2F%2Fhal.inria.fr%2Fhal-01613342&amp;rft.identifier=hal-01613342&amp;rft.title=Studying%20and%20solving%20visual%20artifacts%20occurring%20when%20procedural%20texturing%20with%20paradoxical%20requirements&amp;rft.creator=Tavernier%2C%20Vincent&amp;rft.subject=procedural%20textures&amp;rft.subject=stochastic%20textures&amp;rft.subject=procedural%20noises&amp;rft.subject=perception&amp;rft.subject=texturing%20artifacts&amp;rft.subject=texture%20blending&amp;rft.language=en&amp;rft.date=2017-06-21&amp;rft.coverage=Grenoble\"></span>",
+        "openAccess_bool": true,
+        "licence_s": "http://creativecommons.org/licenses/by/",
+        "audience_s": "2",
+        "inria_degreeType_s": [
+          "1"
+        ],
+        "domainAllCode_s": [
+          "info.info-gr"
+        ],
+        "level0_domain_s": [
+          "info"
+        ],
+        "domain_s": [
+          "0.info",
+          "1.info.info-gr"
+        ],
+        "level1_domain_s": [
+          "info.info-gr"
+        ],
+        "fr_domainAllCodeLabel_fs": [
+          "info.info-gr_FacetSep_Informatique [cs]/Synthèse d'image et réalité virtuelle [cs.GR]"
+        ],
+        "en_domainAllCodeLabel_fs": [
+          "info.info-gr_FacetSep_Computer Science [cs]/Graphics [cs.GR]"
+        ],
+        "es_domainAllCodeLabel_fs": [
+          "info.info-gr_FacetSep_Computer Science [cs]/Graphics [cs.GR]"
+        ],
+        "eu_domainAllCodeLabel_fs": [
+          "info.info-gr_FacetSep_domain_info/domain_info.info-gr"
+        ],
+        "primaryDomain_s": "info.info-gr",
+        "en_title_s": [
+          "Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements"
+        ],
+        "title_s": [
+          "Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements"
+        ],
+        "en_keyword_s": [
+          "Procedural textures",
+          "Stochastic textures",
+          "Procedural noises",
+          "Perception",
+          "Texturing artifacts",
+          "Texture blending"
+        ],
+        "keyword_s": [
+          "Procedural textures",
+          "Stochastic textures",
+          "Procedural noises",
+          "Perception",
+          "Texturing artifacts",
+          "Texture blending"
+        ],
+        "abstract_s": [
+          "Textures are images widely used by computer graphics artists to add visual detail to their work. Textures may come from different sources, such as pictures of real-world surfaces, manually created images using graphics editors, or algorithmic processes. “Procedural texturing” refers to the creation of textures using algorithmic processes. Procedural textures offer many advantages, including the ability to manipulate their appearance through parameters. Many applications rely on changing those parameters to evolve the look of those textures over time or space. This often introduces requirements contradictory with the structure of the unaltered texture, often resulting in visible rendering artifacts. As an example, to animate a lava flow the rendered texture should be an effective representation of the simulated flow, but features such as rocks floating over should not be distorted, nor brutally appear or disappear thus disrupting the illusion. Informally, we want our lava texture to “change, but stay the same”. This example is an instance of the consistency problem that arises when changing parameters of a texture, resulting in noticeable artifacts in the rendered result. In this project, we seek to classify these artifacts depending on their causes and their effects on textures, but also how we can objectively detect and explain their presence, and so predict their occurrence. Analytical and statistical analysis of procedural texturing processes will be performed, in order to find the relation with the corresponding artifacts.",
+          "Les textures sont des images largement utilisées par les artistes infographistes pour ajouter des détails dans leurs rendus. Ces textures peuvent provenir de différentes sources, telles que des images de surfaces réelles, des images créées manuellement dans des logiciels, ou des processus algorithmiques. Ces dernières sont appelées “textures procédurales”. Les textures procédurales offrent beaucoup d’avantages, notamment la possibilité de définir leur apparence à partir de paramètres. Dans de nombreuses situations, ces paramètres évoluent au cours du temps ou dans l’espace. Cela introduit cependant des contraintes contradictoires à l’apparence de la texture originale, introduisant ainsi des artefacts visibles. Par exemple, pour animer un flot de lave, la texture rendue devrait suivre le flot simulé, mais les formes telles que des rochers flottants à la surface ne devraient pas être distordus, ni apparaître ou disparaître brutalement, ce qui casserait l’illusion. Informellement, cette texture de lave doit “changer, mais rester la même”. Cet exemple est une instance du problème de la cohérence temporelle lié à l’évolution de paramètres d’une texture, ce qui introduit des artefacts dans le rendu final. Au cours de ce projet, nous essayons de classer les différents artefacts selon les causes qui les produisent et leurs effets sur les textures. Nous cherchons aussi des méthodes pour décrire objectivement et détecter leur présence, et même prédire leur apparition. Des méthodes analytiques mais aussi statistiques des procédés de texture vont être mis en œuvre, afin de trouver les liens entre artefacts et descripteurs."
+        ],
+        "en_abstract_s": [
+          "Textures are images widely used by computer graphics artists to add visual detail to their work. Textures may come from different sources, such as pictures of real-world surfaces, manually created images using graphics editors, or algorithmic processes. “Procedural texturing” refers to the creation of textures using algorithmic processes. Procedural textures offer many advantages, including the ability to manipulate their appearance through parameters. Many applications rely on changing those parameters to evolve the look of those textures over time or space. This often introduces requirements contradictory with the structure of the unaltered texture, often resulting in visible rendering artifacts. As an example, to animate a lava flow the rendered texture should be an effective representation of the simulated flow, but features such as rocks floating over should not be distorted, nor brutally appear or disappear thus disrupting the illusion. Informally, we want our lava texture to “change, but stay the same”. This example is an instance of the consistency problem that arises when changing parameters of a texture, resulting in noticeable artifacts in the rendered result. In this project, we seek to classify these artifacts depending on their causes and their effects on textures, but also how we can objectively detect and explain their presence, and so predict their occurrence. Analytical and statistical analysis of procedural texturing processes will be performed, in order to find the relation with the corresponding artifacts."
+        ],
+        "fr_abstract_s": [
+          "Les textures sont des images largement utilisées par les artistes infographistes pour ajouter des détails dans leurs rendus. Ces textures peuvent provenir de différentes sources, telles que des images de surfaces réelles, des images créées manuellement dans des logiciels, ou des processus algorithmiques. Ces dernières sont appelées “textures procédurales”. Les textures procédurales offrent beaucoup d’avantages, notamment la possibilité de définir leur apparence à partir de paramètres. Dans de nombreuses situations, ces paramètres évoluent au cours du temps ou dans l’espace. Cela introduit cependant des contraintes contradictoires à l’apparence de la texture originale, introduisant ainsi des artefacts visibles. Par exemple, pour animer un flot de lave, la texture rendue devrait suivre le flot simulé, mais les formes telles que des rochers flottants à la surface ne devraient pas être distordus, ni apparaître ou disparaître brutalement, ce qui casserait l’illusion. Informellement, cette texture de lave doit “changer, mais rester la même”. Cet exemple est une instance du problème de la cohérence temporelle lié à l’évolution de paramètres d’une texture, ce qui introduit des artefacts dans le rendu final. Au cours de ce projet, nous essayons de classer les différents artefacts selon les causes qui les produisent et leurs effets sur les textures. Nous cherchons aussi des méthodes pour décrire objectivement et détecter leur présence, et même prédire leur apparition. Des méthodes analytiques mais aussi statistiques des procédés de texture vont être mis en œuvre, afin de trouver les liens entre artefacts et descripteurs."
+        ],
+        "authIdFormPerson_s": [
+          "42291-742166"
+        ],
+        "authIdForm_i": [
+          42291
+        ],
+        "authIdPerson_i": [
+          742166
+        ],
+        "authLastName_s": [
+          "Tavernier"
+        ],
+        "authFirstName_s": [
+          "Vincent"
+        ],
+        "authFullName_s": [
+          "Vincent Tavernier"
+        ],
+        "authLastNameFirstName_s": [
+          "Tavernier Vincent"
+        ],
+        "authIdLastNameFirstName_fs": [
+          "742166_FacetSep_Tavernier Vincent"
+        ],
+        "authFullNameIdFormPerson_fs": [
+          "Vincent Tavernier_FacetSep_42291-742166"
+        ],
+        "authAlphaLastNameFirstNameId_fs": [
+          "T_AlphaSep_Tavernier Vincent_FacetSep_742166"
+        ],
+        "authIdFullName_fs": [
+          "742166_FacetSep_Vincent Tavernier"
+        ],
+        "authFullNameId_fs": [
+          "Vincent Tavernier_FacetSep_742166"
+        ],
+        "authQuality_s": [
+          "aut"
+        ],
+        "authEmailDomain_s": [
+          "inria.fr"
+        ],
+        "authIdHal_i": [
+          742166
+        ],
+        "authIdHal_s": [
+          "vincent-tavernier"
+        ],
+        "authIDHALIdExt_s": [
+          "vincent-tavernier"
+        ],
+        "authEmailIdExt_s": [
+          "vincent.tavernier@inria.fr"
+        ],
+        "authFullNameFormIDPersonIDIDHal_fs": [
+          "Vincent Tavernier_FacetSep_42291-742166_FacetSep_vincent-tavernier"
+        ],
+        "authFullNamePersonIDIDHal_fs": [
+          "Vincent Tavernier_FacetSep_742166_FacetSep_vincent-tavernier"
+        ],
+        "authIdHalFullName_fs": [
+          "vincent-tavernier_FacetSep_Vincent Tavernier"
+        ],
+        "authFullNameIdHal_fs": [
+          "Vincent Tavernier_FacetSep_vincent-tavernier"
+        ],
+        "authAlphaLastNameFirstNameIdHal_fs": [
+          "T_AlphaSep_Tavernier Vincent_FacetSep_vincent-tavernier"
+        ],
+        "authIdHasPrimaryStructure_fs": [
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering"
+        ],
+        "structPrimaryHasAuthId_fs": [
+          "1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_42291-742166_FacetSep_Vincent Tavernier"
+        ],
+        "structPrimaryHasAuthIdHal_fs": [
+          "1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent"
+        ],
+        "structPrimaryHasAlphaAuthId_fs": [
+          "T_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_42291-742166_FacetSep_Tavernier Vincent"
+        ],
+        "structPrimaryHasAlphaAuthIdHal_fs": [
+          "T_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent"
+        ],
+        "authIdHasStructure_fs": [
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "42291-742166_FacetSep_Vincent Tavernier_JoinSep_445543_FacetSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "structHasAuthId_fs": [
+          "1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "2497_FacetSep_Inria Grenoble - Rhône-Alpes_JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "1042161_FacetSep_Laboratoire Jean Kuntzmann _JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "441569_FacetSep_Centre National de la Recherche Scientifique_JoinSep_42291-742166_FacetSep_Vincent Tavernier",
+          "445543_FacetSep_Université Grenoble Alpes [2016-2019]_JoinSep_42291-742166_FacetSep_Vincent Tavernier"
+        ],
+        "structHasAuthIdHal_fs": [
+          "1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "2497_FacetSep_Inria Grenoble - Rhône-Alpes_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "1042161_FacetSep_Laboratoire Jean Kuntzmann _JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "441569_FacetSep_Centre National de la Recherche Scientifique_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "445543_FacetSep_Université Grenoble Alpes [2016-2019]_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent"
+        ],
+        "structHasAlphaAuthId_fs": [
+          "T_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes_JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann _JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_441569_FacetSep_Centre National de la Recherche Scientifique_JoinSep_42291-742166_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_445543_FacetSep_Université Grenoble Alpes [2016-2019]_JoinSep_42291-742166_FacetSep_Tavernier Vincent"
+        ],
+        "structHasAlphaAuthIdHal_fs": [
+          "T_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann _JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_441569_FacetSep_Centre National de la Recherche Scientifique_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent",
+          "T_AlphaSep_445543_FacetSep_Université Grenoble Alpes [2016-2019]_JoinSep_vincent-tavernier_FacetSep_Tavernier Vincent"
+        ],
+        "rteamStructId_i": [
+          1042486
+        ],
+        "rteamStructIdName_fs": [
+          "1042486_FacetSep_Models and Algorithms for Visualization and Rendering"
+        ],
+        "rteamStructNameId_fs": [
+          "M_AlphaSep_Models and Algorithms for Visualization and Rendering_FacetSep_1042486"
+        ],
+        "rteamStructName_fs": [
+          "M_AlphaSep_Models and Algorithms for Visualization and Rendering"
+        ],
+        "rteamStructAcronym_s": [
+          "MAVERICK"
+        ],
+        "rteamStructName_s": [
+          "Models and Algorithms for Visualization and Rendering"
+        ],
+        "rteamStructAddress_s": [
+          "655 avenue de l'Europe 38334 Saint Ismier Cedex"
+        ],
+        "rteamStructCountry_s": [
+          "fr"
+        ],
+        "rteamStructType_s": [
+          "researchteam"
+        ],
+        "rteamStructValid_s": [
+          "OLD"
+        ],
+        "rteamStructIdrefIdExt_s": [
+          "236107992"
+        ],
+        "rteamStructIdrefIdExtUrl_s": [
+          "https://www.idref.fr/236107992"
+        ],
+        "rteamStructRnsrIdExt_s": [
+          "201221005J"
+        ],
+        "rteamStructRnsrIdExtUrl_s": [
+          "https://appliweb.dgri.education.fr/rnsr/PresenteStruct.jsp?PUBLIC=OK&numNatStruct=201221005J"
+        ],
+        "structId_i": [
+          1042486,
+          2497,
+          300009,
+          89889,
+          1042161,
+          89889,
+          300009,
+          441569,
+          445543
+        ],
+        "structIdName_fs": [
+          "1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "1042161_FacetSep_Laboratoire Jean Kuntzmann",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "441569_FacetSep_Centre National de la Recherche Scientifique",
+          "445543_FacetSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "structNameId_fs": [
+          "M_AlphaSep_Models and Algorithms for Visualization and Rendering_FacetSep_1042486",
+          "I_AlphaSep_Inria Grenoble - Rhône-Alpes_FacetSep_2497",
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique_FacetSep_300009",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_FacetSep_89889",
+          "L_AlphaSep_Laboratoire Jean Kuntzmann _FacetSep_1042161",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_FacetSep_89889",
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique_FacetSep_300009",
+          "C_AlphaSep_Centre National de la Recherche Scientifique_FacetSep_441569",
+          "U_AlphaSep_Université Grenoble Alpes [2016-2019]_FacetSep_445543"
+        ],
+        "structName_fs": [
+          "M_AlphaSep_Models and Algorithms for Visualization and Rendering",
+          "I_AlphaSep_Inria Grenoble - Rhône-Alpes",
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "L_AlphaSep_Laboratoire Jean Kuntzmann",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique",
+          "C_AlphaSep_Centre National de la Recherche Scientifique",
+          "U_AlphaSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "structAcronym_s": [
+          "MAVERICK",
+          "Inria",
+          "Grenoble INP",
+          "LJK",
+          "Grenoble INP",
+          "Inria",
+          "CNRS",
+          "UGA [2016-2019]"
+        ],
+        "structName_s": [
+          "Models and Algorithms for Visualization and Rendering",
+          "Inria Grenoble - Rhône-Alpes",
+          "Institut National de Recherche en Informatique et en Automatique",
+          "Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "Laboratoire Jean Kuntzmann",
+          "Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "Institut National de Recherche en Informatique et en Automatique",
+          "Centre National de la Recherche Scientifique",
+          "Université Grenoble Alpes [2016-2019]"
+        ],
+        "structAddress_s": [
+          "655 avenue de l'Europe 38334 Saint Ismier Cedex",
+          "Inovallée655 avenue de l'Europe38330 Montbonnot",
+          "Domaine de VoluceauRocquencourt - BP 10578153 Le Chesnay Cedex",
+          "46 avenue Félix Viallet 38031 Grenoble Cedex 1",
+          "Bâtiment IMAG, CS 40700, F-38058 Grenoble Cedex 9",
+          "46 avenue Félix Viallet 38031 Grenoble Cedex 1",
+          "Domaine de VoluceauRocquencourt - BP 10578153 Le Chesnay Cedex",
+          "38058 Grenoble cedex"
+        ],
+        "structCountry_s": [
+          "fr",
+          "fr",
+          "fr",
+          "fr",
+          "fr",
+          "fr",
+          "fr",
+          "fr",
+          "fr"
+        ],
+        "structType_s": [
+          "researchteam",
+          "laboratory",
+          "institution",
+          "institution",
+          "laboratory",
+          "institution",
+          "institution",
+          "institution",
+          "institution"
+        ],
+        "structValid_s": [
+          "OLD",
+          "VALID",
+          "VALID",
+          "OLD",
+          "OLD",
+          "OLD",
+          "VALID",
+          "VALID",
+          "OLD"
+        ],
+        "structIdrefIdExt_s": [
+          "236107992",
+          "026388804",
+          "184945011",
+          "026388804",
+          "02636817X",
+          "188399275"
+        ],
+        "structIdrefIdExtUrl_s": [
+          "https://www.idref.fr/236107992",
+          "https://www.idref.fr/026388804",
+          "https://www.idref.fr/184945011",
+          "https://www.idref.fr/026388804",
+          "https://www.idref.fr/02636817X",
+          "https://www.idref.fr/188399275"
+        ],
+        "structRnsrIdExt_s": [
+          "201221005J",
+          "199218244V",
+          "200711891Z"
+        ],
+        "structRnsrIdExtUrl_s": [
+          "https://appliweb.dgri.education.fr/rnsr/PresenteStruct.jsp?PUBLIC=OK&numNatStruct=201221005J",
+          "https://appliweb.dgri.education.fr/rnsr/PresenteStruct.jsp?PUBLIC=OK&numNatStruct=199218244V",
+          "https://appliweb.dgri.education.fr/rnsr/PresenteStruct.jsp?PUBLIC=OK&numNatStruct=200711891Z"
+        ],
+        "labStructId_i": [
+          2497,
+          1042161
+        ],
+        "labStructIdName_fs": [
+          "2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "1042161_FacetSep_Laboratoire Jean Kuntzmann"
+        ],
+        "labStructNameId_fs": [
+          "I_AlphaSep_Inria Grenoble - Rhône-Alpes_FacetSep_2497",
+          "L_AlphaSep_Laboratoire Jean Kuntzmann _FacetSep_1042161"
+        ],
+        "labStructName_fs": [
+          "I_AlphaSep_Inria Grenoble - Rhône-Alpes",
+          "L_AlphaSep_Laboratoire Jean Kuntzmann"
+        ],
+        "labStructName_s": [
+          "Inria Grenoble - Rhône-Alpes",
+          "Laboratoire Jean Kuntzmann"
+        ],
+        "labStructAddress_s": [
+          "Inovallée655 avenue de l'Europe38330 Montbonnot",
+          "Bâtiment IMAG, CS 40700, F-38058 Grenoble Cedex 9"
+        ],
+        "labStructCountry_s": [
+          "fr",
+          "fr"
+        ],
+        "labStructType_s": [
+          "laboratory",
+          "laboratory"
+        ],
+        "labStructValid_s": [
+          "VALID",
+          "OLD"
+        ],
+        "labStructRnsrIdExt_s": [
+          "199218244V",
+          "200711891Z"
+        ],
+        "labStructRnsrIdExtUrl_s": [
+          "https://appliweb.dgri.education.fr/rnsr/PresenteStruct.jsp?PUBLIC=OK&numNatStruct=199218244V",
+          "https://appliweb.dgri.education.fr/rnsr/PresenteStruct.jsp?PUBLIC=OK&numNatStruct=200711891Z"
+        ],
+        "structIsChildOf_fs": [
+          "1042486_researchteam_JoinSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "1042486_Models and Algorithms for Visualization and Rendering_JoinSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "2497_laboratory_JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "2497_Inria Grenoble - Rhône-Alpes_JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "1042486_researchteam_JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "1042486_Models and Algorithms for Visualization and Rendering_JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "1042486_researchteam_JoinSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "1042486_Models and Algorithms for Visualization and Rendering_JoinSep_1042161_FacetSep_Laboratoire Jean Kuntzmann",
+          "1042161_laboratory_JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "1042161_laboratory_JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "1042161_laboratory_JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "1042161_laboratory_JoinSep_445543_FacetSep_Université Grenoble Alpes [2016-2019]",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_445543_FacetSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "structIsParentOf_fs": [
+          "2497_JoinSep_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "300009_JoinSep_I_AlphaSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "89889_JoinSep_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "1042161_JoinSep_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "89889_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "300009_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "441569_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "445543_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann "
+        ],
+        "structIsParentOfType_fs": [
+          "2497_JoinSep_researchteam_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "300009_JoinSep_laboratory_I_AlphaSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "89889_JoinSep_researchteam_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "1042161_JoinSep_researchteam_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "89889_JoinSep_laboratory_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "300009_JoinSep_laboratory_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "441569_JoinSep_laboratory_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann ",
+          "445543_JoinSep_laboratory_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann "
+        ],
+        "rteamStructIsChildOf_fs": [
+          "1042486_Models and Algorithms for Visualization and Rendering_JoinSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "1042486_Models and Algorithms for Visualization and Rendering_JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "1042486_Models and Algorithms for Visualization and Rendering_JoinSep_1042161_FacetSep_Laboratoire Jean Kuntzmann"
+        ],
+        "labStructIsParentOf_fs": [
+          "2497_JoinSep_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "1042161_JoinSep_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering"
+        ],
+        "instStructId_i": [
+          300009,
+          89889,
+          89889,
+          300009,
+          441569,
+          445543
+        ],
+        "instStructIdName_fs": [
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "441569_FacetSep_Centre National de la Recherche Scientifique",
+          "445543_FacetSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "instStructNameId_fs": [
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique_FacetSep_300009",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_FacetSep_89889",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology_FacetSep_89889",
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique_FacetSep_300009",
+          "C_AlphaSep_Centre National de la Recherche Scientifique_FacetSep_441569",
+          "U_AlphaSep_Université Grenoble Alpes [2016-2019]_FacetSep_445543"
+        ],
+        "instStructName_fs": [
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "I_AlphaSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "I_AlphaSep_Institut National de Recherche en Informatique et en Automatique",
+          "C_AlphaSep_Centre National de la Recherche Scientifique",
+          "U_AlphaSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "instStructAcronym_s": [
+          "Inria",
+          "Grenoble INP",
+          "Grenoble INP",
+          "Inria",
+          "CNRS",
+          "UGA [2016-2019]"
+        ],
+        "instStructName_s": [
+          "Institut National de Recherche en Informatique et en Automatique",
+          "Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "Institut National de Recherche en Informatique et en Automatique",
+          "Centre National de la Recherche Scientifique",
+          "Université Grenoble Alpes [2016-2019]"
+        ],
+        "instStructAddress_s": [
+          "Domaine de VoluceauRocquencourt - BP 10578153 Le Chesnay Cedex",
+          "46 avenue Félix Viallet 38031 Grenoble Cedex 1",
+          "46 avenue Félix Viallet 38031 Grenoble Cedex 1",
+          "Domaine de VoluceauRocquencourt - BP 10578153 Le Chesnay Cedex",
+          "38058 Grenoble cedex"
+        ],
+        "instStructCountry_s": [
+          "fr",
+          "fr",
+          "fr",
+          "fr",
+          "fr",
+          "fr"
+        ],
+        "instStructType_s": [
+          "institution",
+          "institution",
+          "institution",
+          "institution",
+          "institution",
+          "institution"
+        ],
+        "instStructValid_s": [
+          "VALID",
+          "OLD",
+          "OLD",
+          "VALID",
+          "VALID",
+          "OLD"
+        ],
+        "labStructIsChildOf_fs": [
+          "2497_Inria Grenoble - Rhône-Alpes_JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_89889_FacetSep_Institut polytechnique de Grenoble - Grenoble Institute of Technology",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_300009_FacetSep_Institut National de Recherche en Informatique et en Automatique",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_441569_FacetSep_Centre National de la Recherche Scientifique",
+          "1042161_Laboratoire Jean Kuntzmann _JoinSep_445543_FacetSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "instStructIsParentOf_fs": [
+          "300009_JoinSep_I_AlphaSep_2497_FacetSep_Inria Grenoble - Rhône-Alpes",
+          "89889_JoinSep_M_AlphaSep_1042486_FacetSep_Models and Algorithms for Visualization and Rendering",
+          "89889_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann",
+          "300009_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann",
+          "441569_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann",
+          "445543_JoinSep_L_AlphaSep_1042161_FacetSep_Laboratoire Jean Kuntzmann"
+        ],
+        "instStructIdrefIdExt_s": [
+          "026388804",
+          "026388804",
+          "02636817X",
+          "188399275"
+        ],
+        "instStructIdrefIdExtUrl_s": [
+          "https://www.idref.fr/026388804",
+          "https://www.idref.fr/026388804",
+          "https://www.idref.fr/02636817X",
+          "https://www.idref.fr/188399275"
+        ],
+        "labStructAcronym_s": [
+          "LJK"
+        ],
+        "labStructIdrefIdExt_s": [
+          "184945011"
+        ],
+        "labStructIdrefIdExtUrl_s": [
+          "https://www.idref.fr/184945011"
+        ],
+        "labStructIsniIdExt_s": [
+          "0000 0004 0383 676X"
+        ],
+        "labStructIsniIdExtUrl_s": [
+          "http://isni.org/isni/0000 0004 0383 676X"
+        ],
+        "labStructRorIdExt_s": [
+          "04ett5b41"
+        ],
+        "labStructRorIdExtUrl_s": [
+          "https://ror.org/04ett5b41"
+        ],
+        "structIsniIdExt_s": [
+          "0000 0004 0383 676X",
+          "0000000122597504"
+        ],
+        "structIsniIdExtUrl_s": [
+          "http://isni.org/isni/0000 0004 0383 676X",
+          "http://isni.org/isni/0000000122597504"
+        ],
+        "structRorIdExt_s": [
+          "04ett5b41"
+        ],
+        "structRorIdExtUrl_s": [
+          "https://ror.org/04ett5b41"
+        ],
+        "instStructIsniIdExt_s": [
+          "0000000122597504"
+        ],
+        "instStructIsniIdExtUrl_s": [
+          "http://isni.org/isni/0000000122597504"
+        ],
+        "contributorId_i": 557057,
+        "contributorFullName_s": "Vincent TAVERNIER",
+        "contributorIdFullName_fs": "557057_FacetSep_Vincent TAVERNIER",
+        "contributorFullNameId_fs": "Vincent TAVERNIER_FacetSep_557057",
+        "language_s": [
+          "en"
+        ],
+        "halId_s": "hal-01613342",
+        "uri_s": "https://hal.inria.fr/hal-01613342",
+        "version_i": 1,
+        "status_i": 11,
+        "instance_s": "inria",
+        "sid_i": 2,
+        "submitType_s": "file",
+        "docType_s": "MEM",
+        "thumbId_i": 8226631,
+        "selfArchiving_bool": true,
+        "authorityInstitution_s": [
+          "Grenoble INP, Université de Grenoble"
+        ],
+        "committee_s": [
+          "CROWLEY James",
+          "VAUFREYDAZ Dominique",
+          "BLANCH Renaud",
+          "HETROY-WHEELER Franck"
+        ],
+        "city_s": "Grenoble",
+        "director_s": [
+          "NEYRET Fabrice",
+          "THOLLOT Joelle",
+          "VERGNE Romain"
+        ],
+        "page_s": "70",
+        "inPress_bool": false,
+        "writingDate_tdate": "2017-06-21T00:00:00Z",
+        "writingDate_s": "2017-06-21",
+        "writingDateY_i": 2017,
+        "writingDateM_i": 6,
+        "writingDateD_i": 21,
+        "modifiedDate_tdate": "2022-06-25T20:29:22Z",
+        "modifiedDate_s": "2022-06-25 20:29:22",
+        "modifiedDateY_i": 2022,
+        "modifiedDateM_i": 6,
+        "modifiedDateD_i": 25,
+        "submittedDate_tdate": "2017-10-09T14:53:36Z",
+        "submittedDate_s": "2017-10-09 14:53:36",
+        "submittedDateY_i": 2017,
+        "submittedDateM_i": 10,
+        "submittedDateD_i": 9,
+        "releasedDate_tdate": "2017-10-09T15:58:05Z",
+        "releasedDate_s": "2017-10-09 15:58:05",
+        "releasedDateY_i": 2017,
+        "releasedDateM_i": 10,
+        "releasedDateD_i": 9,
+        "producedDate_tdate": "2017-06-21T00:00:00Z",
+        "producedDate_s": "2017-06-21",
+        "producedDateY_i": 2017,
+        "producedDateM_i": 6,
+        "producedDateD_i": 21,
+        "publicationDate_tdate": "2017-06-21T00:00:00Z",
+        "publicationDate_s": "2017-06-21",
+        "publicationDateY_i": 2017,
+        "publicationDateM_i": 6,
+        "publicationDateD_i": 21,
+        "owners_i": [
+          557057
+        ],
+        "collId_i": [
+          192,
+          264,
+          268,
+          384,
+          192,
+          420,
+          1727,
+          2211,
+          2424,
+          2211,
+          2452,
+          2424,
+          2211,
+          2673,
+          4108,
+          5555,
+          6394,
+          8330,
+          192
+        ],
+        "collName_s": [
+          "HAL Grenoble Alpes",
+          "CNRS - Centre national de la recherche scientifique",
+          "INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "Institut polytechnique de Grenoble",
+          "HAL Grenoble Alpes",
+          "INRIA Grenoble - Rhône-Alpes",
+          "INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "Laboratoire Jean Kuntzmann",
+          "Département Géométrie et Images",
+          "Laboratoire Jean Kuntzmann",
+          "MAVERICK",
+          "Département Géométrie et Images",
+          "Laboratoire Jean Kuntzmann",
+          "TESTALAIN1",
+          "INRIA 2",
+          "INRIA2017",
+          "INRIA-RENGRE",
+          "Université Grenoble Alpes [2016-2019]",
+          "HAL Grenoble Alpes"
+        ],
+        "collCode_s": [
+          "UGA",
+          "CNRS",
+          "INRIA",
+          "INPG",
+          "UGA",
+          "INRIA-RHA",
+          "INRIA_TEST",
+          "LJK",
+          "LJK_GI",
+          "LJK",
+          "LJK_GI_MAVERICK",
+          "LJK_GI",
+          "LJK",
+          "TESTALAIN1",
+          "INRIA2",
+          "INRIA2017",
+          "INRIA-RENGRE",
+          "UGA-COMUE",
+          "UGA"
+        ],
+        "collCategory_s": [
+          "PRES",
+          "INSTITUTION",
+          "INSTITUTION",
+          "ECOLE",
+          "PRES",
+          "INSTITUTION",
+          "INSTITUTION",
+          "LABO",
+          "AUTRE",
+          "LABO",
+          "AUTRE",
+          "AUTRE",
+          "LABO",
+          "INSTITUTION",
+          "INSTITUTION",
+          "INSTITUTION",
+          "INSTITUTION",
+          "UNIV",
+          "PRES"
+        ],
+        "collIdName_fs": [
+          "192_FacetSep_HAL Grenoble Alpes",
+          "264_FacetSep_CNRS - Centre national de la recherche scientifique",
+          "268_FacetSep_INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "384_FacetSep_Institut polytechnique de Grenoble",
+          "192_FacetSep_HAL Grenoble Alpes",
+          "420_FacetSep_INRIA Grenoble - Rhône-Alpes",
+          "1727_FacetSep_INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "2211_FacetSep_Laboratoire Jean Kuntzmann",
+          "2424_FacetSep_Département Géométrie et Images",
+          "2211_FacetSep_Laboratoire Jean Kuntzmann",
+          "2452_FacetSep_MAVERICK",
+          "2424_FacetSep_Département Géométrie et Images",
+          "2211_FacetSep_Laboratoire Jean Kuntzmann",
+          "2673_FacetSep_TESTALAIN1",
+          "4108_FacetSep_INRIA 2",
+          "5555_FacetSep_INRIA2017",
+          "6394_FacetSep_INRIA-RENGRE",
+          "8330_FacetSep_Université Grenoble Alpes [2016-2019]",
+          "192_FacetSep_HAL Grenoble Alpes"
+        ],
+        "collNameId_fs": [
+          "HAL Grenoble Alpes_FacetSep_192",
+          "CNRS - Centre national de la recherche scientifique_FacetSep_264",
+          "INRIA - Institut National de Recherche en Informatique et en Automatique_FacetSep_268",
+          "Institut polytechnique de Grenoble_FacetSep_384",
+          "HAL Grenoble Alpes_FacetSep_192",
+          "INRIA Grenoble - Rhône-Alpes_FacetSep_420",
+          "INRIA - Institut National de Recherche en Informatique et en Automatique_FacetSep_1727",
+          "Laboratoire Jean Kuntzmann_FacetSep_2211",
+          "Département Géométrie et Images_FacetSep_2424",
+          "Laboratoire Jean Kuntzmann_FacetSep_2211",
+          "MAVERICK_FacetSep_2452",
+          "Département Géométrie et Images_FacetSep_2424",
+          "Laboratoire Jean Kuntzmann_FacetSep_2211",
+          "TESTALAIN1_FacetSep_2673",
+          "INRIA 2_FacetSep_4108",
+          "INRIA2017_FacetSep_5555",
+          "INRIA-RENGRE_FacetSep_6394",
+          "Université Grenoble Alpes [2016-2019]_FacetSep_8330",
+          "HAL Grenoble Alpes_FacetSep_192"
+        ],
+        "collCodeName_fs": [
+          "UGA_FacetSep_HAL Grenoble Alpes",
+          "CNRS_FacetSep_CNRS - Centre national de la recherche scientifique",
+          "INRIA_FacetSep_INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "INPG_FacetSep_Institut polytechnique de Grenoble",
+          "UGA_FacetSep_HAL Grenoble Alpes",
+          "INRIA-RHA_FacetSep_INRIA Grenoble - Rhône-Alpes",
+          "INRIA_TEST_FacetSep_INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "LJK_GI_FacetSep_Département Géométrie et Images",
+          "LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "LJK_GI_MAVERICK_FacetSep_MAVERICK",
+          "LJK_GI_FacetSep_Département Géométrie et Images",
+          "LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "TESTALAIN1_FacetSep_TESTALAIN1",
+          "INRIA2_FacetSep_INRIA 2",
+          "INRIA2017_FacetSep_INRIA2017",
+          "INRIA-RENGRE_FacetSep_INRIA-RENGRE",
+          "UGA-COMUE_FacetSep_Université Grenoble Alpes [2016-2019]",
+          "UGA_FacetSep_HAL Grenoble Alpes"
+        ],
+        "collCategoryCodeName_fs": [
+          "PRES_JoinSep_UGA_FacetSep_HAL Grenoble Alpes",
+          "INSTITUTION_JoinSep_CNRS_FacetSep_CNRS - Centre national de la recherche scientifique",
+          "INSTITUTION_JoinSep_INRIA_FacetSep_INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "ECOLE_JoinSep_INPG_FacetSep_Institut polytechnique de Grenoble",
+          "PRES_JoinSep_UGA_FacetSep_HAL Grenoble Alpes",
+          "INSTITUTION_JoinSep_INRIA-RHA_FacetSep_INRIA Grenoble - Rhône-Alpes",
+          "INSTITUTION_JoinSep_INRIA_TEST_FacetSep_INRIA - Institut National de Recherche en Informatique et en Automatique",
+          "LABO_JoinSep_LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "AUTRE_JoinSep_LJK_GI_FacetSep_Département Géométrie et Images",
+          "LABO_JoinSep_LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "AUTRE_JoinSep_LJK_GI_MAVERICK_FacetSep_MAVERICK",
+          "AUTRE_JoinSep_LJK_GI_FacetSep_Département Géométrie et Images",
+          "LABO_JoinSep_LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "INSTITUTION_JoinSep_TESTALAIN1_FacetSep_TESTALAIN1",
+          "INSTITUTION_JoinSep_INRIA2_FacetSep_INRIA 2",
+          "INSTITUTION_JoinSep_INRIA2017_FacetSep_INRIA2017",
+          "INSTITUTION_JoinSep_INRIA-RENGRE_FacetSep_INRIA-RENGRE",
+          "UNIV_JoinSep_UGA-COMUE_FacetSep_Université Grenoble Alpes [2016-2019]",
+          "PRES_JoinSep_UGA_FacetSep_HAL Grenoble Alpes"
+        ],
+        "collNameCode_fs": [
+          "HAL Grenoble Alpes_FacetSep_UGA",
+          "CNRS - Centre national de la recherche scientifique_FacetSep_CNRS",
+          "INRIA - Institut National de Recherche en Informatique et en Automatique_FacetSep_INRIA",
+          "Institut polytechnique de Grenoble_FacetSep_INPG",
+          "HAL Grenoble Alpes_FacetSep_UGA",
+          "INRIA Grenoble - Rhône-Alpes_FacetSep_INRIA-RHA",
+          "INRIA - Institut National de Recherche en Informatique et en Automatique_FacetSep_INRIA_TEST",
+          "Laboratoire Jean Kuntzmann_FacetSep_LJK",
+          "Département Géométrie et Images_FacetSep_LJK_GI",
+          "Laboratoire Jean Kuntzmann_FacetSep_LJK",
+          "MAVERICK_FacetSep_LJK_GI_MAVERICK",
+          "Département Géométrie et Images_FacetSep_LJK_GI",
+          "Laboratoire Jean Kuntzmann_FacetSep_LJK",
+          "TESTALAIN1_FacetSep_TESTALAIN1",
+          "INRIA 2_FacetSep_INRIA2",
+          "INRIA2017_FacetSep_INRIA2017",
+          "INRIA-RENGRE_FacetSep_INRIA-RENGRE",
+          "Université Grenoble Alpes [2016-2019]_FacetSep_UGA-COMUE",
+          "HAL Grenoble Alpes_FacetSep_UGA"
+        ],
+        "collIsParentOfColl_fs": [
+          "UGA_FacetSep_HAL Grenoble Alpes_JoinSep_INPG_FacetSep_Institut polytechnique de Grenoble",
+          "LJK_FacetSep_Laboratoire Jean Kuntzmann_JoinSep_LJK_GI_FacetSep_Département Géométrie et Images",
+          "LJK_GI_FacetSep_Département Géométrie et Images_JoinSep_LJK_GI_MAVERICK_FacetSep_MAVERICK",
+          "LJK_FacetSep_Laboratoire Jean Kuntzmann_JoinSep_LJK_GI_FacetSep_Département Géométrie et Images",
+          "UGA_FacetSep_HAL Grenoble Alpes_JoinSep_UGA-COMUE_FacetSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "collIsParentOfCategoryColl_fs": [
+          "UGA_FacetSep_ECOLE_JoinSep_INPG_FacetSep_Institut polytechnique de Grenoble",
+          "LJK_FacetSep_AUTRE_JoinSep_LJK_GI_FacetSep_Département Géométrie et Images",
+          "LJK_GI_FacetSep_AUTRE_JoinSep_LJK_GI_MAVERICK_FacetSep_MAVERICK",
+          "LJK_FacetSep_AUTRE_JoinSep_LJK_GI_FacetSep_Département Géométrie et Images",
+          "UGA_FacetSep_UNIV_JoinSep_UGA-COMUE_FacetSep_Université Grenoble Alpes [2016-2019]"
+        ],
+        "collIsChildOfColl_fs": [
+          "INPG_FacetSep_Institut polytechnique de Grenoble_JoinSep_UGA_FacetSep_HAL Grenoble Alpes",
+          "LJK_GI_FacetSep_Département Géométrie et Images_JoinSep_LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "LJK_GI_MAVERICK_FacetSep_MAVERICK_JoinSep_LJK_GI_FacetSep_Département Géométrie et Images",
+          "LJK_GI_FacetSep_Département Géométrie et Images_JoinSep_LJK_FacetSep_Laboratoire Jean Kuntzmann",
+          "UGA-COMUE_FacetSep_Université Grenoble Alpes [2016-2019]_JoinSep_UGA_FacetSep_HAL Grenoble Alpes"
+        ],
+        "fileMain_s": "https://hal.inria.fr/hal-01613342/document",
+        "files_s": [
+          "https://hal.inria.fr/hal-01613342/file/TAVERNIER_Vincent_2017_MoSIG_300dpi.pdf"
+        ],
+        "fileType_s": [
+          "file"
+        ],
+        "_version_": 1739263804352495616,
+        "dateLastIndexed_tdate": "2022-07-24T19:33:39.714Z",
+        "label_xml": "<TEI xmlns=\"http://www.tei-c.org/ns/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:hal=\"http://hal.archives-ouvertes.fr/\" version=\"1.1\" xsi:schemaLocation=\"http://www.tei-c.org/ns/1.0 http://api.archives-ouvertes.fr/documents/aofr-sword.xsd\">  <teiHeader>    <fileDesc>      <titleStmt>        <title>HAL TEI export of hal-01613342</title>      </titleStmt>      <publicationStmt>        <distributor>CCSD</distributor>        <availability status=\"restricted\">          <licence target=\"http://creativecommons.org/licenses/by/\">Attribution</licence>        </availability>        <date when=\"2022-07-24T21:33:34+02:00\"/>      </publicationStmt>      <sourceDesc>        <p part=\"N\">HAL API platform</p>      </sourceDesc>    </fileDesc>  </teiHeader>  <text>    <body>      <listBibl>        <biblFull>          <titleStmt>            <title xml:lang=\"en\">Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements</title>            <author role=\"aut\">              <persName>                <forename type=\"first\">Vincent</forename>                <surname>Tavernier</surname>              </persName>              <email type=\"md5\">9af82af4f47008b75d2501046d371f85</email>              <email type=\"domain\">inria.fr</email>              <ptr type=\"url\" target=\"http://maverick.inria.fr/Members/Vincent.Tavernier/\"/>              <idno type=\"idhal\" notation=\"string\">vincent-tavernier</idno>              <idno type=\"idhal\" notation=\"numeric\">742166</idno>              <idno type=\"halauthorid\" notation=\"string\">42291-742166</idno>              <affiliation ref=\"#struct-1042486\"/>            </author>            <editor role=\"depositor\">              <persName>                <forename>Vincent</forename>                <surname>TAVERNIER</surname>              </persName>              <email type=\"md5\">9af82af4f47008b75d2501046d371f85</email>              <email type=\"domain\">inria.fr</email>            </editor>          </titleStmt>          <editionStmt>            <edition n=\"v1\" type=\"current\">              <date type=\"whenSubmitted\">2017-10-09 14:53:36</date>              <date type=\"whenWritten\">2017-06-21</date>              <date type=\"whenModified\">2022-06-25 20:29:22</date>              <date type=\"whenReleased\">2017-10-09 15:58:05</date>              <date type=\"whenProduced\">2017-06-21</date>              <date type=\"whenEndEmbargoed\">2017-10-09</date>              <ref type=\"file\" target=\"https://hal.inria.fr/hal-01613342/document\">                <date notBefore=\"2017-10-09\"/>              </ref>              <ref type=\"file\" subtype=\"author\" n=\"1\" target=\"https://hal.inria.fr/hal-01613342/file/TAVERNIER_Vincent_2017_MoSIG_300dpi.pdf\">                <date notBefore=\"2017-10-09\"/>              </ref>            </edition>            <respStmt>              <resp>contributor</resp>              <name key=\"557057\">                <persName>                  <forename>Vincent</forename>                  <surname>TAVERNIER</surname>                </persName>                <email type=\"md5\">9af82af4f47008b75d2501046d371f85</email>                <email type=\"domain\">inria.fr</email>              </name>            </respStmt>          </editionStmt>          <publicationStmt>            <distributor>CCSD</distributor>            <idno type=\"halId\">hal-01613342</idno>            <idno type=\"halUri\">https://hal.inria.fr/hal-01613342</idno>            <idno type=\"halBibtex\">tavernier:hal-01613342</idno>            <idno type=\"halRefHtml\">Graphics [cs.GR]. 2017</idno>            <idno type=\"halRef\">Graphics [cs.GR]. 2017</idno>            <availability status=\"restricted\">              <licence target=\"http://creativecommons.org/licenses/by/\">Attribution</licence>            </availability>          </publicationStmt>          <seriesStmt>            <idno type=\"stamp\" n=\"UGA\">HAL Grenoble Alpes</idno>            <idno type=\"stamp\" n=\"CNRS\">CNRS - Centre national de la recherche scientifique</idno>            <idno type=\"stamp\" n=\"INRIA\">INRIA - Institut National de Recherche en Informatique et en Automatique</idno>            <idno type=\"stamp\" n=\"INPG\" corresp=\"UGA\">Institut polytechnique de Grenoble</idno>            <idno type=\"stamp\" n=\"INRIA-RHA\">INRIA Grenoble - Rhône-Alpes</idno>            <idno type=\"stamp\" n=\"INRIA_TEST\">INRIA - Institut National de Recherche en Informatique et en Automatique</idno>            <idno type=\"stamp\" n=\"LJK\">Laboratoire Jean Kuntzmann</idno>            <idno type=\"stamp\" n=\"LJK_GI\" corresp=\"LJK\">Département Géométrie et Images</idno>            <idno type=\"stamp\" n=\"LJK_GI_MAVERICK\" corresp=\"LJK_GI\">MAVERICK</idno>            <idno type=\"stamp\" n=\"TESTALAIN1\">TESTALAIN1</idno>            <idno type=\"stamp\" n=\"INRIA2\">INRIA 2</idno>            <idno type=\"stamp\" n=\"INRIA2017\">INRIA2017</idno>            <idno type=\"stamp\" n=\"INRIA-RENGRE\">INRIA-RENGRE</idno>            <idno type=\"stamp\" n=\"UGA-COMUE\" corresp=\"UGA\">Université Grenoble Alpes [2016-2019]</idno>          </seriesStmt>          <notesStmt>            <note type=\"audience\" n=\"2\">International</note>            <note type=\"degree\" n=\"1\">Master thesis 2</note>          </notesStmt>          <sourceDesc>            <biblStruct>              <analytic>                <title xml:lang=\"en\">Studying and solving visual artifacts occurring when procedural texturing with paradoxical requirements</title>                <author role=\"aut\">                  <persName>                    <forename type=\"first\">Vincent</forename>                    <surname>Tavernier</surname>                  </persName>                  <email type=\"md5\">9af82af4f47008b75d2501046d371f85</email>                  <email type=\"domain\">inria.fr</email>                  <ptr type=\"url\" target=\"http://maverick.inria.fr/Members/Vincent.Tavernier/\"/>                  <idno type=\"idhal\" notation=\"string\">vincent-tavernier</idno>                  <idno type=\"idhal\" notation=\"numeric\">742166</idno>                  <idno type=\"halauthorid\" notation=\"string\">42291-742166</idno>                  <affiliation ref=\"#struct-1042486\"/>                </author>              </analytic>              <monogr>                <meeting>                  <settlement>Grenoble</settlement>                </meeting>                <imprint>                  <biblScope unit=\"pp\">70</biblScope>                  <date type=\"dateDefended\">2017-06-21</date>                </imprint>                <authority type=\"institution\">Grenoble INP, Université de Grenoble</authority>                <authority type=\"supervisor\">NEYRET Fabrice</authority>                <authority type=\"supervisor\">THOLLOT Joelle</authority>                <authority type=\"supervisor\">VERGNE Romain</authority>                <authority type=\"supervisorEmail\">fabrice.neyret@imag.fr</authority>                <authority type=\"jury\">CROWLEY James</authority>                <authority type=\"jury\">VAUFREYDAZ Dominique</authority>                <authority type=\"jury\">BLANCH Renaud</authority>                <authority type=\"jury\">HETROY-WHEELER Franck</authority>              </monogr>            </biblStruct>          </sourceDesc>          <profileDesc>            <langUsage>              <language ident=\"en\">English</language>            </langUsage>            <textClass>              <keywords scheme=\"author\">                <term xml:lang=\"en\">procedural textures</term>                <term xml:lang=\"en\">stochastic textures</term>                <term xml:lang=\"en\">procedural noises</term>                <term xml:lang=\"en\">perception</term>                <term xml:lang=\"en\">texturing artifacts</term>                <term xml:lang=\"en\">texture blending</term>              </keywords>              <classCode scheme=\"halDomain\" n=\"info.info-gr\">Computer Science [cs]/Graphics [cs.GR]</classCode>              <classCode scheme=\"halTypology\" n=\"MEM\">Master thesis</classCode>            </textClass>            <abstract xml:lang=\"en\">              <p>Textures are images widely used by computer graphics artists to add visual detail to their work. Textures may come from different sources, such as pictures of real-world surfaces, manually created images using graphics editors, or algorithmic processes. “Procedural texturing” refers to the creation of textures using algorithmic processes.Procedural textures offer many advantages, including the ability to manipulate their appearance through parameters. Many applications rely on changing those parameters to evolve the look of those textures over time or space. This often introduces requirements contradictory with the structure of the unaltered texture, often resulting in visible rendering artifacts. As an example, to animate a lava flow the rendered texture should be an effective representation of the simulated flow, but features such as rocks floating over should not be distorted, nor brutally appearor disappear thus disrupting the illusion. Informally, we want our lava texture to “change, but stay the same”. This example is an instance of the consistency problem that arises when changing parameters of a texture, resulting in noticeable artifacts in the rendered result.In this project, we seek to classify these artifacts depending on their causes and their effects on textures, but also how we can objectively detect and explain their presence, and so predict their occurrence. Analytical and statistical analysis of procedural texturing processes will be performed, in order to find the relation with the corresponding artifacts.</p>            </abstract>            <abstract xml:lang=\"fr\">              <p>Les textures sont des images largement utilisées par les artistes infographistes pour ajouter des détails dans leurs rendus. Ces textures peuvent provenir de différentes sources, telles que des images de surfaces réelles, des images créées manuellement dans des logiciels, ou des processus algorithmiques. Ces dernières sont appelées“textures procédurales”.Les textures procédurales offrent beaucoup d’avantages, notamment la possibilité de définir leur apparence à partir de paramètres. Dans de nombreuses situations, ces paramètres évoluent au cours du temps ou dans l’espace. Cela introduit cependant des contraintes contradictoires à l’apparence de la texture originale, introduisant ainsi des artefacts visibles. Par exemple, pour animer un flot de lave, la texture rendue devrait suivre le flot simulé, mais les formes telles que des rochers flottants à la surface ne devraient pas être distordus, ni apparaître ou disparaîtrebrutalement, ce qui casserait l’illusion. Informellement, cette texture de lave doit “changer, mais rester la même”. Cet exemple est une instance du problème de la cohérence temporelle lié à l’évolution de paramètres d’une texture, ce qui introduit des artefacts dans le rendu final.Au cours de ce projet, nous essayons de classer les différents artefacts selon les causes qui les produisent et leurs effets sur les textures. Nous cherchons aussi des méthodes pour décrire objectivement et détecter leur présence, et même prédire leur apparition. Des méthodes analytiques mais aussi statistiques des procédés de texture vont être mis en œuvre, afin de trouver les liens entre artefacts et descripteurs.</p>            </abstract>          </profileDesc>        </biblFull>      </listBibl>    </body>    <back>      <listOrg type=\"structures\">        <org type=\"researchteam\" xml:id=\"struct-1042486\" status=\"OLD\">          <idno type=\"IdRef\">236107992</idno>          <idno type=\"RNSR\">201221005J</idno>          <orgName>Models and Algorithms for Visualization and Rendering</orgName>          <orgName type=\"acronym\">MAVERICK </orgName>          <date type=\"start\">2016-01-01</date>          <date type=\"end\">2019-12-31</date>          <desc>            <address>              <addrLine>655 avenue de l'Europe 38334 Saint Ismier Cedex</addrLine>              <country key=\"FR\"/>            </address>            <ref type=\"url\">http://www.inria.fr/equipes/maverick</ref>          </desc>          <listRelation>            <relation active=\"#struct-2497\" type=\"direct\"/>            <relation active=\"#struct-300009\" type=\"indirect\"/>            <relation active=\"#struct-89889\" type=\"direct\"/>            <relation active=\"#struct-1042161\" type=\"direct\"/>            <relation active=\"#struct-441569\" type=\"indirect\"/>            <relation active=\"#struct-445543\" type=\"indirect\"/>          </listRelation>        </org>        <org type=\"laboratory\" xml:id=\"struct-2497\" status=\"VALID\">          <idno type=\"RNSR\">199218244V</idno>          <orgName>Inria Grenoble - Rhône-Alpes</orgName>          <desc>            <address>              <addrLine>Inovallée655 avenue de l'Europe38330 Montbonnot</addrLine>              <country key=\"FR\"/>            </address>            <ref type=\"url\">http://www.inria.fr/centre/grenoble</ref>          </desc>          <listRelation>            <relation active=\"#struct-300009\" type=\"direct\"/>          </listRelation>        </org>        <org type=\"institution\" xml:id=\"struct-300009\" status=\"VALID\">          <orgName>Institut National de Recherche en Informatique et en Automatique</orgName>          <orgName type=\"acronym\">Inria</orgName>          <desc>            <address>              <addrLine>Domaine de VoluceauRocquencourt - BP 10578153 Le Chesnay Cedex</addrLine>              <country key=\"FR\"/>            </address>            <ref type=\"url\">http://www.inria.fr/en/</ref>          </desc>        </org>        <org type=\"institution\" xml:id=\"struct-89889\" status=\"OLD\">          <idno type=\"IdRef\">026388804</idno>          <orgName>Institut polytechnique de Grenoble - Grenoble Institute of Technology</orgName>          <orgName type=\"acronym\">Grenoble INP </orgName>          <date type=\"start\">2007-01-01</date>          <date type=\"end\">2019-12-31</date>          <desc>            <address>              <addrLine>46 avenue Félix Viallet 38031 Grenoble Cedex 1</addrLine>              <country key=\"FR\"/>            </address>            <ref type=\"url\">http://www.grenoble-inp.fr/</ref>          </desc>        </org>        <org type=\"laboratory\" xml:id=\"struct-1042161\" status=\"OLD\">          <idno type=\"IdRef\">184945011</idno>          <idno type=\"ISNI\">0000 0004 0383 676X</idno>          <idno type=\"RNSR\">200711891Z</idno>          <idno type=\"ROR\">04ett5b41</idno>          <orgName>Laboratoire Jean Kuntzmann </orgName>          <orgName type=\"acronym\">LJK </orgName>          <date type=\"start\">2016-01-01</date>          <date type=\"end\">2019-12-31</date>          <desc>            <address>              <addrLine>Bâtiment IMAG, CS 40700, F-38058 Grenoble Cedex 9 </addrLine>              <country key=\"FR\"/>            </address>            <ref type=\"url\">https://ljk.imag.fr/</ref>          </desc>          <listRelation>            <relation active=\"#struct-89889\" type=\"direct\"/>            <relation active=\"#struct-300009\" type=\"direct\"/>            <relation active=\"#struct-441569\" type=\"direct\"/>            <relation active=\"#struct-445543\" type=\"direct\"/>          </listRelation>        </org>        <org type=\"institution\" xml:id=\"struct-441569\" status=\"VALID\">          <idno type=\"IdRef\">02636817X</idno>          <idno type=\"ISNI\">0000000122597504</idno>          <orgName>Centre National de la Recherche Scientifique</orgName>          <orgName type=\"acronym\">CNRS</orgName>          <date type=\"start\">1939-10-19</date>          <desc>            <address>              <country key=\"FR\"/>            </address>            <ref type=\"url\">http://www.cnrs.fr/</ref>          </desc>        </org>        <org type=\"institution\" xml:id=\"struct-445543\" status=\"OLD\">          <idno type=\"IdRef\">188399275</idno>          <orgName>Université Grenoble Alpes [2016-2019]</orgName>          <orgName type=\"acronym\">UGA [2016-2019]</orgName>          <date type=\"start\">2016-01-01</date>          <date type=\"end\">2019-12-31</date>          <desc>            <address>              <addrLine>38058 Grenoble cedex</addrLine>              <country key=\"FR\"/>            </address>          </desc>        </org>      </listOrg>    </back>  </text></TEI>"
+      }
+    ]
+  }
+}
