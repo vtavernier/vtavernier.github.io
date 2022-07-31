@@ -1,75 +1,162 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="en"><meta name=color-scheme content="light dark"><meta name=author content="Vincent Tavernier"><meta name=description content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!"><meta name=keywords content="blog,developer,personal,research,graphics"><meta name=twitter:card content="summary"><meta name=twitter:title content="Git is your friend, not your enemy — Part 3"><meta name=twitter:description content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!"><meta property="og:title" content="Git is your friend, not your enemy — Part 3"><meta property="og:description" content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!"><meta property="og:type" content="article"><meta property="og:url" content="https://vtavernier.github.io/posts/git-is-your-friend-part-3/"><meta property="article:published_time" content="2021-02-08T00:00:00+00:00"><meta property="article:modified_time" content="2021-02-08T00:00:00+00:00"><meta property="og:see_also" content="https://vtavernier.github.io/posts/git-is-your-friend-part-2/"><meta property="og:see_also" content="https://vtavernier.github.io/posts/git-is-your-friend-part-1/"><title>Git is your friend, not your enemy — Part 3 · The Tavern</title><link rel=canonical href=https://vtavernier.github.io/posts/git-is-your-friend-part-3/><link rel=preload href="/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin><link rel=stylesheet href=/css/coder.min.c99932527e4ee59cd8aeb0f42c7aa4dd03a68a027a5cd24af1da34f9e9867fab.css integrity="sha256-yZkyUn5O5ZzYrrD0LHqk3QOmigJ6XNJK8do0+emGf6s=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/coder-dark.min.876b132a2ef3947e5bdc3c8dbeda49fc71bd5a4abbd4ddfbc92e8112aebfebe3.css integrity="sha256-h2sTKi7zlH5b3DyNvtpJ/HG9Wkq71N37yS6BEq6/6+M=" crossorigin=anonymous media=screen><link rel=stylesheet href=/css/main.css><link rel=icon type=image/png href=/images/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=/images/favicon-16x16.png sizes=16x16><link rel=apple-touch-icon href=/images/apple-touch-icon.png><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png><script defer src=https://twemoji.maxcdn.com/v/13.0.2/twemoji.min.js integrity=sha384-wyB/MspSJ/r2bT2kCj44qtsYRYlpzO2oAPhRj5myrWD63dt6qWv4x8AZe7Fl3K3b crossorigin=anonymous></script><meta name=generator content="Hugo 0.80.0"></head><body class="preload-transitions colorscheme-dark" onload=twemoji.parse(document.body);><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=/>The Tavern</a>
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="Vincent Tavernier">
+<meta name=description content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!">
+<meta name=keywords content="blog,developer,personal,research,graphics">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Git is your friend, not your enemy — Part 3">
+<meta name=twitter:description content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!">
+<meta property="og:title" content="Git is your friend, not your enemy — Part 3">
+<meta property="og:description" content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://vtavernier.github.io/posts/git-is-your-friend-part-3/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-02-08T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-02-08T00:00:00+00:00">
+<meta property="og:see_also" content="https://vtavernier.github.io/posts/git-is-your-friend-part-2/"><meta property="og:see_also" content="https://vtavernier.github.io/posts/git-is-your-friend-part-1/">
+<title>The Tavern</title><link rel=canonical href=https://vtavernier.github.io/posts/git-is-your-friend-part-3/>
+<link rel=preload href="/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=/css/coder.min.6b1a4fbc48955b72aea7913e43fabeb45e8bc120da5aa41b598dd33adcac4b59.css integrity="sha256-axpPvEiVW3Kup5E+Q/q+tF6LwSDaWqQbWY3TOtysS1k=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/css/coder-dark.min.39e41a7f16bdf8cb16e43cae7d714fa1016f1d2d2898a5b3f27f42c9979204e2.css integrity="sha256-OeQafxa9+MsW5DyufXFPoQFvHS0omKWz8n9CyZeSBOI=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/css/main.min.eee8b4bae3f8317f1bbbaba644bd5343666fc10948260e11f665c17f082d882c.css integrity="sha256-7ui0uuP4MX8bu6umRL1TQ2ZvwQlIJg4R9mXBfwgtiCw=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.93.3">
+</head><body class="preload-transitions colorscheme-dark">
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=/>
+The Tavern
+</a>
 <input type=checkbox id=menu-toggle>
-<label class="menu-button float-right" for=menu-toggle><i class="fa fa-bars fa-fw" aria-hidden=true></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=/projects/>Projects</a></li><li class=navigation-item><a class=navigation-link href=/research/>Research</a></li><li class=navigation-item><a class=navigation-link href=/about/>About me</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title><a class=title-link href=https://vtavernier.github.io/posts/git-is-your-friend-part-3/>Git is your friend, not your enemy — Part 3</a></h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fa fa-calendar" aria-hidden=true></i><time datetime=2021-02-08T00:00:00Z>February 8, 2021</time></span>
-<span class=reading-time><i class="fa fa-clock-o" aria-hidden=true></i>10-minute read</span></div><div class=tags><i class="fa fa-tag" aria-hidden=true></i><span class=tag><a href=/tags/tutorial/>tutorial</a></span>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=/posts/>Blog</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/projects/>Projects</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/research/>Research</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/about/>About me</a>
+</li></ul></section></nav><div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=https://vtavernier.github.io/posts/git-is-your-friend-part-3/>
+Git is your friend, not your enemy — Part 3
+</a>
+</h1></div><div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2021-02-08T00:00:00Z>
+February 8, 2021
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+10-minute read
+</span>
+</div><div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=/tags/tutorial/>tutorial</a>
+</span>
 <span class=separator>•</span>
-<span class=tag><a href=/tags/git/>git</a></span></div></div></header><div><blockquote><p>This post is the third part of a tutorial series on how to use Git to its full potential. You may want to read the
+<span class=tag>
+<a href=/tags/git/>git</a>
+</span></div></div></header><div>
+<blockquote>
+<p>This post is the third part of a tutorial series on how to use Git to its full potential. You may want to read the
 <a href=https://vtavernier.github.io/posts/git-is-your-friend-part-1/>first part</a> and the
-<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-2/>second part</a> before proceeding.</p></blockquote><h1 id=finding-bugs-with-git-problem-statement>Finding bugs with Git: problem statement
-<a class=heading-link href=#finding-bugs-with-git-problem-statement><i class="fa fa-link" aria-hidden=true></i></a></h1><p>You are working on a large-ish project which is &mdash; thankfully &mdash; under version control. This could be a project with a
+<a href=https://vtavernier.github.io/posts/git-is-your-friend-part-2/>second part</a> before proceeding.</p></blockquote><h1 id=finding-bugs-with-git-problem-statement>
+Finding bugs with Git: problem statement
+<a class=heading-link href=#finding-bugs-with-git-problem-statement>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>You are working on a large-ish project which is &mdash; thankfully &mdash; under version control. This could be a project with a
 large amount of code, with many contributors and thus a lot of activity, or maybe some software you are using that you
 decided to contribute to by fixing some bugs. What we will learn today applies to all those cases where you just can&rsquo;t
 manually review every single line of code searching for bugs.</p><p>Although in the case of this article, we will study a very stripped down example to just learn the essentials of one of
 Git&rsquo;s most advanced features: <em>bisection</em>. Our example will be a library implementing some sorting algorithms as they
 are described on their respective <a href=https://en.wikipedia.org/wiki/Sorting_algorithm target=_blank rel=noopener>Wikipedia pages</a>.</p><p>While developing this library, we shall follow good software development practices, especially ensuring our library has
 proper automated testing. Here is the <a href=https://github.com/vtavernier/blog-git-libsort/tree/r-initial target=_blank rel=noopener>initial
-scaffolding</a> for our library:</p><ul><li>The following functions will be provided by our library:</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#ff79c6>#ifndef _SORT_H_
-</span><span style=color:#ff79c6>#define _SORT_H_
-</span><span style=color:#ff79c6></span>
-<span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;cstddef&gt;</span><span style=color:#ff79c6>
-</span><span style=color:#ff79c6></span>
-<span style=color:#ff79c6>typedef</span> <span style=color:#8be9fd>int</span> sort_data_t;
-
-<span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_insertion</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
-<span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_selection</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
-<span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_merge</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
-<span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_heap</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
-<span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_quick</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
-
-<span style=color:#ff79c6>#endif </span><span style=color:#6272a4>/* _SORT_H_ */</span><span style=color:#ff79c6>
-</span></code></pre></div><ul><li>They will be tested using a test executable that returns 0 on success, and non-zero on failure:</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&#34;sort.h&#34;</span><span style=color:#ff79c6>
-</span><span style=color:#ff79c6></span>
-<span style=color:#6272a4>// [...]
-</span><span style=color:#6272a4></span>
-<span style=color:#8be9fd>int</span> <span style=color:#50fa7b>main</span>() {
-    <span style=color:#8be9fd>int</span> res <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>0</span>;
-    <span style=color:#ff79c6>const</span> size_t Ns[] <span style=color:#ff79c6>=</span> {<span style=color:#bd93f9>10</span>};
-
-    <span style=color:#ff79c6>for</span> (<span style=color:#ff79c6>auto</span> <span style=color:#ff79c6>&amp;</span><span style=color:#8be9fd;font-style:italic>N</span> : Ns) {
-        std<span style=color:#ff79c6>::</span>vector<span style=color:#ff79c6>&lt;</span>sort_data_t<span style=color:#ff79c6>&gt;</span> source_vector(N, <span style=color:#bd93f9>0</span>), working_vector(N, <span style=color:#bd93f9>0</span>), sorted_vector(N, <span style=color:#bd93f9>0</span>);
-
-        <span style=color:#6272a4>// Generate some test data
-</span><span style=color:#6272a4></span>        std<span style=color:#ff79c6>::</span>generate(source_vector.begin(), source_vector.end(), [<span style=color:#ff79c6>=</span>]() { <span style=color:#ff79c6>return</span> rand() <span style=color:#ff79c6>%</span> (<span style=color:#bd93f9>2</span> <span style=color:#ff79c6>*</span> N); });
-
-        <span style=color:#6272a4>// Generate reference data
-</span><span style=color:#6272a4></span>        std<span style=color:#ff79c6>::</span>copy(source_vector.begin(), source_vector.end(), sorted_vector.begin());
-        std<span style=color:#ff79c6>::</span>sort(sorted_vector.begin(), sorted_vector.end());
-
-        <span style=color:#6272a4>// Test the insertion sort function
-</span><span style=color:#6272a4></span>        res <span style=color:#ff79c6>+=</span> test_sort_function(working_vector, source_vector, sorted_vector, sort_insertion);
-        <span style=color:#6272a4>// [...]
-</span><span style=color:#6272a4></span>    }
-
-    <span style=color:#ff79c6>return</span> res;
-}
-</code></pre></div><ul><li>Testing the library is done through a special Makefile rule, so we can just run <code>make test</code>:</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-make data-lang=make><span style=color:#6272a4># [...]
-</span><span style=color:#6272a4></span>
-<span style=color:#50fa7b>test</span><span style=color:#ff79c6>:</span> <span style=color:#ff79c6>$(</span><span style=color:#8be9fd;font-style:italic>BUILDDIR</span><span style=color:#ff79c6>)</span>/main
-	@echo <span style=color:#ff79c6>$(</span>BUILDDIR<span style=color:#ff79c6>)</span>/main
-	@<span style=color:#ff79c6>$(</span>BUILDDIR<span style=color:#ff79c6>)</span>/main ; <span style=color:#f1fa8c>\
-</span><span style=color:#f1fa8c></span>	<span style=color:#8be9fd;font-style:italic>RET</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>$$</span>? ; <span style=color:#f1fa8c>\
-</span><span style=color:#f1fa8c></span>	<span style=color:#ff79c6>if</span> <span style=color:#ff79c6>[</span> <span style=color:#8be9fd;font-style:italic>$$</span>RET -eq <span style=color:#bd93f9>0</span> <span style=color:#ff79c6>]</span>; <span style=color:#ff79c6>then</span> <span style=color:#f1fa8c>\
-</span><span style=color:#f1fa8c></span>		<span style=color:#8be9fd;font-style:italic>echo</span> -e <span style=color:#f1fa8c>&#34;\e[0;32mTests succeeded\e[0m&#34;</span> ; <span style=color:#f1fa8c>\
-</span><span style=color:#f1fa8c></span>	<span style=color:#ff79c6>else</span> <span style=color:#f1fa8c>\
-</span><span style=color:#f1fa8c></span>		<span style=color:#8be9fd;font-style:italic>echo</span> -e <span style=color:#f1fa8c>&#34;\e[0;31mTests failed with </span><span style=color:#8be9fd;font-style:italic>$$</span><span style=color:#f1fa8c>RET\e[0m&#34;</span> ; <span style=color:#f1fa8c>\
-</span><span style=color:#f1fa8c></span>		<span style=color:#8be9fd;font-style:italic>exit</span> <span style=color:#8be9fd;font-style:italic>$$</span>RET ; <span style=color:#f1fa8c>\
-</span><span style=color:#f1fa8c></span>	<span style=color:#ff79c6>fi</span>
-
-<span style=color:#6272a4># [...]
-</span></code></pre></div><p>We obtain this output when testing our initial version:<div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>make test</span>
+scaffolding</a> for our library:</p><ul>
+<li>The following functions will be provided by our library:</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>#ifndef _SORT_H_
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6>#define _SORT_H_
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;cstddef&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>typedef</span> <span style=color:#8be9fd>int</span> sort_data_t;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_insertion</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_selection</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_merge</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_heap</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>sort_quick</span>(sort_data_t <span style=color:#ff79c6>*</span>data, size_t length);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>#endif </span><span style=color:#6272a4>/* _SORT_H_ */</span><span style=color:#ff79c6>
+</span></span></span></code></pre></div><ul>
+<li>They will be tested using a test executable that returns 0 on success, and non-zero on failure:</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&#34;sort.h&#34;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>// [...]
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>int</span> <span style=color:#50fa7b>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd>int</span> res <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>0</span>;
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>const</span> size_t Ns[] <span style=color:#ff79c6>=</span> {<span style=color:#bd93f9>10</span>};
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>for</span> (<span style=color:#ff79c6>auto</span> <span style=color:#ff79c6>&amp;</span><span style=color:#8be9fd;font-style:italic>N</span> : Ns) {
+</span></span><span style=display:flex><span>        std<span style=color:#ff79c6>::</span>vector<span style=color:#ff79c6>&lt;</span>sort_data_t<span style=color:#ff79c6>&gt;</span> source_vector(N, <span style=color:#bd93f9>0</span>), working_vector(N, <span style=color:#bd93f9>0</span>), sorted_vector(N, <span style=color:#bd93f9>0</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#6272a4>// Generate some test data
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>        std<span style=color:#ff79c6>::</span>generate(source_vector.begin(), source_vector.end(), [<span style=color:#ff79c6>=</span>]() { <span style=color:#ff79c6>return</span> rand() <span style=color:#ff79c6>%</span> (<span style=color:#bd93f9>2</span> <span style=color:#ff79c6>*</span> N); });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#6272a4>// Generate reference data
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>        std<span style=color:#ff79c6>::</span>copy(source_vector.begin(), source_vector.end(), sorted_vector.begin());
+</span></span><span style=display:flex><span>        std<span style=color:#ff79c6>::</span>sort(sorted_vector.begin(), sorted_vector.end());
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#6272a4>// Test the insertion sort function
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>        res <span style=color:#ff79c6>+=</span> test_sort_function(working_vector, source_vector, sorted_vector, sort_insertion);
+</span></span><span style=display:flex><span>        <span style=color:#6272a4>// [...]
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>return</span> res;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><ul>
+<li>Testing the library is done through a special Makefile rule, so we can just run <code>make test</code>:</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-make data-lang=make><span style=display:flex><span><span style=color:#6272a4># [...]
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>test</span><span style=color:#ff79c6>:</span> <span style=color:#ff79c6>$(</span><span style=color:#8be9fd;font-style:italic>BUILDDIR</span><span style=color:#ff79c6>)</span>/main
+</span></span><span style=display:flex><span>	@echo <span style=color:#ff79c6>$(</span>BUILDDIR<span style=color:#ff79c6>)</span>/main
+</span></span><span style=display:flex><span>	@<span style=color:#ff79c6>$(</span>BUILDDIR<span style=color:#ff79c6>)</span>/main ; <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>	<span style=color:#8be9fd;font-style:italic>RET</span><span style=color:#ff79c6>=</span><span style=color:#8be9fd;font-style:italic>$$</span>? ; <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>	<span style=color:#ff79c6>if</span> <span style=color:#ff79c6>[</span> <span style=color:#8be9fd;font-style:italic>$$</span>RET -eq <span style=color:#bd93f9>0</span> <span style=color:#ff79c6>]</span>; <span style=color:#ff79c6>then</span> <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>		<span style=color:#8be9fd;font-style:italic>echo</span> -e <span style=color:#f1fa8c>&#34;\e[0;32mTests succeeded\e[0m&#34;</span> ; <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>	<span style=color:#ff79c6>else</span> <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>		<span style=color:#8be9fd;font-style:italic>echo</span> -e <span style=color:#f1fa8c>&#34;\e[0;31mTests failed with </span><span style=color:#8be9fd;font-style:italic>$$</span><span style=color:#f1fa8c>RET\e[0m&#34;</span> ; <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>		<span style=color:#8be9fd;font-style:italic>exit</span> <span style=color:#8be9fd;font-style:italic>$$</span>RET ; <span style=color:#f1fa8c>\
+</span></span></span><span style=display:flex><span><span style=color:#f1fa8c></span>	<span style=color:#ff79c6>fi</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># [...]
+</span></span></span></code></pre></div><p>We obtain this output when testing our initial version:
+<div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>make test</span>
 <span style=color:gray># Output omitted</span>
 build/main
-<span style=color:green>Tests succeeded</span></code></pre></div></p><p>With this perfect development setup in place, we can iteratively improve our library:<div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>git log --oneline</span>
+<span style=color:green>Tests succeeded</span></code></pre></div></p><p>With this perfect development setup in place, we can iteratively improve our library:
+<div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git log --oneline</span>
 <span style=color:olive>a4ecb0d</span><span style=color:olive> (</span><span style=font-weight:700;color:teal>HEAD -&gt; </span><span style=font-weight:700;color:green>master</span><span style=color:olive>, </span><span style=font-weight:700;color:red>origin/master</span><span style=color:olive>)</span> Update ColumnLimit
 <span style=color:olive>4096d3d</span> Add N=20000 test
 <span style=color:olive>01770f7</span> Change IndentWidth to 4
@@ -78,7 +165,8 @@ build/main
 <span style=color:olive>25a6e64</span> Add N=10000 test
 <span style=color:olive>10930d8</span> Add N=1000 test
 <span style=color:olive>0f0ff63</span> Add N=100 test
-<span style=color:olive>65defb0</span><span style=color:olive> (</span><span style=font-weight:700;color:olive>tag: r-initial</span><span style=color:olive>)</span> Initial commit</code></pre></div></p><p>Satisfied with our changes, we check that tests still pass and&mldr;</p><div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>make test</span>
+<span style=color:olive>65defb0</span><span style=color:olive> (</span><span style=font-weight:700;color:olive>tag: r-initial</span><span style=color:olive>)</span> Initial commit</code></pre></div></p><p>Satisfied with our changes, we check that tests still pass and&mldr;</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>make test</span>
 <span style=color:gray># Output omitted</span>
 sort_insertion: error at index 0
 sort_insertion: error at index 0
@@ -86,14 +174,20 @@ sort_insertion: error at index 0
 sort_insertion: error at index 0
 sort_insertion: error at index 0
 <span style=color:red>Tests failed with 5</span>
-make: *** [Makefile:14 : test] Erreur 5</code></pre></div><p>Where did we go wrong? Let&rsquo;s answer this question using Git.</p><h1 id=finding-trivial-bugs-with-git-blame-and-git-log>Finding trivial bugs with <code>git blame</code> and <code>git log</code>
-<a class=heading-link href=#finding-trivial-bugs-with-git-blame-and-git-log><i class="fa fa-link" aria-hidden=true></i></a></h1><p>Our test harness revealed the <code>sort_insertion</code> function is broken. Thus, we might want to look into who changed the
+make: *** [Makefile:14 : test] Erreur 5</code></pre></div><p>Where did we go wrong? Let&rsquo;s answer this question using Git.</p><h1 id=finding-trivial-bugs-with-git-blame-and-git-log>
+Finding trivial bugs with <code>git blame</code> and <code>git log</code>
+<a class=heading-link href=#finding-trivial-bugs-with-git-blame-and-git-log>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>Our test harness revealed the <code>sort_insertion</code> function is broken. Thus, we might want to look into who changed the
 corresponding <code>src/insertion.cpp</code> file. The <code>git log --oneline -- src/insertion.cpp</code> shows us the history of that file
-(commits that do not change this file are omitted):</p><div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>git log --oneline -- src/insertion.cpp</span>
+(commits that do not change this file are omitted):</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git log --oneline -- src/insertion.cpp</span>
 <span style=color:olive>01770f7</span> Change IndentWidth to 4
 <span style=color:olive>5889f58</span> Update sorting logic
 <span style=color:olive>65defb0</span><span style=color:olive> (</span><span style=font-weight:700;color:olive>tag: r-initial</span><span style=color:olive>)</span> Initial commit</code></pre></div><p>Only 3 commits (out of the 9 commits in our repository) changed that file. This greatly narrows our search space, which
-we can further refine using <code>git blame</code>. This command outputs which commit changed each line in a given file:</p><div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>git blame src/insertion.cpp</span>
+we can further refine using <code>git blame</code>. This command outputs which commit changed each line in a given file:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git blame src/insertion.cpp</span>
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  2) 
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
@@ -111,7 +205,8 @@ we can further refine using <code>git blame</code>. This command outputs which c
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 15)     }
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }</code></pre></div><p>If we cross-reference this with the output of <code>git log</code> we notice that most of the file was changed by one single
 commit&mldr; Which is just formatting changes, and is probably not the culprit (<code>01770f7a Change IndentWidth to 4</code>). If we
-know this commit indeed doesn&rsquo;t change anything, we can ask Git to ignore it in the blame:</p><div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>git blame --ignore-rev 01770f7 src/insertion.cpp</span>
+know this commit indeed doesn&rsquo;t change anything, we can ask Git to ignore it in the blame:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git blame --ignore-rev 01770f7 src/insertion.cpp</span>
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  2) 
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
@@ -127,7 +222,10 @@ know this commit indeed doesn&rsquo;t change anything, we can ask Git to ignore 
 01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 13)         }
 01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 14)         i++;
 ^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 15)     }
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }</code></pre></div><p>From this output, we can deduce:</p><ul><li>Most of the code comes from the initial commit, <code>65defb0</code>. We know this passed the tests before.</li><li>One line of our sorting logic was changed by commit <code>5889f58f</code>. We can show this change in more detail:<div class="highlight highlight-manual"><pre><code>$ <span style=font-weight:700;color:#fff>git show 5889f58f</span>
+^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }</code></pre></div><p>From this output, we can deduce:</p><ul>
+<li>Most of the code comes from the initial commit, <code>65defb0</code>. We know this passed the tests before.</li><li>One line of our sorting logic was changed by commit <code>5889f58f</code>. We can show this change in more detail:
+<div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git show 5889f58f</span>
 <span style=color:olive>commit 5889f58fd7ec438b5e45ddab97611f6d34e916de</span>
 Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
 Date:   Sun Jan 24 03:17:12 2021 +0100
@@ -147,7 +245,9 @@ Date:   Sun Jan 24 03:17:12 2021 +0100
        std::swap(data[j], data[j - 1]);
        j--;
      }</code></pre></div></li></ul><p>This change seems dubious. To confirm this indeed broke our library, we need to test the code before <em>and</em> after this
-change was introduced. As we are using Git, this is easy to do:<div class="highlight highlight-manual"><pre><code><span style=color:gray># Before the changes, check that the tests do pass</span>
+change was introduced. As we are using Git, this is easy to do:
+<div class="highlight highlight-manual">
+<pre><code><span style=color:gray># Before the changes, check that the tests do pass</span>
 $ <span style=font-weight:700;color:#fff>git checkout 5889f58f^ && make test</span>
 HEAD is now at 25a6e64 Add N=10000 test
 <span style=color:gray># Output omitted</span>
@@ -160,16 +260,27 @@ HEAD is now at 5889f58 Update sorting logic
 <span style=color:gray># Output omitted</span>
 build/main
 <span style=color:red>Tests failed with 4</span>
-make: *** [Makefile:14: test] Error 4</code></pre></div></p><p>Thus, we confirmed commit <code>5889f58</code> broke the library!</p><p>However, to come to that conclusion we needed to:</p><ul><li>Find which file was the source of the bug (sometimes it could be multiple files, or this could be non-trivial)</li><li>Identify commits bringing relevant changes to the file in question (there could be a lot of irrelevant commits)</li><li>Among relevant commits, find the first one that breaks the build (a lot of commits may have to be checked for that)</li></ul><p>This is where the <code>git bisect</code> command comes in: a faster, automated way to find bugs.</p><h1 id=finding-any-kind-of-bug-with-git-bisect>Finding any kind of bug with <code>git bisect</code>
-<a class=heading-link href=#finding-any-kind-of-bug-with-git-bisect><i class="fa fa-link" aria-hidden=true></i></a></h1><p><code>git bisect</code> works under the assumption that:</p><ul><li>You have a <em>last known good</em> commit, referred to as <strong>good</strong>, where the bug was not present</li><li>You have a <em>known bad</em> commit, referred to as <strong>bad</strong>, following the <em>good</em> commit, and where the bug is present</li></ul><p>Under this assumption, Git is able to deduce which is the first bad commit in $O(\log_2 N)$ steps, where $N$ is the
+make: *** [Makefile:14: test] Error 4</code></pre></div></p><p>Thus, we confirmed commit <code>5889f58</code> broke the library!</p><p>However, to come to that conclusion we needed to:</p><ul>
+<li>Find which file was the source of the bug (sometimes it could be multiple files, or this could be non-trivial)</li><li>Identify commits bringing relevant changes to the file in question (there could be a lot of irrelevant commits)</li><li>Among relevant commits, find the first one that breaks the build (a lot of commits may have to be checked for that)</li></ul><p>This is where the <code>git bisect</code> command comes in: a faster, automated way to find bugs.</p><h1 id=finding-any-kind-of-bug-with-git-bisect>
+Finding any kind of bug with <code>git bisect</code>
+<a class=heading-link href=#finding-any-kind-of-bug-with-git-bisect>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p><code>git bisect</code> works under the assumption that:</p><ul>
+<li>You have a <em>last known good</em> commit, referred to as <strong>good</strong>, where the bug was not present</li><li>You have a <em>known bad</em> commit, referred to as <strong>bad</strong>, following the <em>good</em> commit, and where the bug is present</li></ul><p>Under this assumption, Git is able to deduce which is the first bad commit in $O(\log_2 N)$ steps, where $N$ is the
 number of commits between <strong>good</strong> and <strong>bad</strong>. This uses the same idea as <a href=https://en.wikipedia.org/wiki/Dichotomic_search target=_blank rel=noopener>dichotomic
-search</a>:</p><ul><li>Pick the middle commit between <strong>good</strong> and <strong>bad</strong>, <strong>middle</strong></li><li>Run the tests. If they pass, <strong>good</strong> becomes <strong>middle</strong> and repeat. Else, <strong>bad</strong> becomes <strong>middle</strong> and repeat.</li><li>Stop when <strong>bad</strong> is the commit immediately following <strong>good</strong></li></ul><p>If you are testing manually, or tests are slow to run, the gains from $N$ to $\log_2 N$ can add up very quickly, hence
-the importance of this feature. Let&rsquo;s start bisecting our repository:<div class="highlight highlight-manual"><pre><code><span style=color:gray># git bisect start [good [bad]]</span>
+search</a>:</p><ul>
+<li>Pick the middle commit between <strong>good</strong> and <strong>bad</strong>, <strong>middle</strong></li><li>Run the tests. If they pass, <strong>good</strong> becomes <strong>middle</strong> and repeat. Else, <strong>bad</strong> becomes <strong>middle</strong> and repeat.</li><li>Stop when <strong>bad</strong> is the commit immediately following <strong>good</strong></li></ul><p>If you are testing manually, or tests are slow to run, the gains from $N$ to $\log_2 N$ can add up very quickly, hence
+the importance of this feature. Let&rsquo;s start bisecting our repository:
+<div class="highlight highlight-manual">
+<pre><code><span style=color:gray># git bisect start [good [bad]]</span>
 <span style=color:gray># Additionally, you can mark commits with `git bisect good` and `git bisect bad`</span>
 $ <span style=font-weight:700;color:#fff>git bisect start HEAD master~8</span>
 Bisecting: 3 revisions left to test after this (roughly 2 steps)
 [5889f58fd7ec438b5e45ddab97611f6d34e916de] Update sorting logic</code></pre></div></p><p>Git estimates the number of revisions to test to 3, which is already much less than our repository&rsquo;s history (9). In
-order to locate the first bad commit, we can then run the automated bisection with <code>git bisect run</code>:<div class="highlight highlight-manual"><pre><code><span style=color:gray># git bisect run command</span>
+order to locate the first bad commit, we can then run the automated bisection with <code>git bisect run</code>:
+<div class="highlight highlight-manual">
+<pre><code><span style=color:gray># git bisect run command</span>
 $ <span style=font-weight:700;color:#fff>git bisect run make test</span>
 running make test
 <span style=color:gray># Output omitted</span>
@@ -199,22 +310,64 @@ Date:   Sun Jan 24 03:17:12 2021 +0100
  1 file changed, 1 insertion(+), 1 deletion(-)
 bisect run success</code></pre></div></p><p>Thus, with only two commands (<code>start</code> and <code>run</code>), Git identified the first bad commit in our target range, and checked
 it out for us to inspect. When we&rsquo;re done inspecting the bad changes, we can return to the state of the repository
-before the bisection with <code>git bisect reset</code>.</p><h2 id=bisecting-without-automated-tests>Bisecting without automated tests
-<a class=heading-link href=#bisecting-without-automated-tests><i class="fa fa-link" aria-hidden=true></i></a></h2><p>In our little test project, we already had a test harness set up to find the offending commit. However, this may not
-always be the case:</p><ul><li>Some complex issues might require setup outside the repository</li><li>The tests for a given bug might have only been added later</li></ul><p>In those cases, you can either:</p><ul><li>Write a script to do the testing, preferably outside the repository folder (so it doesn&rsquo;t conflict with Git checking
+before the bisection with <code>git bisect reset</code>.</p><h2 id=bisecting-without-automated-tests>
+Bisecting without automated tests
+<a class=heading-link href=#bisecting-without-automated-tests>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>In our little test project, we already had a test harness set up to find the offending commit. However, this may not
+always be the case:</p><ul>
+<li>Some complex issues might require setup outside the repository</li><li>The tests for a given bug might have only been added later</li></ul><p>In those cases, you can either:</p><ul>
+<li>Write a script to do the testing, preferably outside the repository folder (so it doesn&rsquo;t conflict with Git checking
 out revisions). Then run it using <code>git bisect run ../script.sh</code></li><li>Test manually. After starting the bisection, check if the current state of the repository is good or bad (Git will
-have checked out the next revision for you), and then mark it as <strong>good</strong> with <code>git bisect good</code>, or <strong>bad</strong> with <code>git bisect bad</code>. Git will then advance to the next revision to be tested.</li></ul><p>In any case, you will still benefit from the $O(\log_2 N)$ complexity of the bisection.</p><h2 id=closing-thoughts>Closing thoughts
-<a class=heading-link href=#closing-thoughts><i class="fa fa-link" aria-hidden=true></i></a></h2><p>When submitting an issue to an open-source project, you will usually have to describe properties of the host system, the
+have checked out the next revision for you), and then mark it as <strong>good</strong> with <code>git bisect good</code>, or <strong>bad</strong> with <code>git bisect bad</code>. Git will then advance to the next revision to be tested.</li></ul><p>In any case, you will still benefit from the $O(\log_2 N)$ complexity of the bisection.</p><h2 id=closing-thoughts>
+Closing thoughts
+<a class=heading-link href=#closing-thoughts>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>When submitting an issue to an open-source project, you will usually have to describe properties of the host system, the
 exact version being tested, reproduction instructions, etc&mldr;</p><p>If you are able to, include the result of <code>git bisect</code> in your bug report. Pointing to a relevant changes in the
-repository&rsquo;s history will greatly help the maintainers diagnose the issue and work on a fix.</p><h1 id=conclusion>Conclusion
-<a class=heading-link href=#conclusion><i class="fa fa-link" aria-hidden=true></i></a></h1><p>With this tutorial series, we looked at how to maintain a sane Git history as well as your own sanity. Armed with this
+repository&rsquo;s history will greatly help the maintainers diagnose the issue and work on a fix.</p><h1 id=conclusion>
+Conclusion
+<a class=heading-link href=#conclusion>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>With this tutorial series, we looked at how to maintain a sane Git history as well as your own sanity. Armed with this
 knowledge and carefully crafted Git repository histories, you may now use your newly-acquired advanced Git skills like
-bisecting to <del>flex on your colleagues</del> solve issues faster in your code.</p><h1 id=more-useful-resources>More useful resources
-<a class=heading-link href=#more-useful-resources><i class="fa fa-link" aria-hidden=true></i></a></h1><ul><li>Relation between staging, committing, local and remote repositories:
-<a href=http://ndpsoftware.com/git-cheatsheet.html target=_blank rel=noopener>Git Cheatsheet</a></li><li>I screwed up, can I get my work back? <a href=https://ohshitgit.com/ target=_blank rel=noopener>Oh Shit, Git!?!</a></li><li>Official manual: <a href=https://git-scm.com/doc target=_blank rel=noopener>Git Documentation</a></li></ul></div><footer><section class=see-also><h3 id=see-also-in-git-is-your-friend-not-your-enemy>See also in Git is your friend, not your enemy
-<a class=heading-link href=#see-also-in-git-is-your-friend-not-your-enemy><i class="fa fa-link" aria-hidden=true></i></a></h3><nav><ul><li><a href=/posts/git-is-your-friend-part-2/>Git is your friend, not your enemy — Part 2</a></li><li><a href=/posts/git-is-your-friend-part-1/>Git is your friend, not your enemy — Part 1</a></li></ul></nav></section><script src=https://utteranc.es/client.js repo=vtavernier/vtavernier.github.io issue-term=pathname label=comments theme=github-dark crossorigin=anonymous async></script></footer></article><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css integrity=sha384-Um5gpz1odJg5Z4HAmzPtgZKdTBHZdw8S29IecapCSB31ligYPhHQZMIlWLYQGVoc crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js integrity=sha384-YNHdsYkH6gMx9y3mRkmcJ2mFUjTd0qNQQvY9VYZgQd7DcN7env35GzlmFaZ23JGp crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js integrity=sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl crossorigin=anonymous onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}]});"></script></section></div><footer class=footer><section class=container><p>This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</p>©
+bisecting to <del>flex on your colleagues</del> solve issues faster in your code.</p><h1 id=more-useful-resources>
+More useful resources
+<a class=heading-link href=#more-useful-resources>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><ul>
+<li>Relation between staging, committing, local and remote repositories:
+<a href=http://ndpsoftware.com/git-cheatsheet.html target=_blank rel=noopener>Git Cheatsheet</a></li><li>I screwed up, can I get my work back? <a href=https://ohshitgit.com/ target=_blank rel=noopener>Oh Shit, Git!?!</a></li><li>Official manual: <a href=https://git-scm.com/doc target=_blank rel=noopener>Git Documentation</a></li></ul></div><footer>
+<section class=see-also>
+<h3 id=see-also-in-git-is-your-friend-not-your-enemy>
+See also in Git is your friend, not your enemy
+<a class=heading-link href=#see-also-in-git-is-your-friend-not-your-enemy>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h3><nav>
+<ul>
+<li>
+<a href=/posts/git-is-your-friend-part-2/>Git is your friend, not your enemy — Part 2</a>
+</li><li>
+<a href=/posts/git-is-your-friend-part-1/>Git is your friend, not your enemy — Part 1</a>
+</li></ul></nav></section><div class=comments>
+<script>let getTheme=window.localStorage&&window.localStorage.getItem("colorscheme");getTheme=getTheme??"github-dark";let theme=getTheme==="dark"?"github-dark":"github-light",s=document.createElement("script");s.src="https://utteranc.es/client.js",s.setAttribute("repo","vtavernier/vtavernier.github.io"),s.setAttribute("issue-term","pathname"),s.setAttribute("theme",theme),s.setAttribute("crossorigin","anonymous"),s.setAttribute("async",''),document.querySelector("div.comments").innerHTML='',document.querySelector("div.comments").appendChild(s)</script>
+</div></footer></article><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css integrity=sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs crossorigin=anonymous>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js integrity=sha384-z1fJDqw8ZApjGO3/unPWUPsIymfsJmyrDVWC8Tv/a1HeOtGmkwNd/7xUS0Xcnvsx crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}]})'></script>
+</section></div><footer class=footer>
+<section class=container>
+©
 2019 -
 2022
 Vincent Tavernier
 ·
-Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main><script src=/js/coder.min.a350362441276ec5c1671926420497bb8e52b63ead1d51d3c9bc4342d0039526.js integrity="sha256-o1A2JEEnbsXBZxkmQgSXu45Stj6tHVHTybxDQtADlSY="></script><script src=/main.js></script><script data-goatcounter=https://vtavernier.goatcounter.com/count async src=//gc.zgo.at/count.js></script></body></html>
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
+</section></footer></main><script src=/js/coder.min.617ac1196e51a8e5820c29ea3f349ae87be7db1242a5a91f3afa569275213d0f.js integrity="sha256-YXrBGW5RqOWCDCnqPzSa6Hvn2xJCpakfOvpWknUhPQ8="></script>
+<script src=/main.min.d2d1e601897e7d550d453590ae2ba709fcb5997a42c921151e8a64f7928a38af.js integrity="sha256-0tHmAYl+fVUNRTWQriunCfy1mXpCySEVHopk95KKOK8="></script>
+<script data-goatcounter=https://vtavernier.goatcounter.com/count async src=//gc.zgo.at/count.js></script>
+</body></html>
