@@ -86,3 +86,8 @@ figcaption {
 .tooltip {
 	text-decoration: underline dashed #888;
 }
+
+body.colorscheme-dark pre code {
+	color: rgb(218, 218, 218);
+}
+

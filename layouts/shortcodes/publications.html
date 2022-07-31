@@ -5,7 +5,7 @@
 {{- with (index $details.response.docs 0) -}}
 <div class="publications">
 <div class="publications-main">
-  <a href="{{ (index .files_s 0) }}" target="blank" rel="noopener"><img src="../images/publications/{{ int .thumbId_i }}.png" alt="" class="publications-thumb"></a>
+  <a href="{{ .fileMain_s }}" target="blank" rel="noopener"><img src="{{ (resources.GetMatch (printf "images/publications/%d.png" (int .thumbId_i))).RelPermalink }}" alt="" class="publications-thumb"></a>
 <div class="publications-right">
   <h3 class="publications-title"><span class="publications-year">{{ .publicationDateY_i }}</span><a href="{{ $url }}" target="blank" rel="noopener">{{ (index .en_title_s 0) | safeHTML }}</a></h3>
 {{ $authors := (len .authFullName_s ) }}
