@@ -7,3 +7,5 @@ hugo_stats.json
 hugo.exe
 hugo.darwin
 hugo.linux
+
+.lock
