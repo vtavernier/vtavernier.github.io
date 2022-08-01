@@ -48,7 +48,7 @@ code = "vtavernier"
 repo = "vtavernier/vtavernier.github.io"
 issueTerm = "pathname"
 label = "comments"
-theme = "github-dark"
+theme = "dark"
 
 # Social links
 [[params.social]]
