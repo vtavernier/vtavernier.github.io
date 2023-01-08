@@ -1,5 +1,5 @@
 {{ $repo := .Page.Params.repo }}
-{{ $json := getJSON "https://api.github.com/repos/vtavernier/" $repo "/readme" }}
+{{ $json := getJSON (printf "https://api.github.com/repos/vtavernier/%s/readme" $repo) (dict "Authorization" (printf "Bearer %s" (getenv "GITHUB_TOKEN"))) }}
 <header>
   <h1>
     <a href="https://github.com/vtavernier/{{ $repo }}">{{ .Page.Title }}</a>
