@@ -1,0 +1,665 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="Vincent Tavernier">
+<meta name=description content="The Arduino ecosystem changed the world of DIY electronics, let's take a look under the hood to figure out how that happened.">
+<meta name=keywords content="blog,developer,personal,research,graphics">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Arduino Internals — What's behind the magic?">
+<meta name=twitter:description content="The Arduino ecosystem changed the world of DIY electronics, let's take a look under the hood to figure out how that happened.">
+<meta property="og:title" content="Arduino Internals — What's behind the magic?">
+<meta property="og:description" content="The Arduino ecosystem changed the world of DIY electronics, let's take a look under the hood to figure out how that happened.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://vtavernier.github.io/posts/arduino-internals-whats-behind-the-magic/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-04-26T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-04-26T00:00:00+00:00">
+<title>The Tavern</title><link rel=canonical href=https://vtavernier.github.io/posts/arduino-internals-whats-behind-the-magic/>
+<link rel=preload href="/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=/css/coder.min.6b1a4fbc48955b72aea7913e43fabeb45e8bc120da5aa41b598dd33adcac4b59.css integrity="sha256-axpPvEiVW3Kup5E+Q/q+tF6LwSDaWqQbWY3TOtysS1k=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/css/coder-dark.min.39e41a7f16bdf8cb16e43cae7d714fa1016f1d2d2898a5b3f27f42c9979204e2.css integrity="sha256-OeQafxa9+MsW5DyufXFPoQFvHS0omKWz8n9CyZeSBOI=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/css/main.min.eee8b4bae3f8317f1bbbaba644bd5343666fc10948260e11f665c17f082d882c.css integrity="sha256-7ui0uuP4MX8bu6umRL1TQ2ZvwQlIJg4R9mXBfwgtiCw=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.93.3">
+</head><body class="preload-transitions colorscheme-dark">
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=/>
+The Tavern
+</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=/posts/>Blog</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/projects/>Projects</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/research/>Research</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/about/>About me</a>
+</li></ul></section></nav><div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=https://vtavernier.github.io/posts/arduino-internals-whats-behind-the-magic/>
+Arduino Internals — What's behind the magic?
+</a>
+</h1></div><div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2021-04-26T00:00:00Z>
+April 26, 2021
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+22-minute read
+</span>
+</div><div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=/tags/arduino/>arduino</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=/tags/software/>software</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=/tags/electronics/>electronics</a>
+</span></div></div></header><div>
+<p>Arduino is an open-source software and hardware platform tailored for electronics beginners and enthusiasts alike. Since
+the early models&rsquo; releases (Arduino Diecimila in 2007 and Duemilanove in 2009), they have become ubiquitous to the point
+that &ldquo;an Arduino&rdquo; is often used as a synonym for &ldquo;a microcontroller&rdquo;, and have been used in countless projects by makers
+around the world.</p><p>
+<figure>
+<img src=Arduino_Duemilanove_2009b.jpg alt="Arduino Duemilanove 2009b">
+<figcaption>An Arduino Duemilanove. The first Arduino I actually
+programmed. Source: <a href=https://commons.wikimedia.org/wiki/File:Arduino_Duemilanove_2009b.jpg target=_blank rel=noopener>Wikipedia</a></figcaption></figure></p><p>What this project actually achieved is simplifying microcontroller programming to the extreme, replacing obscure
+datasheet diving and reference implementation diagrams dissection with intuitive function calls <em>mostly</em> portable across
+the entire official product range. The &ldquo;hello world&rdquo; of electronics, the blinking LED was simplified from this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#6272a4>// Compile with:       avr-gcc -mmcu=atmega328p -DF_CPU=16000000L
+</span></span></span><span style=display:flex><span><span style=color:#6272a4>// Create binary with: avr-objcopy -O ihex -R .eeprom a.out a.hex
+</span></span></span><span style=display:flex><span><span style=color:#6272a4>// Upload with:        avrdude -p atmega328p -c arduino -P /dev/ttyUSB0 -b 57600 -D -U flash:w:a.hex:i
+</span></span></span><span style=display:flex><span><span style=color:#6272a4>// Only works on the Arduino Uno series, with a 16MHz µC
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;avr/io.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;util/delay.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>int</span> <span style=color:#50fa7b>main</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Set the LED&#39;s pin to output
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  DDRB <span style=color:#ff79c6>|=</span> (<span style=color:#bd93f9>1</span> <span style=color:#ff79c6>&lt;&lt;</span> PB5);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>while</span> (<span style=color:#bd93f9>1</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>// Toggle the LED pin state
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>    PORTB <span style=color:#ff79c6>^=</span> (<span style=color:#bd93f9>1</span> <span style=color:#ff79c6>&lt;&lt;</span> PB5);
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>// Wait
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>    _delay_ms(<span style=color:#bd93f9>1000</span>);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#6272a4>// In the Arduino IDE, click &#34;upload&#34;
+</span></span></span><span style=display:flex><span><span style=color:#6272a4>// Portable across all Arduinos which have a built-in LED
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;Arduino.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>setup</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Set the LED&#39;s pin to output
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  pinMode(LED_BUILTIN, OUTPUT);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>loop</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Switch on the LED
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  digitalWrite(LED_BUILTIN, HIGH);
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Wait
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  delay(<span style=color:#bd93f9>1000</span>);
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Switch off the LED
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  digitalWrite(LED_BUILTIN, LOW);
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Wait
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  delay(<span style=color:#bd93f9>1000</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Of course, this is just scratching the surface, since opening up the world of microcontrollers to the masses also
+sparked a lot of open-source development, and many libraries can be used to interact with the &ldquo;shields&rdquo;, add-ons to the
+base Arduino board: <a href=https://store.arduino.cc/arduino-motor-shield-rev3 target=_blank rel=noopener>motor drivers</a>, <a href=https://store.arduino.cc/arduino-ethernet-shield-2 target=_blank rel=noopener>Ethernet
+interfaces</a>, <a href=https://store.arduino.cc/arduino-mkr-imu-shield target=_blank rel=noopener>IMUs</a>
+and countless others.</p><p>Various <a href=https://www.amazon.com/ELEGOO-Project-Tutorial-Controller-Projects/dp/B01D8KOZF4 target=_blank rel=noopener>starter kits</a> can also be
+used if you want to prototype your own circuits with an Arduino Uno compatible board and some standard components, such
+as an ultrasonic distance reader, humidity and temperature sensor, 7-segment displays, etc.</p><p>The USB (data and power!) connection on most boards means these are just plug and play: buy an Arduino board from your
+favorite reseller, and you can program it from any desktop or laptop PC.</p><p>Recently however, a lot of &ldquo;Arduino-compatible&rdquo; boards started appearing on the market, such as the hugely popular
+ESP8266 from Espressif Systems, available on the original <a href=https://en.wikipedia.org/wiki/NodeMCU target=_blank rel=noopener>NodeMCU</a>, but also in
+Arduino-Uno <a href=https://www.amazon.com/ARCELI-ESP8266-Development-Compatible-Arduino/dp/B07J2QKNHB/ target=_blank rel=noopener>footprints</a>, with
+built-in Wi-Fi capabilities, much more processing power as well as large storage.</p><p>
+<figure>
+<img src=WeMos_D1.jpg alt="WeMos D1">
+<figcaption>WeMos D1, one of the many ESP8266 boards</figcaption></figure></p><p>Even though those were not initially programmable from the Arduino IDE, the Arduino community added support for these as
+they became one of the most go-to choices for IoT projects over the recent years.</p><p>But with such a wide variety of hardware, how does the Arduino platform provide an <em>almost</em> seamless development
+experience on AVR, ARM, Xtensa and many other architectures?</p><p>Experienced embedded developers know this means installing various toolchains for cross-compiling, fiddling with linker
+scripts to get the right memory layout for your specific board revision, and a bunch of other boring stuff we won&rsquo;t get
+to in this article. Instead, we&rsquo;ll be focusing on the software side: what&rsquo;s exactly behind <code>#include &lt;Arduino.h></code> on a
+few select platforms, and why we would need to care about it.</p><blockquote>
+<p>All the examples in this article were developed using <a href=https://platformio.org/ target=_blank rel=noopener>PlatformIO</a>, which I highly recommend
+instead of the Arduino IDE. Although the recent releases have made huge progress, I prefer the versatility of my text
+editor (with <a href=https://github.com/MaskRay/ccls target=_blank rel=noopener>ccls</a> completion) and compiling/uploading with a simple <code>pio run -t upload</code> command.</p></blockquote><h1 id=arduino-framework-architecture>
+Arduino framework architecture
+<a class=heading-link href=#arduino-framework-architecture>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>For most software projects, the go-to way for getting information about library internals would be hitting the reference
+manual online. In the case of Arduino, it is located at <a href=https://www.arduino.cc/reference/en target=_blank rel=noopener>https://www.arduino.cc/reference/en</a>. However, it is surprisingly
+succint: function signatures included in the documentation don&rsquo;t even show the arguments'
+type<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>.</p><p>For a beginner, using the C++ language, whose type conversions are a minefield<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>, on a target that doesn&rsquo;t
+support debugging (and where buffer overflows result in usually very funny looking output on your serial port monitor)
+can lead to many headaches and hours of painful trial and error.</p><p>This reference was also written for the <em>original</em> Arduino boards, i.e. the AVR-based ones. The most notable example is
+the <a href=https://www.arduino.cc/reference/en/language/variables/utilities/progmem/ target=_blank rel=noopener>PROGMEM</a> variable modifier, which is
+only available on AVR targets. Trying to use it on non-AVR targets results in a compile-error, unless your code detects
+it is being compiled for a non-AVR target.</p><p>The reference documentation also mixes <a href=https://www.arduino.cc/reference/en/#functions target=_blank rel=noopener>standard library functions</a>,
+<a href=https://www.arduino.cc/reference/en/#variables target=_blank rel=noopener>plain datatypes and complex ones</a><sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>, <a href=https://www.arduino.cc/reference/en/#structure target=_blank rel=noopener>Arduino program
+structure and C++ language details</a> on a single page.</p><p><strong>To be absolutely clear:</strong> I am not saying this is a bad thing. This documentation has been written with the clear
+intent of being a one-stop point, easy to approach for a beginner, and should be sufficient for hobbyists to get
+started, until they are more at ease with electronics and/or software development &mdash; and it accomplishes this goal
+rather well. But for more advanced users, it is clearly lacking information about design choices and platform
+differences &mdash; a notable issue when promoting Arduino code as platform-independent.</p><p>My goal when writing this article was to share with the world the process I went through to unearth some differences I
+noticed when working with various boards (ESP8266, Arduino Nano 33 BLE, ATTiny85-based Digispark and others). So let&rsquo;s
+get started!</p><h2 id=whats-behind-arduinoh-exactly>
+What&rsquo;s behind <code>Arduino.h</code> exactly?
+<a class=heading-link href=#whats-behind-arduinoh-exactly>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>Using a new board in the Arduino IDE is as simple as downloading the right <em>core</em> through the <em>board manager</em>. We can
+look around starting from a basic sketch to peek at the internals of what this <em>core</em> really is. Starting with
+<code>Arduino.h</code>, which all Arduino code should <code>#include</code> to access the standard library functions described in the
+reference documentation, using an IDE with code completion<sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup>, we can just ask the editor to open the
+header file under our cursor and follow the include graph.</p><p>This will bring up this version of <code>Arduino.h</code> from the core installation path. When building for an AVR board such as
+the Arduino Uno, this will bring up
+<a href=https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h target=_blank rel=noopener>$AVR_CORE/cores/arduino/Arduino.h</a>,
+which already teaches us a lot:</p><ul>
+<li>There&rsquo;s all the constants in the documentation, as <code>#define</code>s, and some functions which are actually implemented as
+macros (e.g. <code>min</code> and <code>max</code>).</li><li>Gated behind <code>__cplusplus</code>, includes for some types defined by Wiring, the predecessor of the Arduino framework,
+itself based on Processing. The main one being <code>WString.h</code>, defining the <code>String</code> type.</li><li>Some board-specific stuff, like including USB API support or hardware serial support depending on preprocessor
+definitions.</li><li>A final include for <code>pins_arduino.h</code>, which contains mappings from Arduino pin numbers (0-13 as what&rsquo;s passed to
+<code>digitalWrite</code>) to physical microcontroller pins (<code>PORTB</code>, <code>PORTC</code> registers and others). This one is stored in the
+<code>$AVR_CORE/variants/$VARIANT</code> folder: depending on the current board, the right <code>-I</code> flag will be passed to the
+compiler to include mappings for the target, for example the Arduino Mega (<code>$VARIANT = mega</code>), or Uno (<code>$VARIANT = standard</code>).</li></ul><p>Noting the dependencies while following along, we can draw a (partial so it fits in a blog post) include graph between
+the different components of this core:</p><figure>
+<div style=display:flex;justify-content:center>
+<div class=mermaid>
+flowchart TB
+sketch[Blink.ino] --> arduino_h
+subgraph avr_std[AVR Toolchain]
+avr_io[avr/io.h]
+avr_pgmspace[avr/pgmspace.h]
+avr_stdio[stdio.h]
+end
+subgraph avr_core[Arduino AVR Core]
+subgraph cores/arduino
+arduino_h[Arduino.h]
+arduino_h --> wstring_h[WString.h]
+arduino_h --> print_h[Print.h]
+arduino_h --> avr_pgmspace
+print_h --> avr_stdio
+wstring_h --> avr_pgmspace
+end
+arduino_h -- -I flag --> arduino_pins_h_standard
+arduino_h -.-> arduino_pins_h_others
+arduino_h --> avr_io
+subgraph variants
+subgraph standard
+arduino_pins_h_standard[arduino_pins.h] ---> avr_io
+arduino_pins_h_standard ---> avr_pgmspace
+end
+subgraph others[...]
+arduino_pins_h_others[arduino_pins.h] ---> avr_io
+arduino_pins_h_others ---> avr_pgmspace
+end
+end
+end
+</div></div><figcaption>Arduino AVR partial include graph</figcaption></figure><p>This <code>Arduino.h</code> is already hardware-specific, even if most of it is hardware-independent. Its definitions follow what
+we can see in the reference documentation, but it is definitely <strong>not</strong> portable. It is however shared for all boards
+using the same architecture, and maintained by the same entity. In this case, this is the original AVR core, and it is
+even available on GitHub, in a sensible location: <a href=https://github.com/arduino/ArduinoCore-avr target=_blank rel=noopener>https://github.com/arduino/ArduinoCore-avr</a>.</p><p>Let&rsquo;s explore it a bit more: the core also contains the actual implementations of functions from the Arduino framework,
+which is what we&rsquo;re after. To keep this short, we will look at <code>digitalWrite</code>, about which there is already a lot to
+say.</p><h3 id=arduinos-digitalwrite-on-atmels-avr-platform>
+Arduino&rsquo;s <code>digitalWrite</code> on Atmel&rsquo;s AVR platform
+<a class=heading-link href=#arduinos-digitalwrite-on-atmels-avr-platform>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h3><p>Using our trusty editor and it is <em>go to implementation</em> feature, we can quickly find it in
+<a href=https://github.com/arduino/ArduinoCore-avr/blob/9f8d27f09f3bbd1da1374b5549a82bda55d45d44/cores/arduino/wiring_digital.c#L138 target=_blank rel=noopener>wiring_digital.c</a>,
+in all its microcontroller-programming-simplifying glory:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>digitalWrite</span>(<span style=color:#8be9fd>uint8_t</span> pin, <span style=color:#8be9fd>uint8_t</span> val)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#8be9fd>uint8_t</span> timer <span style=color:#ff79c6>=</span> digitalPinToTimer(pin);
+</span></span><span style=display:flex><span>	<span style=color:#8be9fd>uint8_t</span> bit <span style=color:#ff79c6>=</span> digitalPinToBitMask(pin);
+</span></span><span style=display:flex><span>	<span style=color:#8be9fd>uint8_t</span> port <span style=color:#ff79c6>=</span> digitalPinToPort(pin);
+</span></span><span style=display:flex><span>	<span style=color:#ff79c6>volatile</span> <span style=color:#8be9fd>uint8_t</span> <span style=color:#ff79c6>*</span>out;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#ff79c6>if</span> (port <span style=color:#ff79c6>==</span> NOT_A_PIN) <span style=color:#ff79c6>return</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#6272a4>// If the pin that support PWM output, we need to turn it off
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>	<span style=color:#6272a4>// before doing a digital write.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>	<span style=color:#ff79c6>if</span> (timer <span style=color:#ff79c6>!=</span> NOT_ON_TIMER) turnOffPWM(timer);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	out <span style=color:#ff79c6>=</span> portOutputRegister(port);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#8be9fd>uint8_t</span> oldSREG <span style=color:#ff79c6>=</span> SREG;
+</span></span><span style=display:flex><span>	cli();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#ff79c6>if</span> (val <span style=color:#ff79c6>==</span> LOW) {
+</span></span><span style=display:flex><span>		<span style=color:#ff79c6>*</span>out <span style=color:#ff79c6>&amp;=</span> <span style=color:#ff79c6>~</span>bit;
+</span></span><span style=display:flex><span>	} <span style=color:#ff79c6>else</span> {
+</span></span><span style=display:flex><span>		<span style=color:#ff79c6>*</span>out <span style=color:#ff79c6>|=</span> bit;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	SREG <span style=color:#ff79c6>=</span> oldSREG;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To set the logic level of an output pin, <code>digitalWrite</code> actually does the following:</p><ul>
+<li>Check that the given pin is suitable for digital output (the <code>digitalPinTo*</code> family of functions will return <code>NOT_*</code>
+sentinel values otherwise)</li><li>Disable hardware PWM on the target pin if it was enabled</li><li>Disable hardware interrupts, set the target value, and then re-enable them</li></ul><p>For a microcontroller running at 16MHz, <code>digitalWrite</code> is a noticeably expensive operation. Indeed, it does:</p><ul>
+<li>3 <code>PROGMEM</code> reads (<code>digitalPinTo*</code> function calls) for <code>timer</code>, <code>bit</code> and <code>port</code>.</li><li>2 branches to validate the pin values. Note that the function fails silently for wrong pin values.</li><li>1 more <code>PROGMEM</code> read for getting the port&rsquo;s output register from its port number <code>port</code>.<br>
+<blockquote>
+<p><em>Note: by this point, all the values in the data flow are returned from reading constant arrays in program memory
+with <code>pgm_read_byte</code>. Even though these values should be constant folded if <code>pin</code> and <code>val</code> are themselves
+constants, the compiler can&rsquo;t reason enough yet to perform this optimization. Which means the rest of the operations
+can&rsquo;t be optimized for constants.</em></p></blockquote></li><li>Disable interrupts<sup id=fnref:5><a href=#fn:5 class=footnote-ref role=doc-noteref>5</a></sup>.</li><li>One last branch to determine if a bit should be cleared or set.</li><li>Apply the bitmask: this is a read-modify-write operation, and thus non-atomic, which requires disabled interrupts for
+correctness.</li><li>Restore interrupts.</li></ul><p>These multiple levels of indirections are, at the time of writing, <strong>not</strong> optimized away by <code>avr-gcc</code>. The following
+Arduino sketch (which only uses constants for both the pin and value):</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;Arduino.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>setup</span>() { pinMode(LED_BUILTIN, OUTPUT); }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>loop</span>() {
+</span></span><span style=display:flex><span>  digitalWrite(LED_BUILTIN, HIGH);
+</span></span><span style=display:flex><span>  digitalWrite(LED_BUILTIN, LOW);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Compiles to the following assembly<sup id=fnref:6><a href=#fn:6 class=footnote-ref role=doc-noteref>6</a></sup>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-s data-lang=s><span style=display:flex><span><span style=color:#bd93f9>000000e0</span> <span style=color:#ff79c6>&lt;</span>digitalWrite.constprop.0<span style=color:#ff79c6>&gt;:</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4># [truncated: 54 instructions for computing timer, bit, port and other checks]</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#   uint8_t oldSREG = SREG;</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>158</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>9</span>f b7       	in	r25, <span style=color:#bd93f9>0x3f</span>	<span style=color:#6272a4># 63</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#   cli();</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>15</span>a<span style=color:#ff79c6>:</span>	f8 <span style=color:#bd93f9>94</span>       	cli
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#   if (val == LOW) {</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>15</span>c<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>81</span> <span style=color:#bd93f9>11</span>       	cpse	r24, r1
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>15</span>e<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>04</span> c0       	rjmp	.+8      	<span style=color:#6272a4># 0x168 &lt;digitalWrite.constprop.0+0x88&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#     *out &amp;= ~bit;</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>160</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>8</span>c <span style=color:#bd93f9>91</span>       	ld	r24, X
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>162</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>20</span> <span style=color:#bd93f9>95</span>       	com	r18
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>164</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>28</span> <span style=color:#bd93f9>23</span>       	and	r18, r24
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#   } else {</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>166</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>02</span> c0       	rjmp	.+4      	<span style=color:#6272a4># 0x16c &lt;digitalWrite.constprop.0+0x8c&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#     *out |= bit;</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>168</span><span style=color:#ff79c6>:</span>	ec <span style=color:#bd93f9>91</span>       	ld	r30, X
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>16</span>a<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>2</span>e <span style=color:#bd93f9>2</span>b       	or	r18, r30
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>16</span>c<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>2</span>c <span style=color:#bd93f9>93</span>       	st	X, r18
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#   }</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>#   SREG = oldSREG;</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>16</span>e<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>9</span>f bf       	out	<span style=color:#bd93f9>0x3f</span>, r25	<span style=color:#6272a4># 63</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4># }</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>170</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>08</span> <span style=color:#bd93f9>95</span>       	ret
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#bd93f9>00000206</span> <span style=color:#ff79c6>&lt;</span>main<span style=color:#ff79c6>&gt;:</span>
+</span></span><span style=display:flex><span> <span style=color:#6272a4># [truncated: Arduino framework initialization]</span>
+</span></span><span style=display:flex><span> <span style=color:#6272a4># [truncated: inlined call to pinMode(...) ]</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span> <span style=color:#6272a4># Note: loop is inlined since it is only called from Arduino&#39;s main</span>
+</span></span><span style=display:flex><span> <span style=color:#6272a4># digitalWrite(LED_BUILTIN, HIGH);</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>2</span>c6<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>81</span> e0       	ldi	r24, <span style=color:#bd93f9>0x01</span>	<span style=color:#6272a4># 1</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>2</span>c8<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>0</span>e <span style=color:#bd93f9>94</span> <span style=color:#bd93f9>70</span> <span style=color:#bd93f9>00</span> 	call	<span style=color:#bd93f9>0xe0</span>	<span style=color:#6272a4># 0xe0 &lt;digitalWrite.constprop.0&gt;</span>
+</span></span><span style=display:flex><span> <span style=color:#6272a4># digitalWrite(LED_BUILTIN, LOW);</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>2</span>cc<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>80</span> e0       	ldi	r24, <span style=color:#bd93f9>0x00</span>	<span style=color:#6272a4># 0</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>2</span>ce<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>0</span>e <span style=color:#bd93f9>94</span> <span style=color:#bd93f9>70</span> <span style=color:#bd93f9>00</span> 	call	<span style=color:#bd93f9>0xe0</span>	<span style=color:#6272a4># 0xe0 &lt;digitalWrite.constprop.0&gt;</span>
+</span></span><span style=display:flex><span> <span style=color:#6272a4># Note: the following is the Arduino&#39;s while loop around calling loop()</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>2</span>d2<span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>20</span> <span style=color:#bd93f9>97</span>       	sbiw	r28, <span style=color:#bd93f9>0x00</span>	<span style=color:#6272a4># 0</span>
+</span></span><span style=display:flex><span> <span style=color:#bd93f9>2</span>d4<span style=color:#ff79c6>:</span>	c1 f3       	breq	.-16     	<span style=color:#6272a4># 0x2c6 &lt;main+0xc0&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span> <span style=color:#6272a4># [truncated: more main code]</span>
+</span></span></code></pre></div><p>While its equivalent pure-AVR code:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;avr/io.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>int</span> <span style=color:#50fa7b>main</span>() {
+</span></span><span style=display:flex><span>  DDRB <span style=color:#ff79c6>|=</span> (<span style=color:#bd93f9>1</span> <span style=color:#ff79c6>&lt;&lt;</span> PB5);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>while</span> (<span style=color:#bd93f9>1</span>) {
+</span></span><span style=display:flex><span>    PORTB <span style=color:#ff79c6>|=</span> (<span style=color:#bd93f9>1</span> <span style=color:#ff79c6>&lt;&lt;</span> PB5);
+</span></span><span style=display:flex><span>    PORTB <span style=color:#ff79c6>&amp;=</span> <span style=color:#ff79c6>~</span>(<span style=color:#bd93f9>1</span> <span style=color:#ff79c6>&lt;&lt;</span> PB5);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Compiles to the optimal assembly below (<code>sbi</code> sets a specific bit in a port register, and <code>cbi</code> clears it):</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-s data-lang=s><span style=display:flex><span><span style=color:#bd93f9>00000080</span> <span style=color:#ff79c6>&lt;</span>main<span style=color:#ff79c6>&gt;:</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4># DDRB |= (1 &lt;&lt; PB5);</span>
+</span></span><span style=display:flex><span>  <span style=color:#bd93f9>80</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>25</span> <span style=color:#bd93f9>9</span>a       	sbi	<span style=color:#bd93f9>0x04</span>, <span style=color:#bd93f9>5</span>	<span style=color:#6272a4># 4</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4># while (1) {</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4># PORTB |= (1 &lt;&lt; PB5);</span>
+</span></span><span style=display:flex><span>  <span style=color:#bd93f9>82</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>2</span>d <span style=color:#bd93f9>9</span>a       	sbi	<span style=color:#bd93f9>0x05</span>, <span style=color:#bd93f9>5</span>	<span style=color:#6272a4># 5</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4># PORTB &amp;= ~(1 &lt;&lt; PB5);</span>
+</span></span><span style=display:flex><span>  <span style=color:#bd93f9>84</span><span style=color:#ff79c6>:</span>	<span style=color:#bd93f9>2</span>d <span style=color:#bd93f9>98</span>       	cbi	<span style=color:#bd93f9>0x05</span>, <span style=color:#bd93f9>5</span>	<span style=color:#6272a4># 5</span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4># }</span>
+</span></span><span style=display:flex><span>  <span style=color:#bd93f9>86</span><span style=color:#ff79c6>:</span>	fd cf       	rjmp	.-6      	<span style=color:#6272a4># 0x82 &lt;main+0x2&gt;</span>
+</span></span></code></pre></div><p>Which brings us to the essential question: <strong>is the Arduino framework&rsquo;s implementation right?</strong></p><p>In a sense, <strong>yes</strong>: it translates user-facing Arduino board pin identifiers to hardware pins under the hood, ensures
+there are no conflicts with PWM settings, and does update the output register in a correct (atomic) way. <strong>But</strong>, this
+is a very costly abstraction (67 instructions + function call compared to one <em>single-cycle</em> instruction). If your code
+does some high-frequency bit banging (every few clock cycles), you won&rsquo;t be able to use <code>digitalWrite</code>, which is orders
+of magnitude slower, and has side effects (disabling interrupts temporarily).</p><p>Of course, these abstractions are what make Arduino beginner-friendly, but are limited because of their implementation
+in C++. A language with more robust compile-time guarantees could reason more efficiently about hardware port usage, and
+could also compile to the optimal version &mdash; but <a href=https://github.com/rust-lang/rust/issues/78260 target=_blank rel=noopener>the Rust backend isn&rsquo;t there
+yet</a>.</p><p>More details about this assembly comparison are available on <a href=https://vtavernier.github.io/blog-arduino-internals/ target=_blank rel=noopener>this
+page</a>. As an extra comparison point, a proof of concept for a
+template-based hardware abstraction is included, which compiles to the same optimal assembly as raw AVR code. Please
+note that the Arduino version also has timer interrupts for maintaining a clock, which explains most of the program size
+difference &mdash; aside from the actual <code>digitalWrite</code> calls.</p><p>Personally, I think these limitations should <em>at least</em> be mentioned in the reference documentation. This wouldn&rsquo;t
+overload beginners browsing the function reference for the first time, as long as it is hidden in an expandable &ldquo;For
+advanced users&rdquo; section. This function <span class=tooltip title="Does this call for a part 2 🤔?">isn&rsquo;t the only one
+with caveats</span>, and it is likely that large projects using the Arduino platform will encounter more of those &ndash;
+undocumented &ndash; limitations and performance/readability trade-offs.</p><h3 id=arduinos-analogwrite-on-the-mbed-framework>
+Arduino&rsquo;s <code>analogWrite</code> on the Mbed framework
+<a class=heading-link href=#arduinos-analogwrite-on-the-mbed-framework>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h3><p>Backtracking a bit, we can look at a core&rsquo;s implementation for another platform. In this case, the <a href=https://github.com/arduino/ArduinoCore-mbed target=_blank rel=noopener>ARM Mbed
+core</a> for Mbed enabled devices. <a href=https://os.mbed.com/ target=_blank rel=noopener>Mbed</a> is an
+open-source operating system for IoT applications running on the ARM architecture. The goal of this kind of <em>operating
+systems</em> is to simplify embedded development for the supported platforms, the same way the Arduino framework simplifies
+development for the Arduino-enabled boards.</p><p>The <a href=https://store.arduino.cc/arduino-nano-33-ble target=_blank rel=noopener>Arduino Nano 33 BLE</a> is one example of such a board. Its nRF52840 SoC
+contains a 32-bit ARM Cortex-M4 CPU running at 64MHz as well as a Bluetooth chip which supports BLE. This is the board
+we will be using as a target for looking under the hood.</p><p>
+<figure>
+<img src=Arduino_Nano_33_BLE.jpg alt="Arduino Nano 33 BLE">
+<figcaption>Arduino Nano 33 BLE. Source: <a href=https://arduino.cc target=_blank rel=noopener>arduino.cc</a></figcaption></figure></p><p>The <code>Arduino.h</code> header is located in the same directory, relative to the Mbed core root, and corresponds roughly to what
+we saw before for the AVR core: generic Arduino definitions and &ldquo;hardware&rdquo;-specific. &ldquo;Hardware&rdquo; in quotes since the Mbed
+framework is already an abstraction layer over the actual processor:</p><figure>
+<div style=display:flex;justify-content:center>
+<div class=mermaid>
+graph LR
+sketch[Blink.ino] --> arduino_h
+subgraph arm_mbed[Arm Mbed]
+subgraph mbed_target_nrf5x[nrf5X SDK]
+nrfx_h[nrfx.h]
+end
+mbed_h[mbed.h] -.-> nrfx_h
+end
+subgraph mbed_core[Arduino Mbed Core]
+arduino_h[Arduino.h] --> mbed_h
+end
+</div></div><figcaption>Arduino Mbed partial include graph</figcaption></figure><p>In this case, the Arduino core provides:</p><ul>
+<li>An abstraction over the Mbed API, for platform-independence of Arduino code, and to simplify it for beginners</li><li>The hardware pin mappings for the various boards (<em>variants</em>), since Mbed is only responsible for interacting with the
+CPU</li></ul><p>This can easily be seen by looking at the implementation of, let&rsquo;s say <code>analogWrite</code> in
+<a href=https://github.com/arduino/ArduinoCore-mbed/blob/e50ec8aa1b1cd3079566b66b22bf8ded5e253cbb/cores/arduino/wiring_analog.cpp#L45 target=_blank rel=noopener>cores/arduino/wiring_analog.cpp</a>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>static</span> <span style=color:#8be9fd>int</span> write_resolution <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>8</span>;
+</span></span><span style=display:flex><span><span style=color:#6272a4>// [...]
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>analogWrite</span>(PinName pin, <span style=color:#8be9fd>int</span> val)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  pin_size_t idx <span style=color:#ff79c6>=</span> PinNameToIndex(pin);
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>if</span> (idx <span style=color:#ff79c6>!=</span> NOT_A_PIN) {
+</span></span><span style=display:flex><span>    analogWrite(idx, val);
+</span></span><span style=display:flex><span>  } <span style=color:#ff79c6>else</span> {
+</span></span><span style=display:flex><span>    mbed<span style=color:#ff79c6>::</span>PwmOut<span style=color:#ff79c6>*</span> pwm <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>new</span> mbed<span style=color:#ff79c6>::</span>PwmOut(pin);
+</span></span><span style=display:flex><span>    pwm<span style=color:#ff79c6>-&gt;</span>period_ms(<span style=color:#bd93f9>2</span>); <span style=color:#6272a4>//500Hz
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>    <span style=color:#8be9fd>float</span> percent <span style=color:#ff79c6>=</span> (<span style=color:#8be9fd>float</span>)val<span style=color:#ff79c6>/</span>(<span style=color:#8be9fd>float</span>)(<span style=color:#bd93f9>1</span> <span style=color:#ff79c6>&lt;&lt;</span> write_resolution);
+</span></span><span style=display:flex><span>    pwm<span style=color:#ff79c6>-&gt;</span>write(percent);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>analogWrite</span>(pin_size_t pin, <span style=color:#8be9fd>int</span> val)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>if</span> (pin <span style=color:#ff79c6>&gt;=</span> PINS_COUNT) {
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>return</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span><span style=color:#ff79c6>#ifdef DAC
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>    <span style=color:#ff79c6>if</span> (pin <span style=color:#ff79c6>==</span> DAC) {
+</span></span><span style=display:flex><span>      analogWriteDAC(digitalPinToPinName(pin), val);
+</span></span><span style=display:flex><span>      <span style=color:#ff79c6>return</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span><span style=color:#ff79c6>#endif
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>  <span style=color:#8be9fd>float</span> percent <span style=color:#ff79c6>=</span> (<span style=color:#8be9fd>float</span>)val<span style=color:#ff79c6>/</span>(<span style=color:#8be9fd>float</span>)(<span style=color:#bd93f9>1</span> <span style=color:#ff79c6>&lt;&lt;</span> write_resolution);
+</span></span><span style=display:flex><span>  mbed<span style=color:#ff79c6>::</span>PwmOut<span style=color:#ff79c6>*</span> pwm <span style=color:#ff79c6>=</span> digitalPinToPwm(pin);
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>if</span> (pwm <span style=color:#ff79c6>==</span> <span style=color:#8be9fd;font-style:italic>NULL</span>) {
+</span></span><span style=display:flex><span>    pwm <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>new</span> mbed<span style=color:#ff79c6>::</span>PwmOut(digitalPinToPinName(pin));
+</span></span><span style=display:flex><span>    digitalPinToPwm(pin) <span style=color:#ff79c6>=</span> pwm;
+</span></span><span style=display:flex><span>    pwm<span style=color:#ff79c6>-&gt;</span>period_ms(<span style=color:#bd93f9>2</span>); <span style=color:#6272a4>//500Hz
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  }
+</span></span><span style=display:flex><span>  pwm<span style=color:#ff79c6>-&gt;</span>write(percent);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#6272a4>// [...]
+</span></span></span></code></pre></div><p>Looking at this implementation:</p><ul>
+<li>The first overload is called if you pass a <code>PinName</code> for the pin number, which is an <code>enum</code> declared by Mbed&rsquo;s
+abstraction layer. If the pin exists in the Arduino&rsquo;s mapping (<code>PinNameToIndex</code>), it is forwarded to the second
+overload. Otherwise, writing the PWM parameters is delegated to an <code>mbed::PwmOut</code> which is subsequently leaked.</li><li>The second overload is called when passing a raw pin number, which is what Arduino sketches typically do. Skipping
+over the DAC part, this function sets up a singleton <code>mbed::PwmOut</code> for this pin in a global array somewhere whose
+mapping is resolved by the <code>digitalPinToPwm</code> macro. This allocation only happens once, the <code>PwmOut</code> object being
+reused on a subsequent call to <code>analogWrite</code> for the same pin.</li></ul><p>This implementation is correct: since invoking the constructor for a <code>mbed::PwmOut</code> object actually initializes the PWM
+hardware for the given pin<sup id=fnref:7><a href=#fn:7 class=footnote-ref role=doc-noteref>7</a></sup>, this side effect only appears when the first <code>analogWrite</code> call is
+issued. Being able to change the PWM frequency would be nice, but it is currently not possible on other platforms
+either. At least, not through the official Arduino API<sup id=fnref:8><a href=#fn:8 class=footnote-ref role=doc-noteref>8</a></sup>.</p><p>However, both the <a href=https://os.mbed.com/docs/mbed-os/v6.9/apis/pwmout.html target=_blank rel=noopener>Mbed documentation</a> <strong>and</strong> the <a href=https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/ target=_blank rel=noopener>Arduino
+documentation</a> fail to mention one major
+limitation. The Arduino 33 BLE is equipped with a RGB LED connected to pins 22, 23, and 24 for its R, G and B channels
+respectively. It&rsquo;s a perfect candidate for PWM to dim the various channels:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;Arduino.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>setup</span>() {}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>loop</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>auto</span> now <span style=color:#ff79c6>=</span> millis();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Set the RGB LED color
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  analogWrite(LEDR, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>100</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>  analogWrite(LEDG, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>200</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>  analogWrite(LEDB, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>300</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This sketch works perfectly fine, but is rather limited. In an actual project, you might also be controlling other
+devices using PWM, which the Arduino Nano 33 BLE is perfectly able to do, since PWM is supported on <a href=https://store.arduino.cc/arduino-nano-33-ble target=_blank rel=noopener>all digital
+pins</a>, according to its technical specifications. Maybe we could control
+some extra pins:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;Arduino.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>setup</span>() {}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>loop</span>() {
+</span></span><span style=display:flex><span>  <span style=color:#ff79c6>auto</span> now <span style=color:#ff79c6>=</span> millis();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Set the RGB LED color
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  analogWrite(LEDR, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>100</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>  analogWrite(LEDG, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>200</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>  analogWrite(LEDB, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>300</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#6272a4>// Added: a red LED on 11, and a green one on 12?
+</span></span></span><span style=display:flex><span><span style=color:#6272a4></span>  analogWrite(<span style=color:#bd93f9>11</span>, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>400</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>  analogWrite(<span style=color:#bd93f9>12</span>, (now <span style=color:#ff79c6>+</span> <span style=color:#bd93f9>500</span>) <span style=color:#ff79c6>%</span> <span style=color:#bd93f9>255</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>When compiled and uploaded to the board, you don&rsquo;t get five PWM pins but instead a board that disappears from the USB
+devices on your computer, blinking its builtin LED in a &mdash; rather ominous the first time &mdash; Morse code SOS pattern.
+Before assuming the board burnt-out, I tried the following steps:</p><ul>
+<li>Googling the issue: no significant results at the time to help<sup id=fnref:9><a href=#fn:9 class=footnote-ref role=doc-noteref>9</a></sup>.</li><li>Re-uploading the previous code after resetting: works.</li><li>Replacing <code>analogWrite</code> calls with <code>mbed::PwmOut</code> objects: doesn&rsquo;t work.</li></ul><p>This rules out hardware issues, as well as the Arduino abstraction layer over Mbed. Off to the Mbed source code we go!
+Note that the core downloaded by the board manager or PlatformIO does not contain the Mbed source code. It&rsquo;s a rather
+large project, and as such is distributed in a pre-compiled version:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700>find -name *.a</span>
+./variants/ARDUINO_NANO33BLE/libs/libmbed.a
+./variants/ARDUINO_NANO33BLE/libs/libcc_310_core.a
+./variants/ARDUINO_NANO33BLE/libs/libcc_310_trng.a
+./variants/ARDUINO_NANO33BLE/libs/libcc_310_ext.a
+./variants/PORTENTA_H7_M4/libs/libmbed.a
+./variants/PORTENTA_H7_M4/libs/libopenamp.a
+./variants/PORTENTA_H7_M7/libs/libmbed.a</code></pre></div><p>Thankfully, the Mbed source code is available on <a href=https://github.com/ARMmbed/mbed-os target=_blank rel=noopener>GitHub</a>. Following the dependency
+chain, we can find the source of our issue:</p><ul>
+<li><code>mbed::PwmOut</code> is declared in
+<a href=https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/include/drivers/PwmOut.h target=_blank rel=noopener>drivers/include/drivers/PwmOut.h</a>.
+It references <code>hal/pwmout_api.h</code> which, as the name indicates, is an Hardware Abstraction Layer (HAL) for the <code>PwmOut</code>
+API.</li><li>The implementation of <code>mbed::PwmOut</code> in
+<a href=https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/drivers/source/PwmOut.cpp target=_blank rel=noopener>drivers/source/PwmOut.cpp</a>
+confirms this: the class methods call methods from this HAL API in order to change the actual hardware state.</li><li>Looking at
+<a href=https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/hal/include/hal/pwmout_api.h target=_blank rel=noopener>hal/include/hal/pwmout_api.h</a>,
+the comments mention that the target should implement the methods declared in this file in order to provide PWM output
+capabilities to the user.</li><li>The CPU on the Arduino Nano 33 BLE is a Nordic nRF52840. The Mbed source code does indeed contain a target for this
+architecture, in
+<a href=https://github.com/ARMmbed/mbed-os/tree/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x target=_blank rel=noopener>targets/TARGET_NORDIC/TARGET_NRF5x</a>.</li><li>A quick <code>find targets/TARGET_NORDIC/TARGET_NRF5x -name pwmout_api.*</code> reveals the PWM HAL implementation for this
+target resides in
+<a href=https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c target=_blank rel=noopener>targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c</a>.
+Bingo!</li></ul><p>Skimming through this implementation, the first interesting thing is the <code>nordic_pwm_init</code> function:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#ff79c6>static</span> <span style=color:#8be9fd>void</span> <span style=color:#50fa7b>nordic_pwm_init</span>(pwmout_t <span style=color:#ff79c6>*</span>obj)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    MBED_ASSERT(obj);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>/* Default configuration:
+</span></span></span><span style=display:flex><span><span style=color:#6272a4>     * 1 pin per instance, otherwise they would share base count.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4>     * 1 MHz clock source to match the 1 us resolution.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4>     */</span>
+</span></span><span style=display:flex><span>    nrfx_pwm_config_t config <span style=color:#ff79c6>=</span> {
+</span></span><span style=display:flex><span>        .output_pins  <span style=color:#ff79c6>=</span> {
+</span></span><span style=display:flex><span>            obj<span style=color:#ff79c6>-&gt;</span>pin,
+</span></span><span style=display:flex><span>            NRFX_PWM_PIN_NOT_USED,
+</span></span><span style=display:flex><span>            NRFX_PWM_PIN_NOT_USED,
+</span></span><span style=display:flex><span>            NRFX_PWM_PIN_NOT_USED,
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        .irq_priority <span style=color:#ff79c6>=</span> PWM_DEFAULT_CONFIG_IRQ_PRIORITY,
+</span></span><span style=display:flex><span>        .base_clock   <span style=color:#ff79c6>=</span> NRF_PWM_CLK_1MHz,
+</span></span><span style=display:flex><span>        .count_mode   <span style=color:#ff79c6>=</span> NRF_PWM_MODE_UP,
+</span></span><span style=display:flex><span>        .top_value    <span style=color:#ff79c6>=</span> obj<span style=color:#ff79c6>-&gt;</span>period,
+</span></span><span style=display:flex><span>        .load_mode    <span style=color:#ff79c6>=</span> NRF_PWM_LOAD_COMMON,
+</span></span><span style=display:flex><span>        .step_mode    <span style=color:#ff79c6>=</span> NRF_PWM_STEP_AUTO,
+</span></span><span style=display:flex><span>    };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>/* Initialize instance with new configuration. */</span>
+</span></span><span style=display:flex><span>    ret_code_t result <span style=color:#ff79c6>=</span> nrfx_pwm_init(<span style=color:#ff79c6>&amp;</span>nordic_nrf5_pwm_instance[obj<span style=color:#ff79c6>-&gt;</span>instance],
+</span></span><span style=display:flex><span>                                      <span style=color:#ff79c6>&amp;</span>config,
+</span></span><span style=display:flex><span>                                      <span style=color:#8be9fd;font-style:italic>NULL</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    MBED_ASSERT(result <span style=color:#ff79c6>==</span> NRFX_SUCCESS);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>A couple of things worth noting:</p><ul>
+<li>It only uses one pin out of four in what looks like a configuration structure for PWM
+(<code>nrfx_pwm_config_t.output_pins</code>).</li><li>Initializing a PWM instance an fail, and is thus checked by the <code>MBED_ASSERT</code> macro. This macro is used multiple times
+through this implementation. Would this assertion failing trigger the blinking SOS behavior we have encountered?</li></ul><p>Finding out the behavior of this macro is left as an exercise to the reader. But since you are still reading this, you
+probably quickly found out that a failed assertion leads to an eventual call to
+<a href=https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/platform/source/mbed_board.c#L26 target=_blank rel=noopener>mbed_die</a>
+which blinks <code>LED1</code> in an SOS pattern indefinitely. Our hypothesis is confirmed!</p><p>If you somehow managed to follow this source-digging carefully, you might have noticed <code>nordic_pwm_init</code> is a <code>static</code>
+function: it is only a helper function for implementing the HAL, which is later defined in the file. Namely,
+<a href=https://github.com/ARMmbed/mbed-os/blob/mbed-os-6.9.0/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c#L137 target=_blank rel=noopener>pwmout_init</a>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#8be9fd>void</span> <span style=color:#50fa7b>pwmout_init</span>(pwmout_t <span style=color:#ff79c6>*</span>obj, PinName pin)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    DEBUG_PRINTF(<span style=color:#f1fa8c>&#34;pwmout_init: %d</span><span style=color:#f1fa8c>\r\n</span><span style=color:#f1fa8c>&#34;</span>, pin);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    MBED_ASSERT(obj);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>/* Get hardware instance from pinmap. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd>int</span> instance <span style=color:#ff79c6>=</span> pin_instance_pwm(pin);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    MBED_ASSERT(instance <span style=color:#ff79c6>&lt;</span> (<span style=color:#8be9fd>int</span>)(<span style=color:#ff79c6>sizeof</span>(nordic_nrf5_pwm_instance) <span style=color:#ff79c6>/</span> <span style=color:#ff79c6>sizeof</span>(nrfx_pwm_t)));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>/* Populate PWM object with default values. */</span>
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>instance <span style=color:#ff79c6>=</span> instance;
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>pin <span style=color:#ff79c6>=</span> pin;
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>pulse <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>0</span>;
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>period <span style=color:#ff79c6>=</span> MAX_PWM_COUNTERTOP;
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>percent <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>0</span>;
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>sequence.values.p_common <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>&amp;</span>obj<span style=color:#ff79c6>-&gt;</span>pulse;
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>sequence.length <span style=color:#ff79c6>=</span> NRF_PWM_VALUES_LENGTH(obj<span style=color:#ff79c6>-&gt;</span>pulse);
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>sequence.repeats <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>0</span>;
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>sequence.end_delay <span style=color:#ff79c6>=</span> <span style=color:#bd93f9>0</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>/* Set active low logic. */</span>
+</span></span><span style=display:flex><span>    obj<span style=color:#ff79c6>-&gt;</span>pulse <span style=color:#ff79c6>|=</span> SEQ_POLARITY_BIT;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#6272a4>/* Initialize PWM instance. */</span>
+</span></span><span style=display:flex><span>    nordic_pwm_init(obj);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Interestingly enough, this code is very similar to the Arduino implementation of <code>analogWrite</code>. The pin number is mapped
+to an <em>instance</em> number:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span>    <span style=color:#6272a4>/* Get hardware instance from pinmap. */</span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd>int</span> instance <span style=color:#ff79c6>=</span> pin_instance_pwm(pin);
+</span></span></code></pre></div><p><a href=https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pinmap_ex.c#L307 target=_blank rel=noopener>pin_instance_pwm</a>
+actually allocates hardware PWM instance numbers for the given pin. If no more instances are available, it will return
+the <code>NC</code> constant to indicate no such instance is available:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span><span style=color:#6272a4>/**
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> * Brief       Find hardware instance for the provided PWM pin.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *             The function will search the PeripheralPin map for a pre-allocated
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *             assignment. If none is found the allocation map will be searched
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *             to see if the same pins have been assigned an instance before.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *             If no assignement is found and there is an empty slot left in the
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *             map, the pins are stored in the map and the hardware instance is
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *             returned.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *             If no free instances are available, the default instance is returned.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> * Parameter   pwm   pwm pin.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> *
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> * Return      Hardware instance associated with provided pins.
+</span></span></span><span style=display:flex><span><span style=color:#6272a4> */</span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>int</span> pin_instance_pwm(PinName pwm)
+</span></span></code></pre></div><p>Thus, how many instances are there? <a href=https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pinmap_ex.c#L281 target=_blank rel=noopener><strong>four</strong>, according to the declaration preceding
+<code>pin_instance_pwm</code></a>.
+This means that when <code>pwmout_init</code> runs out of hardware PWM instances, the <a href=https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/pwmout_api.c#L146 target=_blank rel=noopener>following
+assertion</a>
+will fail:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span>    MBED_ASSERT(instance <span style=color:#ff79c6>&lt;</span> (<span style=color:#8be9fd>int</span>)(<span style=color:#ff79c6>sizeof</span>(nordic_nrf5_pwm_instance) <span style=color:#ff79c6>/</span> <span style=color:#ff79c6>sizeof</span>(nrfx_pwm_t)));
+</span></span></code></pre></div><p>Which in turn, stops the CPU and blinks the builtin LED in an SOS pattern. <strong>Mystery solved! 🎉</strong></p><blockquote>
+<p>But <strong>hold on</strong>. Why say PWM output is supported on all digital pins if we can only use four of them at the same time?</p></blockquote><p>Well, according to the <a href="https://infocenter.nordicsemi.com/index.jsp?topic=%2Fstruct_nrf52%2Fstruct%2Fnrf52840.html" target=_blank rel=noopener>product
+specification</a>, the nRF52840
+does feature <em>4x four channel pulse width modulator (PWM) unit with EasyDMA</em>. What this actually means is that there are
+four fully-independent PWM modules (the <em>hardware instances</em> in the code we just studied), each of which can drive four
+pins. This brings the total of PWM pins to 16, which is much more reasonable as long as you can group them into the four
+PWM modules available.</p><p>If you spend more time digging through the <a href="https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.0.0%2Fgroup__nrf__pwm.html&cp=7_5_3_6_9_0_12" target=_blank rel=noopener>Nordic SDK documentation for
+PWM</a>,
+you will find out that the 4 pins of a single instance will share the same PWM frequency, but you can still set
+different duty cycles. ARMed with this knowledge, you may now implement an nRF-specific PWM port that can drive 4 pins
+at the same time, but only using one hardware instance. See my implementation which resulted from this
+reverse-engineering at
+<a href=https://github.com/vtavernier/smart-tps/blob/master/include/nano33ble/nrf_pwm_port.hpp target=_blank rel=noopener>nrf_pwm_port.hpp</a> and
+<a href=https://github.com/vtavernier/smart-tps/blob/master/src/nano33ble/nrf_pwm_port.cpp target=_blank rel=noopener>nrf_pwm_port.cpp</a>.</p><p>This leaves us with a fully-dimmable RGB LED and 3 possible <code>analogWrite</code>-controllable pins. <strong>Problem solved!</strong></p><h1 id=conclusion>
+Conclusion
+<a class=heading-link href=#conclusion>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>I wanted to share this reverse-engineering adventure as I think it could be useful for other developers working with the
+Arduino ecosystem. Most of the discoveries mentioned here are to my knowledge, at the time of writing this article, not
+documented anywhere.</p><p>To me, even with those hidden caveats, Arduinos are still an excellent platform for beginners and hobbyists. These
+limitations should not be encountered in <em>most</em> cases, and more experienced developers should be able to work around
+these issues by reaching for the hardware SDKs directly.</p><p>The only major pain point I had working with Arduino libraries is the strong coupling with the hardware. If you wish to
+test some of your code on your computer instead of the target board (PlatformIO has a <code>native</code> target just for this),
+you have to design your code around the fact that <code>Arduino.h</code> is not available for desktop targets, even if most of it
+is hardware-independent. But we shall go down this rabbit hole another time.</p><p>Until then, happy hacking!</p><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>See &ldquo;Syntax&rdquo; and &ldquo;Parameters&rdquo; in
+<a href=https://www.arduino.cc/reference/en/language/functions/digital-io/digitalwrite/ target=_blank rel=noopener>https://www.arduino.cc/reference/en/language/functions/digital-io/digitalwrite/</a>&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
+<p>Using this <a href=https://en.cppreference.com/w/cpp/language/implicit_conversion target=_blank rel=noopener>digest version</a> of the C++
+standard for implicit conversions, try predicting what passing an <code>int</code> to a function that expects a <code>byte</code>
+(Arduino-specific definition). Bonus points if you can describe what happens on overflow on the various architectures
+this code could be run on.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
+<p><code>int</code>, <code>char</code>, <code>float</code> and other built-in data-types are C++ built-ins, supported directly by the
+target platform and are basically free to create. This isn&rsquo;t the case of the <code>String</code> type, which allocates memory, an
+expensive and error-prone operation (running out of heap space overwrites your program&rsquo;s stack &mdash; a &ldquo;technicality&rdquo;
+not mentioned in the documentation).&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote>
+<p>Creating a project with <code>pio init --ide vim</code> will create the necessary files for the <code>ccls</code>
+language server to provide completion and go-to definition for Arduino code. This what I mainly used for this work.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:5 role=doc-endnote>
+<p>On AVR, setting a bit in an output register is an atomic operation (<code>sbi</code> instruction). However,
+<code>*port |= mask</code> is a <em>read-modify-write</em> operation since <code>mask</code> may set more than one bit and/or not be a constant. By
+being 3 instructions long, there is a chance an interruption could happen between the <em>read</em> and <em>write</em>, and break
+the code. Thus, a critical section is required, which equates to temporarily disabling interrupt handling.&#160;<a href=#fnref:5 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:6 role=doc-endnote>
+<p>PlatformIO uses <code>-flto -Os</code> as the default optimization level, but changing those
+settings didn&rsquo;t influence the result significantly.&#160;<a href=#fnref:6 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:7 role=doc-endnote>
+<p>The <a href=https://os.mbed.com/docs/mbed-os/v6.9/mbed-os-api-doxy/classmbed_1_1_pwm_out.html#ae90809b159b1af641a257b3505c56c41 target=_blank rel=noopener>official documentation for
+<code>mbed::PwmOut</code></a>
+does not mention it, but looking through the <a href=https://github.com/ARMmbed/mbed-os/blob/c73413893fb98aaaeda74513c981ac68adc8645d/drivers/source/PwmOut.cpp#L162 target=_blank rel=noopener>source
+code</a>
+you can find that <code>PwmOut::init</code> invokes <code>pwmout_init</code> from the hardware abstraction layer, which does indeed
+initialize the PWM hardware.&#160;<a href=#fnref:7 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:8 role=doc-endnote>
+<p>If you pick the right PWM pins on an AVR board, you can access the registers directly and set
+the PWM frequency, as described on the <a href="https://www.arduino.cc/en/pmwiki.php?n=Tutorial/SecretsOfArduinoPWM" target=_blank rel=noopener>Arduino
+Wiki</a>. On an Mbed board, you can just use the
+<code>mbed::PwmOut</code> class directly.&#160;<a href=#fnref:8 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:9 role=doc-endnote>
+<p>Google&rsquo;s indexing of pages changes all the time, and today you might find out <a href=https://forum.arduino.cc/t/arduino-nano-33-ble-damaged/639669/2 target=_blank rel=noopener>this forum
+post</a>, where the first answer mentions that&rsquo;s what
+Mbed does when it crashes, which could be for various reasons. This answer also includes a vague reference to the
+issue we&rsquo;re encountering here.&#160;<a href=#fnref:9 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></div><footer>
+<div class=comments>
+<script>let getTheme=window.localStorage&&window.localStorage.getItem("colorscheme");getTheme=getTheme??"dark";let theme=getTheme==="dark"?"github-dark":"github-light",s=document.createElement("script");s.src="https://utteranc.es/client.js",s.setAttribute("repo","vtavernier/vtavernier.github.io"),s.setAttribute("issue-term","pathname"),s.setAttribute("theme",theme),s.setAttribute("crossorigin","anonymous"),s.setAttribute("async",''),document.querySelector("div.comments").innerHTML='',document.querySelector("div.comments").appendChild(s)</script>
+</div></footer></article></section></div><footer class=footer>
+<section class=container>
+©
+2019 -
+2023
+Vincent Tavernier
+·
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
+</section></footer></main><script src=/js/coder.min.617ac1196e51a8e5820c29ea3f349ae87be7db1242a5a91f3afa569275213d0f.js integrity="sha256-YXrBGW5RqOWCDCnqPzSa6Hvn2xJCpakfOvpWknUhPQ8="></script>
+<script src=/main.min.d2d1e601897e7d550d453590ae2ba709fcb5997a42c921151e8a64f7928a38af.js integrity="sha256-0tHmAYl+fVUNRTWQriunCfy1mXpCySEVHopk95KKOK8="></script>
+<script data-goatcounter=https://vtavernier.goatcounter.com/count async src=//gc.zgo.at/count.js></script>
+</body></html>
