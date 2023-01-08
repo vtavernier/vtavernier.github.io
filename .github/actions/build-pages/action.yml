@@ -1,0 +1,27 @@
+name: Build pages artifacts
+description: Build GitHub pages artifacts for the repository
+inputs:
+  hugo-version:
+    description: Hugo version to use
+    required: false
+    default: '0.93.3'
+  base-url:
+    description: Base URL
+    required: false
+    default: '/'
+outputs:
+  build-dir:
+    description: Directory containing the artifacts
+    value: ./public
+runs:
+  using: composite
+  steps:
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: '0.93.3'
+        extended: true
+
+    - name: Build
+      run: hugo --minify --buildDrafts --baseURL "https://vtavernier.github.io${{ inputs.base-url }}"
+      shell: bash
