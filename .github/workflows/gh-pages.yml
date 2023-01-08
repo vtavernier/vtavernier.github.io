@@ -22,6 +22,8 @@ jobs:
       - name: Build
         id: build
         uses: ./.github/actions/build-pages
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

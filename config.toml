@@ -107,3 +107,6 @@ style = "dracula"
 
 [markup.goldmark.renderer]
 unsafe = true
+
+[security.funcs]
+getenv = ['^HUGO_', 'GITHUB_TOKEN']

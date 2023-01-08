@@ -9,6 +9,9 @@ inputs:
     description: Base URL
     required: false
     default: '/'
+  github-token:
+    description: GitHub Token
+    required: true
 outputs:
   build-dir:
     description: Directory containing the artifacts
@@ -23,5 +26,7 @@ runs:
         extended: true
 
     - name: Build
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       run: hugo --minify --buildDrafts --baseURL "https://vtavernier.github.io${{ inputs.base-url }}"
       shell: bash
