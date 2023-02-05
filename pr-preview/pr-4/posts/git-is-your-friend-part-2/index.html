@@ -1,0 +1,462 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=color-scheme content="light dark">
+<meta name=author content="Vincent Tavernier">
+<meta name=description content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!">
+<meta name=keywords content="blog,developer,personal,research,graphics">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Git is your friend, not your enemy — Part 2">
+<meta name=twitter:description content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!">
+<meta property="og:title" content="Git is your friend, not your enemy — Part 2">
+<meta property="og:description" content="Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://vtavernier.github.io/pr-preview/pr-4/posts/git-is-your-friend-part-2/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-01-25T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-01-25T00:00:00+00:00">
+<meta property="og:see_also" content="https://vtavernier.github.io/pr-preview/pr-4/posts/git-is-your-friend-part-3/"><meta property="og:see_also" content="https://vtavernier.github.io/pr-preview/pr-4/posts/git-is-your-friend-part-1/">
+<title>The Tavern</title><link rel=canonical href=https://vtavernier.github.io/pr-preview/pr-4/posts/git-is-your-friend-part-2/>
+<link rel=preload href="/fonts/forkawesome-webfont.woff2?v=1.2.0" as=font type=font/woff2 crossorigin>
+<link rel=stylesheet href=/pr-preview/pr-4/css/coder.min.6b1a4fbc48955b72aea7913e43fabeb45e8bc120da5aa41b598dd33adcac4b59.css integrity="sha256-axpPvEiVW3Kup5E+Q/q+tF6LwSDaWqQbWY3TOtysS1k=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/pr-preview/pr-4/css/coder-dark.min.39e41a7f16bdf8cb16e43cae7d714fa1016f1d2d2898a5b3f27f42c9979204e2.css integrity="sha256-OeQafxa9+MsW5DyufXFPoQFvHS0omKWz8n9CyZeSBOI=" crossorigin=anonymous media=screen>
+<link rel=stylesheet href=/pr-preview/pr-4/css/main.min.eee8b4bae3f8317f1bbbaba644bd5343666fc10948260e11f665c17f082d882c.css integrity="sha256-7ui0uuP4MX8bu6umRL1TQ2ZvwQlIJg4R9mXBfwgtiCw=" crossorigin=anonymous media=screen>
+<link rel=icon type=image/png href=/pr-preview/pr-4/images/favicon-32x32.png sizes=32x32>
+<link rel=icon type=image/png href=/pr-preview/pr-4/images/favicon-16x16.png sizes=16x16>
+<link rel=apple-touch-icon href=/pr-preview/pr-4/images/apple-touch-icon.png>
+<link rel=apple-touch-icon sizes=180x180 href=/pr-preview/pr-4/images/apple-touch-icon.png>
+<link rel=manifest href=/pr-preview/pr-4/site.webmanifest>
+<link rel=mask-icon href=/pr-preview/pr-4/images/safari-pinned-tab.svg color=#5bbad5>
+<meta name=generator content="Hugo 0.93.3">
+</head><body class="preload-transitions colorscheme-dark">
+<main class=wrapper>
+<nav class=navigation>
+<section class=container>
+<a class=navigation-title href=/pr-preview/pr-4>
+The Tavern
+</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle>
+<i class="fa fa-bars fa-fw" aria-hidden=true></i>
+</label>
+<ul class=navigation-list>
+<li class=navigation-item>
+<a class=navigation-link href=/pr-preview/pr-4/posts/>Blog</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/pr-preview/pr-4/projects/>Projects</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/pr-preview/pr-4/research/>Research</a>
+</li><li class=navigation-item>
+<a class=navigation-link href=/pr-preview/pr-4/about/>About me</a>
+</li></ul></section></nav><div class=content>
+<section class="container post">
+<article>
+<header>
+<div class=post-title>
+<h1 class=title>
+<a class=title-link href=https://vtavernier.github.io/pr-preview/pr-4/posts/git-is-your-friend-part-2/>
+Git is your friend, not your enemy — Part 2
+</a>
+</h1></div><div class=post-meta>
+<div class=date>
+<span class=posted-on>
+<i class="fa fa-calendar" aria-hidden=true></i>
+<time datetime=2021-01-25T00:00:00Z>
+January 25, 2021
+</time>
+</span>
+<span class=reading-time>
+<i class="fa fa-clock-o" aria-hidden=true></i>
+16-minute read
+</span>
+</div><div class=tags>
+<i class="fa fa-tag" aria-hidden=true></i>
+<span class=tag>
+<a href=/pr-preview/pr-4/tags/tutorial/>tutorial</a>
+</span>
+<span class=separator>•</span>
+<span class=tag>
+<a href=/pr-preview/pr-4/tags/git/>git</a>
+</span></div></div></header><div>
+<blockquote>
+<p>This post is the second part of a tutorial series on how to use Git to its full potential. Read the first part
+<a href=https://vtavernier.github.io/pr-preview/pr-4/posts/git-is-your-friend-part-1/>here</a>.</p></blockquote><p>We ended the previous part of this tutorial on merging local changes with remote changes. That last part assumed there
+was no merge conflict &mdash; a situation you may have already encountered in the wild. We will now look at how to solve
+those conflicts efficiently, which becomes critical for the next part, maintaining a clean Git history using interactive
+rebasing.</p><h1 id=solving-merge-conflicts-with-a-merge-tool>
+Solving merge conflicts with a merge tool
+<a class=heading-link href=#solving-merge-conflicts-with-a-merge-tool>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>Let us start with the following situation:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>    C origin/master
+</span></span><span style=display:flex><span>   /
+</span></span><span style=display:flex><span>  A---B master
+</span></span></code></pre></div><p>We can visualize this in our terminal:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git log --all --oneline --graph</span>
+* <span style=color:olive>d105f20</span><span style=color:olive> (</span><span style=font-weight:700;color:green>origin/master</span><span style=color:olive>)</span> Add success return to main
+<span style=color:red>|</span> * <span style=color:olive>836ba41</span><span style=color:olive> (</span><span style=font-weight:700;color:teal>HEAD -&gt; </span><span style=font-weight:700;color:green>master</span><span style=color:olive>)</span> Add error return to main
+<span style=color:red>|</span><span style=color:red>/</span>  
+* <span style=color:olive>a5aea3c</span> Initial commit</code></pre></div><p>If, from the <code>master</code> branch we try to use <code>git pull</code> (effectively running <code>git merge origin/master</code>), we will end up
+with the following warning from Git: <a id=conflicted-state-1></a></p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git pull</span>
+From .
+ * branch            origin/master -&gt; FETCH_HEAD
+Auto-merging main.c
+CONFLICT (content): Merge conflict in main.c
+Automatic merge failed; fix conflicts and then commit the result.</code></pre></div><p>This means &mdash; exactly as mentioned by the Git output &mdash; that there is no way to automatically merge changes from the
+two branches being merged. Indeed, if we look at the <code>master</code> branch, this is our (local) change:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git show master --oneline</span>
+<span style=color:olive>836ba41cac2a63cb2e060dfb5fdc9c6bdea82882</span> Add error return to main
+<span style=font-weight:700>diff --git a/main.c b/main.c</span>
+<span style=font-weight:700>index 0a502e4..dd314f9 100644</span>
+<span style=font-weight:700>--- a/main.c</span>
+<span style=font-weight:700>+++ b/main.c</span>
+<span style=color:teal>@@ -2,4 +2,5 @@</span>
+ #include &lt;stdlib.h&gt;
+ 
+ int main(int argc, char *argv[]) {
+<span style=color:green>+</span>	<span style=color:green>return 1;</span>
+ }</code></pre></div><p>While the <code>origin/master</code> had those (remote) &mdash; incompatible &mdash; changes:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git show origin/master --oneline</span>
+<span style=color:olive>d105f20e3f19cdc2786d374e73f9f4cd8aa560ec</span> Add success return to main
+<span style=font-weight:700>diff --git a/main.c b/main.c</span>
+<span style=font-weight:700>index 0a502e4..296c7ac 100644</span>
+<span style=font-weight:700>--- a/main.c</span>
+<span style=font-weight:700>+++ b/main.c</span>
+<span style=color:teal>@@ -2,4 +2,5 @@</span>
+ #include &lt;stdlib.h&gt;
+ 
+ int main(int argc, char *argv[]) {
+<span style=color:green>+</span>	<span style=color:green>return 0;</span>
+ }</code></pre></div><p>How do we fix those changes?</p><h2 id=the-manual-bad-way>
+The manual (bad) way
+<a class=heading-link href=#the-manual-bad-way>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>Upon discovering the <code>fix conflicts and then commit the result</code> message from Git, the inexperienced Git user might do
+exactly as suggested. They would open the files in conflict one-by-one in their editor, and be greeted with this
+interesting syntax:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;stdio.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6>#include</span> <span style=color:#ff79c6>&lt;stdlib.h&gt;</span><span style=color:#ff79c6>
+</span></span></span><span style=display:flex><span><span style=color:#ff79c6></span>
+</span></span><span style=display:flex><span><span style=color:#8be9fd>int</span> <span style=color:#50fa7b>main</span>(<span style=color:#8be9fd>int</span> argc, <span style=color:#8be9fd>char</span> <span style=color:#ff79c6>*</span>argv[]) {
+</span></span><span style=display:flex><span><span style=color:#ff79c6>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span> HEAD
+</span></span><span style=display:flex><span>	<span style=color:#ff79c6>return</span> <span style=color:#bd93f9>1</span>;
+</span></span><span style=display:flex><span><span style=color:#ff79c6>=======</span>
+</span></span><span style=display:flex><span>	<span style=color:#ff79c6>return</span> <span style=color:#bd93f9>0</span>;
+</span></span><span style=display:flex><span><span style=color:#ff79c6>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> d105f20e3f19cdc2786d374e73f9f4cd8aa560ec
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The <code>&lt;&lt;&lt;</code>, <code>===</code> and <code>>>></code> character sequences are called <em>conflict markers</em>, since they mark a region of the file as in
+conflict. The name following <code>&lt;&lt;&lt;</code> is the local revision name (<code>HEAD</code> since we are merging into the current branch), and
+similarly the name following <code>>>></code> is the remote revision name (here denoted by its commit SHA).</p><p>The first region between <code>&lt;&lt;&lt;</code> and <code>===</code> contains the changes brought by the local revisions, and the second region
+between <code>===</code> and <code>>>></code> the changes from the remote revisions. To solve the merge conflict, we need to pick which region
+needs to be merged in.</p><p>The <em>manual</em> way to do it is to remove the conflict markers, and the region we do not want to keep in the resulting
+file. After closing the editor, running <code>git status</code> informs us of the current state of the repository:</p><div class="highlight highlight-manual">
+<pre><code>On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commits each, respectively.
+  (use &quot;git pull&quot; to merge the remote branch into yours)
+
+You have unmerged paths.
+  (fix conflicts and run &quot;git commit&quot;)
+  (use &quot;git merge --abort&quot; to abort the merge)
+
+Unmerged paths:
+  (use &quot;git add &lt;file&gt;...&quot; to mark resolution)
+	<span style=color:red>both modified:   main.c</span>
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</code></pre></div><p>Indeed, writing to a file does not inform Git that the conflict has been resolved. You need to mark the conflict as
+resolved with <code>git add main.c</code> (since <code>main.c</code> is the file that we resolved conflicts in) before finishing the merge
+with <code>git commit</code>:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git add main.c</span>
+$ <span style=font-weight:700;color:#fff>git commit --no-edit</span> <span style=color:gray># --no-edit skips opening the editor</span>
+[master 8738275] Merge branch 'origin/master'</code></pre></div><p><em><strong>Make sure you solved all the conflicts</strong></em>: if you call <code>git add</code> on a file which still has conflict markers, there
+will be no warnings and you will commit corrupted files to your repository. Nothing that can&rsquo;t be fixed, but this is
+hard to fix for future maintainers. Especially if you don&rsquo;t have continuous integration set up to catch those mistakes
+early&mldr;</p><p>Since this process has multiple points of failure, we should try to find a <em>better</em> method, which does not have this
+many pitfalls. Thankfully, Git has us covered.</p><h2 id=the-automated-good-way>
+The automated (good) way
+<a class=heading-link href=#the-automated-good-way>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>In order to automate the conflict resolution process, Git supports so-called <em>merge tools</em>: programs that will be run by
+Git in order to help the user fix conflicts by picking the right options on every conflicted region. First, we need to
+configure a <em>merge tool</em>. We will use the graphical tool <a href=https://meldmerge.org/ target=_blank rel=noopener>Meld</a>, although many others are
+available<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>.</p><p>First, install Meld using your distribution&rsquo;s package manager:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#6272a4># Debian/Ubuntu</span>
+</span></span><span style=display:flex><span>$ sudo apt install meld
+</span></span><span style=display:flex><span><span style=color:#6272a4># Fedora</span>
+</span></span><span style=display:flex><span>$ sudo dnf install meld
+</span></span></code></pre></div><p>Then, we need to indicate to Git we want to use Meld as our merge tool:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ git config --global merge.tool meld
+</span></span></code></pre></div><p>We are now ready to go! Let&rsquo;s go back to the <a href=#conflicted-state-1>conflicted state</a>. Then, instead of fixing the
+conflicts manually, we run the following command:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ git mergetool
+</span></span></code></pre></div><p>The main window of Meld opens:</p><p>
+<img src=meld-initial-conflict.png alt="Meld initial window">
+</p><p>As indicated in the headers of the panels:</p><ul>
+<li>The left panel represents the state of the file after local changes: this is our <code>master</code> branch we are merging into</li><li>The middle panel is the current state of the file we are building (where conflicts are solved).</li><li>The right panel represents the state of the file after remote changes: this is the <code>origin/master</code> branch we are
+merging into the <code>master</code> branch.</li></ul><p>Clicking on the arrows between the left (resp. right) panel will bring in the changes from the local (resp. remote)
+branches:</p><p>
+<img src=meld-resolved-conflicts.png alt="Meld window after conflict resolution">
+</p><p>You can then save the changes with the <code>Menu > Save all</code> option, or with <code>Ctrl+s</code>. When you have solved the conflict,
+you can quit Meld and check the status of our repository:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git status</span>
+On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commits each, respectively.
+  (use &quot;git pull&quot; to merge the remote branch into yours)
+
+All conflicts fixed but you are still merging.
+  (use &quot;git commit&quot; to conclude merge)
+
+Changes to be committed:
+	<span style=color:green>modified:   main.c</span>
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+	<span style=color:red>main.c.orig</span></code></pre></div><p>Two things are worth noting here:</p><ul>
+<li>The <code>main.c</code> file was automatically added as all the conflicts were resolved using Meld, so we don&rsquo;t have to call <code>git add main.c</code> (that&rsquo;s one step saved!)</li><li><code>main.c.orig</code> was created: this is a backup copy of <code>main.c</code> before the conflict resolution happened. We can remove
+it once we&rsquo;re sure the merge completed successfully.</li></ul><p>We may then complete our merge process by running <code>git commit</code>.</p><h2 id=merge-tools-conclusion>
+Merge tools: conclusion
+<a class=heading-link href=#merge-tools-conclusion>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>Using a merge tool streamlines the merge conflict resolution process by ensuring we do not miss a step &mdash; and also
+saves us a lot of typing and manually editing files. Since you will encounter merge conflicts regularly while using Git
+and collaborating with other people, it&rsquo;s a good idea to properly set up your <em>merge tool</em> so you don&rsquo;t feel like
+smashing your keyboard on merge conflicts.</p><p>More complicated merge conflicts might be hard to resolve though, especially when working with someone else&rsquo;s changes.
+This is why having a clean Git history is critical, so you can look at it when resolving a merge conflict and make
+informed decisions. Thankfully, Git also has us covered.</p><h1 id=rewriting-local-history-with-git-rebase>
+Rewriting local history with <code>git rebase</code>
+<a class=heading-link href=#rewriting-local-history-with-git-rebase>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>We already encountered rebasing in this tutorial: the <code>git pull --rebase</code> commands <em>rebases</em> (changes the parent of) a
+set of commits onto the current state of the remote branch in order to be able to push. However, we can rebase any set
+of commits while working locally, not just in the case of a pull.</p><p>Let&rsquo;s consider the following situation, with two branches <code>feature</code> and <code>master</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>        A---B---C feature
+</span></span><span style=display:flex><span>       /
+</span></span><span style=display:flex><span>  D---E---F---G master
+</span></span></code></pre></div><p>Running <code>git rebase master feature</code> will <em>rebase</em> the <code>feature</code> branch onto the <code>master</code> branch, resulting in this
+state:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>                A&#39;---B&#39;---C&#39; feature
+</span></span><span style=display:flex><span>               /
+</span></span><span style=display:flex><span>  D---E---F---G master
+</span></span></code></pre></div><p>Since Git has to rewrite every commit in the range being rebased, we also have the option to change the contents being
+committed at each step. This is what the <code>-i</code> option of Git rebase allows us to do: enter <em>interactive rebasing</em>.</p><h2 id=interactive-rebasing>
+Interactive rebasing
+<a class=heading-link href=#interactive-rebasing>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>When rebasing, you specify which commit (by its SHA, branch name, tag name, etc.) should be the last kept intact. All
+the following commits up to <code>HEAD</code> (the latest commit on the current branch) will be rebased &mdash; or <code>--root</code> to rebase
+all the way to the beginning of your repository&rsquo;s history.</p><p>After running <code>git rebase -i --root</code> on this article&rsquo;s tutorial, Git opens the configured text editor on the <em>todo
+file</em> below:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#50fa7b>pick a5aea3c Initial commit</span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>pick 836ba41 Add error return to main</span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>pick d105f20 Add success return to main</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># Rebase 1813570 onto 0625853 (3 commands)</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># Commands:</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># p, pick &lt;commit&gt; = use commit</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># r, reword &lt;commit&gt; = use commit, but edit the commit message</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># e, edit &lt;commit&gt; = use commit, but stop for amending</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># s, squash &lt;commit&gt; = use commit, but meld into previous commit</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># f, fixup &lt;commit&gt; = like &#34;squash&#34;, but discard this commit&#39;s log message</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># x, exec &lt;command&gt; = run command (the rest of the line) using shell</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># b, break = stop here (continue rebase later with &#39;git rebase --continue&#39;)</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># d, drop &lt;commit&gt; = remove commit</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># l, label &lt;label&gt; = label current HEAD with a name</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># t, reset &lt;label&gt; = reset HEAD to a label</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># .       create a merge commit using the original merge commit&#39;s</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># .       message (or the oneline, if no original merge commit was</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># .       specified). Use -c &lt;commit&gt; to reword the commit message.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># These lines can be re-ordered; they are executed from top to bottom.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># If you remove a line here THAT COMMIT WILL BE LOST.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># However, if you remove everything, the rebase will be aborted.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span></code></pre></div><p>Lines starting with <code>#</code> are comments to help use edit the <em>todo file</em> to describe the operations we want to apply to the
+commits about to be rebased. The first lines are commands:</p><ul>
+<li>First column: name of the command to apply</li><li>Second column: either a commit name for <code>pick</code>, <code>reword</code>, <code>edit</code>, <code>squash</code>, <code>fixup</code>, <code>drop</code>; or other command
+arguments for <code>exec</code>, <code>label</code>, <code>reset</code></li></ul><p>The description for these commands is pretty self-explanatory: each command is applied in order from top to bottom to
+the commits referenced in the command arguments. If a command fails, Git will stop the rebase process so you can fix the
+issue. Let&rsquo;s look at some changes we can make to this history.</p><h3 id=squashing-commits>
+Squashing commits
+<a class=heading-link href=#squashing-commits>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h3><p>If for some reason you think two commits should be merged into one instead of being separated, you can use the squash
+command. Edit the <em>todo file</em> to squash the third commit into the second:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#50fa7b>pick a5aea3c Initial commit</span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>pick 836ba41 Add error return to main</span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>squash d105f20 Add success return to main</span>
+</span></span></code></pre></div><p>Then, save the file and exit the editor to run rebasing:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>Auto-merging main.c
+</span></span><span style=display:flex><span>CONFLICT (content): Merge conflict in main.c
+</span></span><span style=display:flex><span>error: could not apply d105f20... Add success return to main
+</span></span><span style=display:flex><span>Resolve all conflicts manually, mark them as resolved with
+</span></span><span style=display:flex><span>&#34;git add/rm &lt;conflicted_files&gt;&#34;, then run &#34;git rebase --continue&#34;.
+</span></span><span style=display:flex><span>You can instead skip this commit: run &#34;git rebase --skip&#34;.
+</span></span><span style=display:flex><span>To abort and get back to the state before &#34;git rebase&#34;, run &#34;git rebase --abort&#34;.
+</span></span><span style=display:flex><span>Could not apply d105f20... Add success return to main
+</span></span></code></pre></div><p>Uh-oh. There is a merge conflict while rebasing (the same merge conflict we studied earlier in this article). This can
+happen when rebasing since some changes may not be compatible and thus require user action. We can solve the issue <code>git mergetool</code> and carry on with the rebase process:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#6272a4># Fix issues with your mergetool</span>
+</span></span><span style=display:flex><span>$ git mergetool
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># Continue rebasing</span>
+</span></span><span style=display:flex><span>$ git rebase --continue
+</span></span></code></pre></div><p>Squashing commits brings up the editor again to write an appropriate commit message<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#6272a4># This is a combination of 2 commits.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># This is the 1st commit message:</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>Add error return to main</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># This is the commit message #2:</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>Add success return to main</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># Please enter the commit message for your changes. Lines starting</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># with &#39;#&#39; will be ignored, and an empty message aborts the commit.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># Date:      Tue Dec 22 21:41:43 2020 +0100</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># interactive rebase in progress; onto bf1a9ac</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># Last commands done (3 commands done):</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#    pick 836ba41 Add error return to main</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#    squash d105f20 Add success return to main</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># No commands remaining.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># You are currently rebasing branch &#39;master&#39; on &#39;bf1a9ac&#39;.</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># Changes to be committed:</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#	modified:   main.c</span>
+</span></span><span style=display:flex><span><span style=color:#6272a4>#</span>
+</span></span></code></pre></div><p>When you&rsquo;re done editing your commit message, exit your editor and observe the completed result:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git log --oneline</span>
+<span style=color:olive>31c5062</span><span style=color:olive> (</span><span style=font-weight:700;color:teal>HEAD -&gt; </span><span style=font-weight:700;color:green>master</span><span style=color:olive>)</span> Add return to main
+<span style=color:olive>a5aea3c</span> Initial commit</code></pre></div><p>With our properly written history, we can keep on working on our project.</p><h3 id=editing-commits>
+Editing commits
+<a class=heading-link href=#editing-commits>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h3><p>Another option when rebasing is <em>editing</em> commits. This allows you to change the contents of a commit arbitrarily, by
+adding or removing changes, or changing the commit message<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>. Let&rsquo;s edit commit <code>31c5062</code> in the following
+history:</p><div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git log --oneline</span>
+<span style=color:olive>b9d4427</span><span style=color:olive> (</span><span style=font-weight:700;color:teal>HEAD -&gt; </span><span style=font-weight:700;color:green>master</span><span style=color:olive>)</span> Add computation
+<span style=color:olive>31c5062</span> Add return to main
+<span style=color:olive>a5aea3c</span><span style=color:olive> (</span><span style=font-weight:700;color:green>origin/master</span><span style=color:olive>)</span> Initial commit</code></pre></div><p>Running <code>git rebase -i origin/master</code>, switching the command for <code>31c5062</code> to <code>edit</code>, saving and quitting the editor
+will drop us back to the terminal. Again, Git indicates what the next steps are:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-txt data-lang=txt><span style=display:flex><span>Stopped at 31c5062...  Add return to main
+</span></span><span style=display:flex><span>You can amend the commit now, with
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  git commit --amend
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Once you are satisfied with your changes, run
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  git rebase --continue
+</span></span></code></pre></div><p>I decided to add some comments to <code>main.c</code> as an example change. We can then continue with the rebasing process:</p><div class="highlight highlight-manual">
+<pre><code><span style=color:gray># Modify the current commit with the changes made to main.c, skip opening the editor</span>
+$ <span style=font-weight:700;color:#fff>git commit --no-edit --amend main.c</span>
+[detached HEAD ffd5f65] Add return to main
+ Date: Tue Dec 22 21:41:43 2020 +0100
+ 1 file changed, 2 insertions(+)
+
+<span style=color:gray># Continue the rebasing process</span>
+$ <span style=font-weight:700;color:#fff>git rebase --continue</span>
+[detached HEAD 6c65969] Add computation
+ 1 file changed, 5 insertions(+)
+Successfully rebased and updated refs/heads/master.</code></pre></div><p>We&rsquo;re done with our changes!</p><h3 id=automating-rebasing-git-commit---fixup>
+Automating rebasing: <code>git commit --fixup</code>
+<a class=heading-link href=#automating-rebasing-git-commit---fixup>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h3><p>Fixing a previous commit with rebasing is such a common occurrence that there are commands dedicated to handling this
+case. First, we need to change our <code>~/.gitconfig</code> a bit to make it easier to work with:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#6272a4># This may equivalently be changed with `git config --global rebase.autosquash true`</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>[rebase]</span>
+</span></span><span style=display:flex><span>	<span style=color:#50fa7b>autosquash</span> <span style=color:#ff79c6>=</span> <span style=color:#f1fa8c>true</span>
+</span></span></code></pre></div><p>The workflow for <code>git commit --fixup</code> is as follows:</p><ol>
+<li>Change the working copy as needed, and stage the changes with <code>git add</code></li><li>Identify the commit you want to fix with <code>git log</code>. Let&rsquo;s say we want to fix commit <code>ffd5f65</code><sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup> in our example.</li><li>Run <code>git commit --fixup ffd5f65</code>. Note that no message is needed: a placeholder mentioning this is a fix-up is
+generated, and will be discarded by the next step:
+<div class="highlight highlight-manual">
+<pre><code>$ <span style=font-weight:700;color:#fff>git commit --fixup ffd5f65</span>
+[master cac3701] fixup! Add return to main
+ 1 file changed, 1 insertion(+), 1 deletion(-)</code></pre></div></li><li>Run <code>git rebase -i</code>. This starts an interactive rebase onto the last pushed state of the current branch. This means
+it shouldn&rsquo;t contain commits that were already shared with other collaborators. As you will notice, the fixup commit
+has been moved to the right location in the <em>TODO</em> file, and its action changed to <code>fixup</code> (due to the <code>.gitconfig</code>
+change we made earlier):
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#50fa7b>pick ffd5f65 Add return to main</span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>fixup cac3701 fixup! Add return to main # &lt;--- Our `git commit --fixup`</span>
+</span></span><span style=display:flex><span><span style=color:#50fa7b>pick 6c65969 Add computation</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#6272a4># ...</span>
+</span></span></code></pre></div></li></ol><ol start=5>
+<li>Exit the editor for the <em>TODO</em> file. Rebasing procede as we described earlier in this article, stopping if your
+changes were to trigger merge conflicts.</li></ol><p>Using <code>git commit --fixup</code> results in a more streamlined workflow, as you can just commit fixes to previous commits
+without interruption (i.e. you don&rsquo;t have to clean your repository until you actually start the rebasing). Then, when
+you are preparing to push your work to the remote, run <code>git rebase -i</code> once and all the changes to the history will be
+properly integrated!</p><h2 id=bonus-round-making-your-shell-smarter>
+Bonus round: making your shell smarter
+<a class=heading-link href=#bonus-round-making-your-shell-smarter>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h2><p>Editing the history of a Git repository often requires looking up previous commit identifiers, which can quickly become
+tedious. Thankfully, modern shells support completion plugins tailored for Git, and by understanding which commands you
+are about to run, are able to suggest appropriate completions, such as references and commit SHAs. For example, here&rsquo;s
+<a href=https://github.com/sorin-ionescu/prezto target=_blank rel=noopener>Prezto</a>&rsquo;s Git plugin at work, completing a <code>git commit --fixup</code> command
+(<code>&lt;TAB></code> will cycle through all the options in this menu):</p><p>
+<img src=zprezto-git-completion.png alt="Prezto Git completion">
+</p><p>These tools are huge time savers, so I highly recommend spending the time setting one up for your shell of choice:</p><ul>
+<li><a href=https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash target=_blank rel=noopener>Bash, from the official Git Book</a></li><li><a href=https://github.com/sorin-ionescu/prezto target=_blank rel=noopener>Zsh, Prezto</a>. Enable the <code>git</code> plugin in <code>zpreztorc</code>.</li><li><a href=https://ohmyz.sh/ target=_blank rel=noopener>Zsh, oh-my-zsh</a>. Also look for the <code>git</code> plugin.</li></ul><p>Git GUIs can also help with those features, as well as editor plugins for your editor of choice.</p><h1 id=final-warning-do-not-rebase-pushed-commits>
+Final warning: do not rebase pushed commits
+<a class=heading-link href=#final-warning-do-not-rebase-pushed-commits>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>I mentioned this multiple times, it is also mentioned in the Git manual pages, but <em><strong>do not rebase pushed commits</strong></em>.
+As rebasing changes the commit data, this effectively creates a fork in the history. Since this fork will prevent
+fast-forwarding the remote branch label when running <code>git push</code>, you will have to run <code>git push --force[-with-lease]</code>.
+This might:</p><ul>
+<li>Destroy work pushed on the remote server (unless using <code>--force-with-lease</code> and making sure you didn&rsquo;t discard it
+while editing the history).</li><li>Make others destroy their own work, when they&rsquo;ll be force to run <code>git fetch && git reset --hard origin/master</code> to
+reset their local copies to the new history you rebased (discarding the local state of the branch).</li></ul><p>So, unless you published secrets in your Git repository, <em><strong>do not</strong></em> rebase public history to change it.</p><h1 id=conclusion>
+Conclusion
+<a class=heading-link href=#conclusion>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h1><p>In this second part, we studied how to maintain a clean history using various more or less automated methods. Aside from
+making the history human-readable, we&rsquo;ll see this plays a big role in some advanced uses of Git, such as <code>git bisect</code>,
+and how to fix our history-editing mistakes using the <em>reflog</em>; which we&rsquo;ll see in the last part of this series.</p><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>Aside from dedicated merge tools, most editors also support merge conflict resolution, either
+built-in or through plugins. Look online for instructions on how to set them up, for example for
+<a href=https://www.grzegorowski.com/using-vim-or-neovim-nvim-as-a-git-mergetool target=_blank rel=noopener>Vim/Neovim</a> and
+<a href=http://blog.binchen.org/posts/emacs-is-the-best-merge-tool-for-git.html target=_blank rel=noopener>Emacs</a>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
+<p>If you want to keep the first commit message and save yourself one step, you can use the
+<code>fixup</code> command, which does specifically that: squash commits, and keep the first message.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
+<p>If you just want to change the message of a given commit, use the <code>reword</code> command to save you a
+few steps: this will drop you directly in an editor to change the message instead of having to use <code>git commit --amend</code>.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote>
+<p>You may also use symbolic references (HEAD, branch names) or ancestry references such as <code>HEAD^</code> (the
+first parent of <code>HEAD</code>), or <code>HEAD~2</code> (the first parent of the first parent of <code>HEAD</code>). See
+<a href=https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection target=_blank rel=noopener>https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection</a> for more details.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></div><footer>
+<section class=see-also>
+<h3 id=see-also-in-git-is-your-friend-not-your-enemy>
+See also in Git is your friend, not your enemy
+<a class=heading-link href=#see-also-in-git-is-your-friend-not-your-enemy>
+<i class="fa fa-link" aria-hidden=true></i>
+</a>
+</h3><nav>
+<ul>
+<li>
+<a href=/pr-preview/pr-4/posts/git-is-your-friend-part-3/>Git is your friend, not your enemy — Part 3</a>
+</li><li>
+<a href=/pr-preview/pr-4/posts/git-is-your-friend-part-1/>Git is your friend, not your enemy — Part 1</a>
+</li></ul></nav></section><div class=comments>
+<script>let getTheme=window.localStorage&&window.localStorage.getItem("colorscheme");getTheme=getTheme??"dark";let theme=getTheme==="dark"?"github-dark":"github-light",s=document.createElement("script");s.src="https://utteranc.es/client.js",s.setAttribute("repo","vtavernier/vtavernier.github.io"),s.setAttribute("issue-term","pathname"),s.setAttribute("theme",theme),s.setAttribute("crossorigin","anonymous"),s.setAttribute("async",''),document.querySelector("div.comments").innerHTML='',document.querySelector("div.comments").appendChild(s)</script>
+</div></footer></article></section></div><footer class=footer>
+<section class=container>
+©
+2019 -
+2023
+Vincent Tavernier
+·
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
+</section></footer></main><script src=/pr-preview/pr-4/js/coder.min.617ac1196e51a8e5820c29ea3f349ae87be7db1242a5a91f3afa569275213d0f.js integrity="sha256-YXrBGW5RqOWCDCnqPzSa6Hvn2xJCpakfOvpWknUhPQ8="></script>
+<script src=/pr-preview/pr-4/main.min.4962b2326a84087d9b01e3f7a69cf58ddfbd1efe7fa93c56a847bd4bf8392a4e.js integrity="sha256-SWKyMmqECH2bAeP3ppz1jd+9Hv5/qTxWqEe9S/g5Kk4="></script>
+<script data-goatcounter=https://vtavernier.goatcounter.com/count async src=//gc.zgo.at/count.js></script>
+</body></html>
