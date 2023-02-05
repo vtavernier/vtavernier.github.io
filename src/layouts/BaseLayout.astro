@@ -1,0 +1,22 @@
+---
+import Nav from "../components/Nav.astro";
+import "../styles/base.css";
+const { pageTitle } = Astro.props;
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+  </head>
+  <body class="dark:bg-gray-800 dark:text-gray-200 prose dark:prose-invert max-w-none">
+    <div class="max-w-4xl mx-auto">
+      <Nav />
+      <h1>{pageTitle}</h1>
+      <slot />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "name": "vtavernier.github.io",
+  "version": "1.0.0",
+  "description": "Source repository for my blog.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint \"src/**/*.{js,astro}\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ci:check": "run-s format:check lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vtavernier/vtavernier.github.io.git"
+  },
+  "author": "Vincent Tavernier <v.tavernier@pm.me>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vtavernier/vtavernier.github.io/issues"
+  },
+  "homepage": "https://vtavernier.github.io",
+  "dependencies": {
+    "@astrojs/mdx": "^0.16.0",
+    "@astrojs/tailwind": "^3.0.1",
+    "astro": "^2.0.6",
+    "astro-diagram": "^0.6.3",
+    "astro-heroicons": "^0.3.0",
+    "mermaid": "^9.3.0",
+    "tailwindcss": "^3.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9",
+    "@typescript-eslint/parser": "^5.50.0",
+    "eslint": "^8.33.0",
+    "eslint-plugin-astro": "^0.23.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.3",
+    "prettier-plugin-astro": "^0.8.0"
+  }
+}

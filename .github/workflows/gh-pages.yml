@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 6 * * Mon'
+    - cron: "0 6 * * Mon"
   workflow_dispatch:
 
 concurrency: gh-pages
@@ -16,8 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
 
       - name: Build
         id: build

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .inline-icon {
+    @apply w-6 inline align-middle
+  }
+}

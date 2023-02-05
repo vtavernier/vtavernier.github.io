@@ -1,0 +1,25 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Calendar from "astro-heroicons/solid/Calendar.astro";
+import Clock from "astro-heroicons/solid/Clock.astro";
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout pageTitle={frontmatter.title}>
+  <p>
+    <Calendar class="inline-icon" />
+    {
+      new Date(frontmatter.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    }
+    <Clock class="inline-icon" />
+  </p>
+  <p><em>{frontmatter.description}</em></p>
+  <p>Written by: {frontmatter.author}</p>
+  <article>
+    <slot />
+  </article>
+</BaseLayout>

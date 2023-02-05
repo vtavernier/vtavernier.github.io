@@ -1,32 +1,37 @@
 name: Build pages artifacts
 description: Build GitHub pages artifacts for the repository
 inputs:
-  hugo-version:
-    description: Hugo version to use
-    required: false
-    default: '0.93.3'
   base-url:
     description: Base URL
     required: false
-    default: '/'
+    default: "/"
   github-token:
     description: GitHub Token
     required: true
 outputs:
   build-dir:
     description: Directory containing the artifacts
-    value: ./public
+    value: ./dist
 runs:
   using: composite
   steps:
-    - name: Setup Hugo
-      uses: peaceiris/actions-hugo@v2
+    - name: Setup Node
+      uses: actions/setup-node@v3
       with:
-        hugo-version: '0.93.3'
-        extended: true
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm ci
+      shell: bash
+
+    - name: Run checks
+      run: npm run ci:check
+      shell: bash
 
     - name: Build
+      run: npm run build
       env:
+        SITE: https://vtavernier.github.io
+        BASE_URL: ${{ inputs.base-url }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
-      run: hugo --minify --buildDrafts --baseURL "https://vtavernier.github.io${{ inputs.base-url }}"
       shell: bash
