@@ -6,19 +6,19 @@
 <meta name=author content="Vincent Tavernier">
 <meta name=description content="efiboot-rs        
 This repository contains the source code for:
-  efivar - A Rust crate to read and write EFI variables efiboot - A command-line tool to manage the UEFI boot manager  The efiboot tool supports both Windows and Linux:
+  efivar - A Rust crate to read and write EFI variables  efiboot - A command-line tool to manage the UEFI boot manager  The efiboot tool supports both Windows and Linux:
  Windows: administrative rights are required to both read and write variables. Linux: efivarfs should be mounted at /sys/firmware/efi/efivars on all major distros.">
 <meta name=keywords content="blog,developer,personal,research,graphics">
 <meta name=twitter:card content="summary">
 <meta name=twitter:title content="efiboot-rs">
 <meta name=twitter:description content="efiboot-rs        
 This repository contains the source code for:
-  efivar - A Rust crate to read and write EFI variables efiboot - A command-line tool to manage the UEFI boot manager  The efiboot tool supports both Windows and Linux:
+  efivar - A Rust crate to read and write EFI variables  efiboot - A command-line tool to manage the UEFI boot manager  The efiboot tool supports both Windows and Linux:
  Windows: administrative rights are required to both read and write variables. Linux: efivarfs should be mounted at /sys/firmware/efi/efivars on all major distros.">
 <meta property="og:title" content="efiboot-rs">
 <meta property="og:description" content="efiboot-rs        
 This repository contains the source code for:
-  efivar - A Rust crate to read and write EFI variables efiboot - A command-line tool to manage the UEFI boot manager  The efiboot tool supports both Windows and Linux:
+  efivar - A Rust crate to read and write EFI variables  efiboot - A command-line tool to manage the UEFI boot manager  The efiboot tool supports both Windows and Linux:
  Windows: administrative rights are required to both read and write variables. Linux: efivarfs should be mounted at /sys/firmware/efi/efivars on all major distros.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://vtavernier.github.io/projects/efiboot-rs/"><meta property="article:section" content="projects">
@@ -60,8 +60,8 @@ The Tavern
 <header>
 <h1>
 <a href=https://github.com/vtavernier/efiboot-rs>efiboot-rs</a>
-</h1></header><p><a href=https://travis-ci.com/vtavernier/efiboot-rs target=_blank rel=noopener>
-<img src="https://travis-ci.com/vtavernier/efiboot-rs.svg?branch=master" alt="Build Status">
+</h1></header><p><a href=https://github.com/vtavernier/efiboot-rs/actions/workflows/build.yml target=_blank rel=noopener>
+<img src=https://github.com/vtavernier/efiboot-rs/actions/workflows/build.yml/badge.svg alt="Build Status">
 </a> <a href=https://docs.rs/efivar/ target=_blank rel=noopener>
 <img src=https://img.shields.io/badge/docs-master-blue.svg alt=Documentation>
 </a> <a href=https://codecov.io/gh/vtavernier/efiboot-rs target=_blank rel=noopener>
@@ -75,7 +75,9 @@ The Tavern
 </a></p><p>This repository contains the source code for:</p><ul>
 <li><a href=https://crates.io/crates/efivar target=_blank rel=noopener>
 <img src=https://img.shields.io/crates/v/efivar.svg alt=crates.io>
-</a> <a href=https://github.com/vtavernier/efiboot-rs/blob/master/efivar target=_blank rel=noopener>efivar</a> - A Rust crate to read and write EFI variables</li><li><a href=https://github.com/vtavernier/efiboot-rs/blob/master/efiboot target=_blank rel=noopener>efiboot</a> - A command-line tool to manage the UEFI boot manager</li></ul><p>The efiboot tool supports both Windows and Linux:</p><ul>
+</a> <a href=https://github.com/vtavernier/efiboot-rs/blob/master/efivar target=_blank rel=noopener>efivar</a> - A Rust crate to read and write EFI variables</li><li><a href=https://crates.io/crates/efiboot target=_blank rel=noopener>
+<img src=https://img.shields.io/crates/v/efiboot.svg alt=crates.io>
+</a> <a href=https://github.com/vtavernier/efiboot-rs/blob/master/efiboot target=_blank rel=noopener>efiboot</a> - A command-line tool to manage the UEFI boot manager</li></ul><p>The efiboot tool supports both Windows and Linux:</p><ul>
 <li>Windows: administrative rights are required to both <em>read</em> and <em>write</em> variables.</li><li>Linux: efivarfs should be mounted at /sys/firmware/efi/efivars on all major
 distros. With the default settings, standard users should be able to read
 variables, while writing to variables requires being root.</li></ul><h2 id=development-status>
@@ -109,15 +111,15 @@ Author
 <a class=heading-link href=#author>
 <i class="fa fa-link" aria-hidden=true></i>
 </a>
-</h2><p>Vincent Tavernier <a href=https://github.com/vtavernier/efiboot-rs/blob/master/mailto:vince.tavernier@gmail.com target=_blank rel=noopener>vince.tavernier@gmail.com</a></p></article></section></div><footer class=footer>
+</h2><p>Vincent Tavernier <a href=https://github.com/vtavernier/efiboot-rs/blob/master/mailto:v.tavernier@pm.me target=_blank rel=noopener>v.tavernier@pm.me</a></p></article></section></div><footer class=footer>
 <section class=container>
 ©
 2019 -
-2022
+2023
 Vincent Tavernier
 ·
 Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.
 </section></footer></main><script src=/js/coder.min.617ac1196e51a8e5820c29ea3f349ae87be7db1242a5a91f3afa569275213d0f.js integrity="sha256-YXrBGW5RqOWCDCnqPzSa6Hvn2xJCpakfOvpWknUhPQ8="></script>
-<script src=/main.min.d2d1e601897e7d550d453590ae2ba709fcb5997a42c921151e8a64f7928a38af.js integrity="sha256-0tHmAYl+fVUNRTWQriunCfy1mXpCySEVHopk95KKOK8="></script>
+<script src=/main.min.4962b2326a84087d9b01e3f7a69cf58ddfbd1efe7fa93c56a847bd4bf8392a4e.js integrity="sha256-SWKyMmqECH2bAeP3ppz1jd+9Hv5/qTxWqEe9S/g5Kk4="></script>
 <script data-goatcounter=https://vtavernier.goatcounter.com/count async src=//gc.zgo.at/count.js></script>
 </body></html>
