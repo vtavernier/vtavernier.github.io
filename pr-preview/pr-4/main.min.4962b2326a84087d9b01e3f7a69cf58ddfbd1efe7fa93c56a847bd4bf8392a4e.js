@@ -1,1 +1,0 @@
-if(document.querySelector(".mermaid")){const e=document.createElement("script");e.onload=function(){const e={startOnLoad:!0,theme:"dark",themeVariables:{fontSize:"12px"}};mermaid.initialize(e)},e.src="https://unpkg.com/mermaid@9.1.3/dist/mermaid.min.js",document.head.appendChild(e)}
