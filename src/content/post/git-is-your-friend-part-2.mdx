@@ -1,0 +1,525 @@
+---
+title: Git is your friend, not your enemy — Part 2
+tags: [tutorial, git]
+category: Tutorials
+publishDate: 2021-01-25
+series:
+  - Git is your friend, not your enemy
+description: Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!
+excerpt: Solving merge conflicts and rewriting history to keep it clean and tidy.
+image: ~/assets/images/git-01.jpg
+---
+import TerminalOutput from '../../components/TerminalOutput.astro';
+
+> This post is the second part of a tutorial series on how to use Git to its full potential. Read the first part
+> [here](git-is-your-friend-part-2/).
+
+We ended the previous part of this tutorial on merging local changes with remote changes. That last part assumed there
+was no merge conflict --- a situation you may have already encountered in the wild. We will now look at how to solve
+those conflicts efficiently, which becomes critical for the next part, maintaining a clean Git history using interactive
+rebasing.
+
+# Solving merge conflicts with a merge tool
+
+Let us start with the following situation:
+
+```txt
+    C origin/master
+   /
+  A---B master
+```
+
+We can visualize this in our terminal:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git log --all --oneline --graph</span>
+* <span style="color:olive;">d105f20</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:green;">origin/master</span><span style="color:olive;">)</span> Add success return to main
+<span style="color:red;">|</span> * <span style="color:olive;">836ba41</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:teal;">HEAD -&gt; </span><span style="font-weight:bold;color:green;">master</span><span style="color:olive;">)</span> Add error return to main
+<span style="color:red;">|</span><span style="color:red;">/</span>  
+* <span style="color:olive;">a5aea3c</span> Initial commit
+`} />
+
+If, from the `master` branch we try to use `git pull` (effectively running `git merge origin/master`), we will end up
+with the following warning from Git: <a id="conflicted-state-1"></a>
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git pull</span>
+From .
+ * branch            origin/master -&gt; FETCH_HEAD
+Auto-merging main.c
+CONFLICT (content): Merge conflict in main.c
+Automatic merge failed; fix conflicts and then commit the result.
+`} />
+
+This means --- exactly as mentioned by the Git output --- that there is no way to automatically merge changes from the
+two branches being merged. Indeed, if we look at the `master` branch, this is our (local) change:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white">git show master --oneline</span>
+<span style="color:olive;">836ba41cac2a63cb2e060dfb5fdc9c6bdea82882</span> Add error return to main
+<span style="font-weight:bold;">diff --git a/main.c b/main.c</span>
+<span style="font-weight:bold;">index 0a502e4..dd314f9 100644</span>
+<span style="font-weight:bold;">--- a/main.c</span>
+<span style="font-weight:bold;">+++ b/main.c</span>
+<span style="color:teal;">@@ -2,4 +2,5 @@</span>
+ #include &lt;stdlib.h&gt;
+ 
+ int main(int argc, char *argv[]) {
+<span style="color:green;">+</span>	<span style="color:green;">return 1;</span>
+ }
+`} />
+
+While the `origin/master` had those (remote) --- incompatible --- changes:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white">git show origin/master --oneline</span>
+<span style="color:olive;">d105f20e3f19cdc2786d374e73f9f4cd8aa560ec</span> Add success return to main
+<span style="font-weight:bold;">diff --git a/main.c b/main.c</span>
+<span style="font-weight:bold;">index 0a502e4..296c7ac 100644</span>
+<span style="font-weight:bold;">--- a/main.c</span>
+<span style="font-weight:bold;">+++ b/main.c</span>
+<span style="color:teal;">@@ -2,4 +2,5 @@</span>
+ #include &lt;stdlib.h&gt;
+ 
+ int main(int argc, char *argv[]) {
+<span style="color:green;">+</span>	<span style="color:green;">return 0;</span>
+ }
+`} />
+
+How do we fix those changes?
+
+## The manual (bad) way
+
+Upon discovering the `fix conflicts and then commit the result` message from Git, the inexperienced Git user might do
+exactly as suggested. They would open the files in conflict one-by-one in their editor, and be greeted with this
+interesting syntax:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[]) {
+<<<<<<< HEAD
+	return 1;
+=======
+	return 0;
+>>>>>>> d105f20e3f19cdc2786d374e73f9f4cd8aa560ec
+}
+```
+
+The `<<<`, `===` and `>>>` character sequences are called *conflict markers*, since they mark a region of the file as in
+conflict. The name following `<<<` is the local revision name (`HEAD` since we are merging into the current branch), and
+similarly the name following `>>>` is the remote revision name (here denoted by its commit SHA).
+
+The first region between `<<<` and `===` contains the changes brought by the local revisions, and the second region
+between `===` and `>>>` the changes from the remote revisions. To solve the merge conflict, we need to pick which region
+needs to be merged in.
+
+The *manual* way to do it is to remove the conflict markers, and the region we do not want to keep in the resulting
+file. After closing the editor, running `git status` informs us of the current state of the repository:
+
+<TerminalOutput set:html={`
+On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commits each, respectively.
+  (use &quot;git pull&quot; to merge the remote branch into yours)
+
+You have unmerged paths.
+  (fix conflicts and run &quot;git commit&quot;)
+  (use &quot;git merge --abort&quot; to abort the merge)
+
+Unmerged paths:
+  (use &quot;git add &lt;file&gt;...&quot; to mark resolution)
+	<span style="color:red;">both modified:   main.c</span>
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+`} />
+
+Indeed, writing to a file does not inform Git that the conflict has been resolved. You need to mark the conflict as
+resolved with `git add main.c` (since `main.c` is the file that we resolved conflicts in) before finishing the merge
+with `git commit`:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git add main.c</span>
+$ <span style="font-weight:bold;color:white;">git commit --no-edit</span> <span style="color:gray"># --no-edit skips opening the editor</span>
+[master 8738275] Merge branch 'origin/master'
+`} />
+
+***Make sure you solved all the conflicts***: if you call `git add` on a file which still has conflict markers, there
+will be no warnings and you will commit corrupted files to your repository. Nothing that can't be fixed, but this is
+hard to fix for future maintainers. Especially if you don't have continuous integration set up to catch those mistakes
+early...
+
+Since this process has multiple points of failure, we should try to find a *better* method, which does not have this
+many pitfalls. Thankfully, Git has us covered.
+
+## The automated (good) way
+
+In order to automate the conflict resolution process, Git supports so-called *merge tools*: programs that will be run by
+Git in order to help the user fix conflicts by picking the right options on every conflicted region. First, we need to
+configure a *merge tool*. We will use the graphical tool [Meld](https://meldmerge.org/), although many others are
+available[^other-merge-tools].
+
+First, install Meld using your distribution's package manager:
+```bash
+# Debian/Ubuntu
+$ sudo apt install meld
+# Fedora
+$ sudo dnf install meld
+```
+
+Then, we need to indicate to Git we want to use Meld as our merge tool:
+```bash
+$ git config --global merge.tool meld
+```
+
+We are now ready to go! Let's go back to the [conflicted state](#conflicted-state-1). Then, instead of fixing the
+conflicts manually, we run the following command:
+```bash
+$ git mergetool
+```
+
+The main window of Meld opens:
+
+![Meld initial window](meld-initial-conflict.png)
+
+As indicated in the headers of the panels:
+* The left panel represents the state of the file after local changes: this is our `master` branch we are merging into
+* The middle panel is the current state of the file we are building (where conflicts are solved).
+* The right panel represents the state of the file after remote changes: this is the `origin/master` branch we are
+merging into the `master` branch.
+
+Clicking on the arrows between the left (resp. right) panel will bring in the changes from the local (resp. remote)
+branches:
+
+![Meld window after conflict resolution](meld-resolved-conflicts.png)
+
+You can then save the changes with the `Menu > Save all` option, or with `Ctrl+s`. When you have solved the conflict,
+you can quit Meld and check the status of our repository:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git status</span>
+On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commits each, respectively.
+  (use &quot;git pull&quot; to merge the remote branch into yours)
+
+All conflicts fixed but you are still merging.
+  (use &quot;git commit&quot; to conclude merge)
+
+Changes to be committed:
+	<span style="color:green;">modified:   main.c</span>
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+	<span style="color:red;">main.c.orig</span>
+`} />
+
+Two things are worth noting here:
+* The `main.c` file was automatically added as all the conflicts were resolved using Meld, so we don't have to call `git
+add main.c` (that's one step saved!)
+* `main.c.orig` was created: this is a backup copy of `main.c` before the conflict resolution happened. We can remove
+it once we're sure the merge completed successfully.
+
+We may then complete our merge process by running `git commit`.
+
+## Merge tools: conclusion
+
+Using a merge tool streamlines the merge conflict resolution process by ensuring we do not miss a step --- and also
+saves us a lot of typing and manually editing files. Since you will encounter merge conflicts regularly while using Git
+and collaborating with other people, it's a good idea to properly set up your *merge tool* so you don't feel like
+smashing your keyboard on merge conflicts.
+
+More complicated merge conflicts might be hard to resolve though, especially when working with someone else's changes.
+This is why having a clean Git history is critical, so you can look at it when resolving a merge conflict and make
+informed decisions. Thankfully, Git also has us covered.
+
+# Rewriting local history with `git rebase`
+
+We already encountered rebasing in this tutorial: the `git pull --rebase` commands *rebases* (changes the parent of) a
+set of commits onto the current state of the remote branch in order to be able to push. However, we can rebase any set
+of commits while working locally, not just in the case of a pull.
+
+Let's consider the following situation, with two branches `feature` and `master`:
+
+```txt
+        A---B---C feature
+       /
+  D---E---F---G master
+```
+
+Running `git rebase master feature` will *rebase* the `feature` branch onto the `master` branch, resulting in this
+state:
+
+```txt
+                A'---B'---C' feature
+               /
+  D---E---F---G master
+```
+
+Since Git has to rewrite every commit in the range being rebased, we also have the option to change the contents being
+committed at each step. This is what the `-i` option of Git rebase allows us to do: enter *interactive rebasing*.
+
+## Interactive rebasing
+
+When rebasing, you specify which commit (by its SHA, branch name, tag name, etc.) should be the last kept intact. All
+the following commits up to `HEAD` (the latest commit on the current branch) will be rebased --- or `--root` to rebase
+all the way to the beginning of your repository's history.
+
+After running `git rebase -i --root` on this article's tutorial, Git opens the configured text editor on the *todo
+file* below:
+
+```ini
+pick a5aea3c Initial commit
+pick 836ba41 Add error return to main
+pick d105f20 Add success return to main
+
+# Rebase 1813570 onto 0625853 (3 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup <commit> = like "squash", but discard this commit's log message
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+# .       create a merge commit using the original merge commit's
+# .       message (or the oneline, if no original merge commit was
+# .       specified). Use -c <commit> to reword the commit message.
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+```
+
+Lines starting with `#` are comments to help use edit the *todo file* to describe the operations we want to apply to the
+commits about to be rebased. The first lines are commands:
+* First column: name of the command to apply
+* Second column: either a commit name for `pick`, `reword`, `edit`, `squash`, `fixup`, `drop`; or other command
+  arguments for `exec`, `label`, `reset`
+
+The description for these commands is pretty self-explanatory: each command is applied in order from top to bottom to
+the commits referenced in the command arguments. If a command fails, Git will stop the rebase process so you can fix the
+issue. Let's look at some changes we can make to this history.
+
+### Squashing commits
+
+If for some reason you think two commits should be merged into one instead of being separated, you can use the squash
+command. Edit the *todo file* to squash the third commit into the second:
+
+```ini
+pick a5aea3c Initial commit
+pick 836ba41 Add error return to main
+squash d105f20 Add success return to main
+```
+
+Then, save the file and exit the editor to run rebasing:
+
+```txt
+Auto-merging main.c
+CONFLICT (content): Merge conflict in main.c
+error: could not apply d105f20... Add success return to main
+Resolve all conflicts manually, mark them as resolved with
+"git add/rm <conflicted_files>", then run "git rebase --continue".
+You can instead skip this commit: run "git rebase --skip".
+To abort and get back to the state before "git rebase", run "git rebase --abort".
+Could not apply d105f20... Add success return to main
+```
+
+Uh-oh. There is a merge conflict while rebasing (the same merge conflict we studied earlier in this article). This can
+happen when rebasing since some changes may not be compatible and thus require user action. We can solve the issue `git
+mergetool` and carry on with the rebase process:
+
+```bash
+# Fix issues with your mergetool
+$ git mergetool
+
+# Continue rebasing
+$ git rebase --continue
+```
+
+Squashing commits brings up the editor again to write an appropriate commit message[^fixup-instead-of-squash]:
+
+```ini
+# This is a combination of 2 commits.
+# This is the 1st commit message:
+
+Add error return to main
+
+# This is the commit message #2:
+
+Add success return to main
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Dec 22 21:41:43 2020 +0100
+#
+# interactive rebase in progress; onto bf1a9ac
+# Last commands done (3 commands done):
+#    pick 836ba41 Add error return to main
+#    squash d105f20 Add success return to main
+# No commands remaining.
+# You are currently rebasing branch 'master' on 'bf1a9ac'.
+#
+# Changes to be committed:
+#	modified:   main.c
+#
+```
+
+When you're done editing your commit message, exit your editor and observe the completed result:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git log --oneline</span>
+<span style="color:olive;">31c5062</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:teal;">HEAD -&gt; </span><span style="font-weight:bold;color:green;">master</span><span style="color:olive;">)</span> Add return to main
+<span style="color:olive;">a5aea3c</span> Initial commit
+`} />
+
+With our properly written history, we can keep on working on our project.
+
+### Editing commits
+
+Another option when rebasing is *editing* commits. This allows you to change the contents of a commit arbitrarily, by
+adding or removing changes, or changing the commit message[^use-reword-instead]. Let's edit commit `31c5062` in the following
+history:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git log --oneline</span>
+<span style="color:olive;">b9d4427</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:teal;">HEAD -&gt; </span><span style="font-weight:bold;color:green;">master</span><span style="color:olive;">)</span> Add computation
+<span style="color:olive;">31c5062</span> Add return to main
+<span style="color:olive;">a5aea3c</span><span style="color:olive;"> (</span><span style="font-weight:bold;color:green;">origin/master</span><span style="color:olive;">)</span> Initial commit
+`} />
+
+Running `git rebase -i origin/master`, switching the command for `31c5062` to `edit`, saving and quitting the editor
+will drop us back to the terminal. Again, Git indicates what the next steps are:
+
+```txt
+Stopped at 31c5062...  Add return to main
+You can amend the commit now, with
+
+  git commit --amend
+
+Once you are satisfied with your changes, run
+
+  git rebase --continue
+```
+
+I decided to add some comments to `main.c` as an example change. We can then continue with the rebasing process:
+
+<TerminalOutput set:html={`
+<span style="color:gray"># Modify the current commit with the changes made to main.c, skip opening the editor</span>
+$ <span style="font-weight:bold;color:white;">git commit --no-edit --amend main.c</span>
+[detached HEAD ffd5f65] Add return to main
+ Date: Tue Dec 22 21:41:43 2020 +0100
+ 1 file changed, 2 insertions(+)
+
+<span style="color:gray"># Continue the rebasing process</span>
+$ <span style="font-weight:bold;color:white;">git rebase --continue</span>
+[detached HEAD 6c65969] Add computation
+ 1 file changed, 5 insertions(+)
+Successfully rebased and updated refs/heads/master.
+`} />
+
+We're done with our changes!
+
+### Automating rebasing: `git commit --fixup`
+
+Fixing a previous commit with rebasing is such a common occurrence that there are commands dedicated to handling this
+case. First, we need to change our `~/.gitconfig` a bit to make it easier to work with:
+
+```ini
+# This may equivalently be changed with `git config --global rebase.autosquash true`
+[rebase]
+	autosquash = true
+```
+
+The workflow for `git commit --fixup` is as follows:
+1. Change the working copy as needed, and stage the changes with `git add`
+2. Identify the commit you want to fix with `git log`. Let's say we want to fix commit `ffd5f65`[^commit-ish] in our example.
+3. Run `git commit --fixup ffd5f65`. Note that no message is needed: a placeholder mentioning this is a fix-up is
+   generated, and will be discarded by the next step:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white">git commit --fixup ffd5f65</span>
+[master cac3701] fixup! Add return to main
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+`} />
+
+4. Run `git rebase -i`. This starts an interactive rebase onto the last pushed state of the current branch. This means
+   it shouldn't contain commits that were already shared with other collaborators. As you will notice, the fixup commit
+   has been moved to the right location in the *TODO* file, and its action changed to `fixup` (due to the `.gitconfig`
+   change we made earlier):
+   ```ini
+   pick ffd5f65 Add return to main
+   fixup cac3701 fixup! Add return to main # <--- Our `git commit --fixup`
+   pick 6c65969 Add computation
+
+   # ...
+   ```
+5. Exit the editor for the *TODO* file. Rebasing procede as we described earlier in this article, stopping if your
+   changes were to trigger merge conflicts.
+
+Using `git commit --fixup` results in a more streamlined workflow, as you can just commit fixes to previous commits
+without interruption (i.e. you don't have to clean your repository until you actually start the rebasing). Then, when
+you are preparing to push your work to the remote, run `git rebase -i` once and all the changes to the history will be
+properly integrated!
+
+## Bonus round: making your shell smarter
+
+Editing the history of a Git repository often requires looking up previous commit identifiers, which can quickly become
+tedious. Thankfully, modern shells support completion plugins tailored for Git, and by understanding which commands you
+are about to run, are able to suggest appropriate completions, such as references and commit SHAs. For example, here's
+[Prezto](https://github.com/sorin-ionescu/prezto)'s Git plugin at work, completing a `git commit --fixup` command
+(`<TAB>` will cycle through all the options in this menu):
+
+![Prezto Git completion](zprezto-git-completion.png)
+
+These tools are huge time savers, so I highly recommend spending the time setting one up for your shell of choice:
+* [Bash, from the official Git Book](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash)
+* [Zsh, Prezto](https://github.com/sorin-ionescu/prezto). Enable the `git` plugin in `zpreztorc`.
+* [Zsh, oh-my-zsh](https://ohmyz.sh/). Also look for the `git` plugin.
+
+Git GUIs can also help with those features, as well as editor plugins for your editor of choice.
+
+# Final warning: do not rebase pushed commits
+
+I mentioned this multiple times, it is also mentioned in the Git manual pages, but ***do not rebase pushed commits***.
+As rebasing changes the commit data, this effectively creates a fork in the history. Since this fork will prevent
+fast-forwarding the remote branch label when running `git push`, you will have to run `git push --force[-with-lease]`.
+This might:
+* Destroy work pushed on the remote server (unless using `--force-with-lease` and making sure you didn't discard it
+  while editing the history).
+* Make others destroy their own work, when they'll be force to run `git fetch && git reset --hard origin/master` to
+  reset their local copies to the new history you rebased (discarding the local state of the branch).
+
+So, unless you published secrets in your Git repository, ***do not*** rebase public history to change it.
+
+# Conclusion
+
+In this second part, we studied how to maintain a clean history using various more or less automated methods. Aside from
+making the history human-readable, we'll see this plays a big role in some advanced uses of Git, such as `git bisect`,
+and how to fix our history-editing mistakes using the *reflog*; which we'll see in the last part of this series.
+
+[^other-merge-tools]: Aside from dedicated merge tools, most editors also support merge conflict resolution, either
+  built-in or through plugins. Look online for instructions on how to set them up, for example for
+  [Vim/Neovim](https://www.grzegorowski.com/using-vim-or-neovim-nvim-as-a-git-mergetool) and
+  [Emacs](http://blog.binchen.org/posts/emacs-is-the-best-merge-tool-for-git.html).
+
+[^fixup-instead-of-squash]: If you want to keep the first commit message and save yourself one step, you can use the
+  `fixup` command, which does specifically that: squash commits, and keep the first message.
+
+[^use-reword-instead]: If you just want to change the message of a given commit, use the `reword` command to save you a
+  few steps: this will drop you directly in an editor to change the message instead of having to use `git commit
+  --amend`.
+
+[^commit-ish]: You may also use symbolic references (HEAD, branch names) or ancestry references such as `HEAD^` (the
+  first parent of `HEAD`), or `HEAD~2` (the first parent of the first parent of `HEAD`). See
+  https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection for more details.

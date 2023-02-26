@@ -1,11 +1,4 @@
-/.astro
-/dist
-/node_modules
-
-# Old posts that shouldn't really be touched anymore
-src/content/posts/arduino-internals-whats-behind-the-magic.mdx
-src/content/posts/git-is-your-friend-part-1.mdx
-src/content/posts/git-is-your-friend-part-2.mdx
-src/content/posts/git-is-your-friend-part-3.mdx
-src/content/posts/i-tried-cross-compiling.mdx
-src/content/posts/welcome-to-my-blog.mdx
+dist
+node_modules
+.github
+.changeset
