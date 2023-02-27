@@ -15,8 +15,8 @@ import { SITE } from './src/config.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  site: process.env.SITE || SITE.origin,
-  base: process.env.BASE_URL || SITE.basePathname,
+  site: SITE.origin,
+  base: SITE.basePathname,
   trailingSlash: SITE.trailingSlash ? 'always' : 'never',
 
   output: 'static',
