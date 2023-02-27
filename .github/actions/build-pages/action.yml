@@ -20,6 +20,10 @@ runs:
       with:
         node-version: 18
 
+    - name: Install native dependencies
+      run: sudo apt-get install -y --no-install-recommends libvips-dev libglib2.0-dev
+      shell: bash
+
     - name: Install dependencies
       run: npm ci
       shell: bash
