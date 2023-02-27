@@ -8,8 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier -w *.{js,mjs,json} **/*.{js,astro,mjs,json}",
-    "format:check": "prettier --check *.{js,mjs,json} **/*.{js,astro,mjs,json}",
+    "format": "prettier -w .",
+    "format:check": "prettier --check .",
     "lint": "eslint . --ext .js,.ts,.astro",
     "subfont": "subfont -ir --no-fallbacks --silent --root dist",
     "ci:check": "run-s format:check lint"
