@@ -1,0 +1,113 @@
+---
+import { Image } from '@astrojs/image/components';
+
+import Layout from '~/layouts/PageLayout.astro';
+import Headline from '~/components/blog/Headline.astro';
+import rootPublications from '~/data/publications.json';
+
+import fs from 'node:fs';
+import { Icon } from 'astro-icon';
+
+interface Publication {
+  fileMain_s: string;
+  thumbId_i: number;
+  publicationDateY_i: number;
+  uri_s: string;
+  en_title_s: string[];
+  authFullName_s: string[];
+  en_abstract_s: string[];
+  label_bibtex: string;
+  citationRef_s: string;
+}
+
+function getPublications(): Array<Publication> {
+  // JSON obtained from https://api.archives-ouvertes.fr/search?q=authIdHal_s:%s&wt=json&sort=producedDate_tdate+desc
+  // With %s = vincent-tavernier
+  return rootPublications.response.docs.map(
+    (doc) =>
+      JSON.parse(fs.readFileSync(`src/data/publications/documents/${doc.docid}.json`, { encoding: 'utf-8' })).response
+        .docs[0]
+  );
+}
+
+const publications = getPublications();
+
+const meta = {
+  title: 'Research',
+};
+---
+
+<Layout {meta}>
+  <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
+    <Headline title={meta.title} />
+
+    <ul>
+      {
+        publications.map((publication) => (
+          <li class="flex mb-12">
+            <div class="flex-grow-0 flex-shrink-0 mr-8">
+              <a href={publication.fileMain_s} target="blank" rel="noopener">
+                <Image
+                  alt=""
+                  aspectRatio={1 / 1.414}
+                  width={200}
+                  src={import(`~/assets/images/publications/${publication.thumbId_i}.png`)}
+                />
+              </a>
+
+              <div class="flex mt-1">
+                <a class="text-gray-400" href="#" data-bibtex={publication.label_bibtex}>
+                  <Icon name="tabler:copy" class="w-4 h-4 inline" />
+                  <span>BibTeX</span>
+                </a>
+
+                <a class="text-gray-400 ml-auto mr-1" href={publication.fileMain_s} target="blank" rel="noopener">
+                  <Icon name="tabler:file" class="w-4 h-4 inline" />
+                  <span>PDF</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="prose dark:prose-invert">
+              <h2 class="mb-4">
+                <a href={publication.uri_s} target="_blank" rel="external">
+                  {publication.en_title_s[0]}
+                </a>
+              </h2>
+
+              <p class="text-sm text-gray-400 mb-0">
+                {publication.publicationDateY_i} — {publication.authFullName_s.join(', ')}
+              </p>
+
+              <p class="text-sm text-gray-400 mb-0 mt-0" set:html={publication.citationRef_s} />
+
+              <p class="text-sm">
+                {(publication.en_abstract_s[0].split('.').splice(0, 2).join('.') + '...').replace('....', '...')}
+                <a href={publication.uri_s} target="_blank" rel="external">
+                  Read more
+                </a>
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Layout>
+
+<script>
+  document.querySelectorAll('a[data-bibtex]').forEach((link) => {
+    const span = link.querySelector('span')!;
+    const initialText = span.innerHTML;
+    const copied = 'Copied!';
+
+    link.addEventListener('click', (event) => {
+      navigator.clipboard.writeText(link.getAttribute('data-bibtex')!);
+      event.preventDefault();
+      span.innerHTML = copied;
+      setTimeout(() => {
+        span.innerHTML = initialText;
+      }, 2000);
+    });
+  });
+</script>
