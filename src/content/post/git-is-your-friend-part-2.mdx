@@ -10,6 +10,8 @@ excerpt: Solving merge conflicts and rewriting history to keep it clean and tidy
 image: ~/assets/images/git-01.jpg
 ---
 import TerminalOutput from '../../components/TerminalOutput.astro';
+import Figure from '~/components/blog/Figure.astro';
+export const components = {img: Figure};
 
 > This post is the second part of a tutorial series on how to use Git to its full potential. Read the first part
 > [here](git-is-your-friend-part-2/).
@@ -181,7 +183,7 @@ $ git mergetool
 
 The main window of Meld opens:
 
-![Meld initial window](meld-initial-conflict.png)
+![Meld initial window](~/assets/images/post/git-is-your-friend-part-2/meld-initial-conflict.png)
 
 As indicated in the headers of the panels:
 * The left panel represents the state of the file after local changes: this is our `master` branch we are merging into
@@ -192,7 +194,7 @@ merging into the `master` branch.
 Clicking on the arrows between the left (resp. right) panel will bring in the changes from the local (resp. remote)
 branches:
 
-![Meld window after conflict resolution](meld-resolved-conflicts.png)
+![Meld window after conflict resolution](~/assets/images/post/git-is-your-friend-part-2/meld-resolved-conflicts.png)
 
 You can then save the changes with the `Menu > Save all` option, or with `Ctrl+s`. When you have solved the conflict,
 you can quit Meld and check the status of our repository:
@@ -480,7 +482,7 @@ are about to run, are able to suggest appropriate completions, such as reference
 [Prezto](https://github.com/sorin-ionescu/prezto)'s Git plugin at work, completing a `git commit --fixup` command
 (`<TAB>` will cycle through all the options in this menu):
 
-![Prezto Git completion](zprezto-git-completion.png)
+![Prezto Git completion](~/assets/images/post/git-is-your-friend-part-2/zprezto-git-completion.png)
 
 These tools are huge time savers, so I highly recommend spending the time setting one up for your shell of choice:
 * [Bash, from the official Git Book](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash)

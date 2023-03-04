@@ -8,14 +8,16 @@ excerpt: Embedded programming abstraction layers and reverse engineering shenani
 image: ~/assets/images/arduino-01.jpg
 ---
 import { Diagram } from 'astro-diagram';
-import TerminalOutput from '../../components/TerminalOutput.astro';
+import TerminalOutput from '~/components/TerminalOutput.astro';
+import Figure from '~/components/blog/Figure.astro';
+export const components = {img: Figure};
 
 Arduino is an open-source software and hardware platform tailored for electronics beginners and enthusiasts alike. Since
 the early models' releases (Arduino Diecimila in 2007 and Duemilanove in 2009), they have become ubiquitous to the point
 that "an Arduino" is often used as a synonym for "a microcontroller", and have been used in countless projects by makers
 around the world.
 
-![Arduino Duemilanove 2009b](/images/arduino-internals-whats-behind-the-magic/Arduino_Duemilanove_2009b.jpg "An Arduino Duemilanove. The first Arduino I actually
+![Arduino Duemilanove 2009b](~/assets/images/post/arduino-internals-whats-behind-the-magic/Arduino_Duemilanove_2009b.jpg "An Arduino Duemilanove. The first Arduino I actually
 programmed. Source: [Wikipedia](https://commons.wikimedia.org/wiki/File:Arduino_Duemilanove_2009b.jpg)")
 
 What this project actually achieved is simplifying microcontroller programming to the extreme, replacing obscure
@@ -85,7 +87,7 @@ ESP8266 from Espressif Systems, available on the original [NodeMCU](https://en.w
 Arduino-Uno [footprints](https://www.amazon.com/ARCELI-ESP8266-Development-Compatible-Arduino/dp/B07J2QKNHB/), with
 built-in Wi-Fi capabilities, much more processing power as well as large storage.
 
-![WeMos D1](/images/arduino-internals-whats-behind-the-magic/WeMos_D1.jpg "WeMos D1, one of the many ESP8266 boards")
+![WeMos D1](~/assets/images/post/arduino-internals-whats-behind-the-magic/WeMos_D1.jpg "WeMos D1, one of the many ESP8266 boards")
 
 Even though those were not initially programmable from the Arduino IDE, the Arduino community added support for these as
 they became one of the most go-to choices for IoT projects over the recent years.
@@ -394,7 +396,7 @@ The [Arduino Nano 33 BLE](https://store.arduino.cc/arduino-nano-33-ble) is one e
 contains a 32-bit ARM Cortex-M4 CPU running at 64MHz as well as a Bluetooth chip which supports BLE. This is the board
 we will be using as a target for looking under the hood.
 
-![Arduino Nano 33 BLE](/images/arduino-internals-whats-behind-the-magic/Arduino_Nano_33_BLE.jpg "Arduino Nano 33 BLE. Source: [arduino.cc](https://arduino.cc)")
+![Arduino Nano 33 BLE](~/assets/images/post/arduino-internals-whats-behind-the-magic/Arduino_Nano_33_BLE.jpg "Arduino Nano 33 BLE. Source: [arduino.cc](https://arduino.cc)")
 
 The `Arduino.h` header is located in the same directory, relative to the Mbed core root, and corresponds roughly to what
 we saw before for the AVR core: generic Arduino definitions and "hardware"-specific. "Hardware" in quotes since the Mbed
