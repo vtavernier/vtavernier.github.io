@@ -420,7 +420,7 @@ Time for some digging.
 # Naming things is hard
 
 Running the following commands on a Raspberry Pi Zero, we obtain this output:
-```txt
+```
 $ dpkg --print-architecture
 armhf
 $ echo $MACHTYPE
@@ -616,7 +616,7 @@ tried various other options, without success:
     space structures for 32-bit architectures like ARMv6. This is a [known
     bug](https://gitlab.com/qemu-project/qemu/-/issues/263), and in case you encounter it, for example by compiling a
     Rust project, the error looks like this:
-    ```text
+    ```
         Updating crates.io index
     warning: spurious network error (2 tries remaining): could not read directory '/root/.cargo/registry/index/github.com-1285ae84e5963aae/.git//refs': Value too large for defined data type; class=Os (2)
     warning: spurious network error (1 tries remaining): could not read directory '/root/.cargo/registry/index/github.com-1285ae84e5963aae/.git//refs': Value too large for defined data type; class=Os (2)
@@ -646,7 +646,7 @@ have multiple options:
 | Add Raspbian's (armhf) repositories to `apt` | We get the exact packages for the target, still using `apt` | Raspbian's packages are not *multiarch-aware*[^debian-multiarch] since they are native packages, and can't be installed at the same time. Also, postinst scripts are not supported since they only run on the native architecture for the package. |
 
 In case you tried option #3, `apt install libpython3-dev` probably produced an error message looking like the following:
-```text
+```
 The following packages have unmet dependencies:
  libexpat1:armhf : Depends: libc6:armhf (>= 2.25) but it is not installable
                    Depends: libgcc-s1:armhf (>= 3.5) but it is not installable

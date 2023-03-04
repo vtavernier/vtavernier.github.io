@@ -142,7 +142,7 @@ Each commit also references one (or more in case of a merge) parent commits, whi
 is constructed. Here is an example from the `git merge` reference manual. *A* to *H* refer to commits, *topic* and
 *master* are branch names. Time evolves from left to right in these graphs, with more recent commits at the right.
 
-```txt
+```
        A---B---C topic
       /         \
  D---E---F---G---H master
@@ -257,7 +257,7 @@ $ <span style="font-weight:bold;color:white;">git add -p</span>
 
 In interactive staging mode, you can get a reminder of available commands by typing `h`:
 
-```txt
+```
 y - stage this hunk
 n - do not stage this hunk
 q - quit; do not stage this hunk or any of the remaining ones
@@ -386,7 +386,7 @@ send your (committed) work, you will encounter one of these cases:
 * No one worked on the remote copy of the branch you are currently working on. Thus, you only added commits to the *end*
   of the history for that branch. Graphically, this can be represented as follows:
 
-  ```txt
+  ```
          origin/master
         /
    D---E---F---G---H master
@@ -397,7 +397,7 @@ send your (committed) work, you will encounter one of these cases:
   `fast-forward` merge in the Git documentation. Think of it as the `origin/master` label just skipping through commits
   to its current location:
 
-  ```txt
+  ```
           > > > > >  origin/master
         /           /
    D---E---F---G---H master
@@ -418,7 +418,7 @@ and have 1 and 1 different commits each, respectively.</span>
 
   Again, represented as graph, the situation is as follows:
 
-  ```txt
+  ```
           A---B---C origin/master
          /
     D---E---F---G---H master
@@ -449,7 +449,7 @@ appropriate depending on the context. Let us review these two approaches for the
 Without `--rebase`, `git pull` is equivalent to `git fetch && git merge origin/master`[^master-in-this-example]. This
 will result in the following situation:
 
-```txt
+```
                   origin/master
                  /
         A---B---C---.
@@ -466,7 +466,7 @@ will result in the following situation:
 This merge operation solves the problem encountered by `git push`: there is now a fast-forward path for the
 `origin/master` branch:
 
-```txt
+```
                  / > > > origin/master
         A---B---C---.   /
        /             \ /
@@ -481,7 +481,7 @@ explicit merge commit, this is the recommended approach. However a *rebase pull*
 With `--rebase`, `git pull` is equivalent to `git fetch && git rebase origin/master`[^master-in-this-example]. This will
 result in the following situation:
 
-```txt
+```
                   origin/master
                  /
         A---B---C---F'---G'---H' master
@@ -498,7 +498,7 @@ result in the following situation:
 This rebase operation also solves the problem encountered by `git push`: there is now a fast-forward path for the
 `origin/master` branch:
 
-```txt
+```
                   > > > > > > > origin/master
                  /             /
         A---B---C---F'---G'---H' master
@@ -509,7 +509,7 @@ This rebase operation also solves the problem encountered by `git push`: there i
 Note that contrarily to the *merge pull*, the history is linear and does not keep a trace of a merge operation
 happening. If we remove the old `master` branch state from the graph, we obtain one single branch in the history:
 
-```txt
+```
                               origin/master
                              /
   D---A---B---C---F'---G'---H' master

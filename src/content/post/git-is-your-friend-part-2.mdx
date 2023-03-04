@@ -23,7 +23,7 @@ rebasing.
 
 Let us start with the following situation:
 
-```txt
+```
     C origin/master
    /
   A---B master
@@ -242,7 +242,7 @@ of commits while working locally, not just in the case of a pull.
 
 Let's consider the following situation, with two branches `feature` and `master`:
 
-```txt
+```
         A---B---C feature
        /
   D---E---F---G master
@@ -251,7 +251,7 @@ Let's consider the following situation, with two branches `feature` and `master`
 Running `git rebase master feature` will *rebase* the `feature` branch onto the `master` branch, resulting in this
 state:
 
-```txt
+```
                 A'---B'---C' feature
                /
   D---E---F---G master
@@ -323,7 +323,7 @@ squash d105f20 Add success return to main
 
 Then, save the file and exit the editor to run rebasing:
 
-```txt
+```
 Auto-merging main.c
 CONFLICT (content): Merge conflict in main.c
 error: could not apply d105f20... Add success return to main
@@ -401,7 +401,7 @@ $ <span style="font-weight:bold;color:white;">git log --oneline</span>
 Running `git rebase -i origin/master`, switching the command for `31c5062` to `edit`, saving and quitting the editor
 will drop us back to the terminal. Again, Git indicates what the next steps are:
 
-```txt
+```
 Stopped at 31c5062...  Add return to main
 You can amend the commit now, with
 

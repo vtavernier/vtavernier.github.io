@@ -283,7 +283,7 @@ void loop() {
 
 Compiles to the following assembly[^arduino-platformio-optimization]:
 
-```s
+```asm
 000000e0 <digitalWrite.constprop.0>:
   # [truncated: 54 instructions for computing timer, bit, port and other checks]
   #   uint8_t oldSREG = SREG;
@@ -344,7 +344,7 @@ int main() {
 
 Compiles to the optimal assembly below (`sbi` sets a specific bit in a port register, and `cbi` clears it):
 
-```s
+```asm
 00000080 <main>:
   # DDRB |= (1 << PB5);
   80:	25 9a       	sbi	0x04, 5	# 4

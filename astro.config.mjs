@@ -23,6 +23,10 @@ export default defineConfig({
 
   markdown: {
     remarkPlugins: [readingTimeRemarkPlugin],
+    shikiConfig: {
+      theme: 'dracula',
+      wrap: true,
+    },
   },
 
   integrations: [
