@@ -13,7 +13,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint . --ext .js,.ts,.astro",
     "subfont": "subfont -ir --no-fallbacks --silent --root dist",
-    "ci:check": "run-s format:check lint"
+    "ci:check": "run-s format:check lint",
+    "postinstall": "sed -i \"s#src = src.substring(config.base.length - 1);#src = src.substring(config.base.length - +config.base.endsWith('/'));#\" node_modules/@astrojs/image/dist/build/ssg.js"
   },
   "devDependencies": {
     "@astrojs/image": "^0.14.1",
