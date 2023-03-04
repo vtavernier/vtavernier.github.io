@@ -3,5 +3,6 @@ node_modules
 .github
 .changeset
 package-lock.json
+.astro
 *.md
 *.mdx
