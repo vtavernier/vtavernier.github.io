@@ -58,3 +58,7 @@
 [data-aw-toggle-menu].expanded g > path:last-child {
   @apply rotate-45 translate-y-[-8px] translate-x-[14px];
 }
+
+.text-green {
+  @apply text-green-500;
+}
