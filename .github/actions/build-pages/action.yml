@@ -8,34 +8,14 @@ inputs:
   github-token:
     description: GitHub Token
     required: true
+    default: ${{ github.token }}
 outputs:
   build-dir:
     description: Directory containing the artifacts
-    value: ./dist
 runs:
-  using: composite
-  steps:
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-
-    - name: Install native dependencies
-      run: sudo apt-get install -y --no-install-recommends libvips-dev libglib2.0-dev
-      shell: bash
-
-    - name: Install dependencies
-      run: npm ci
-      shell: bash
-
-    - name: Run checks
-      run: npm run ci:check
-      shell: bash
-
-    - name: Build
-      run: npm run build
-      env:
-        SITE: https://vtavernier.github.io
-        BASE_URL: ${{ inputs.base-url }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-      shell: bash
+  using: docker
+  image: Dockerfile
+  env:
+    SITE: https://vtavernier.github.io
+    BASE_URL: ${{ inputs.base-url }}
+    GITHUB_TOKEN: ${{ inputs.github-token }}

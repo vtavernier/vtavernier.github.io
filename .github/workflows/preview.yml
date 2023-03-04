@@ -24,7 +24,6 @@ jobs:
         uses: ./.github/actions/build-pages
         with:
           base-url: /pr-preview/pr-${{ github.event.number }}/
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy
         uses: rossjrw/pr-preview-action@v1

@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:podman": "podman build -t localhost/vtavernier.github.io .github/actions/build-pages && podman run --rm -it -e BUILD_ONLY=true -v $PWD:/src:z -w /src localhost/vtavernier.github.io",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier -w .",
