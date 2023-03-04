@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 @layer components {
-  .terminal-output {
-    background: #0d1117;
-    color: var(--tw-prose-pre-code);
-  }
-
   .text-page {
     color: var(--aw-color-text-page);
   }
