@@ -71,6 +71,9 @@ export function transformJsonResume(rawResume: any, lang: string): any {
           'Intégration continue et livraison continue (CI/CD)': {
             name: 'CI/CD',
           },
+          'OpenGL Shading Language': {
+            name: 'OpenGL GLSL',
+          }
         } as any
       )[skill.name] || {}),
     }))
