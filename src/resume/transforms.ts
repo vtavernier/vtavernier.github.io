@@ -11,7 +11,7 @@ export function transformJsonResume(rawResume: any, lang: string): any {
   resume['basics']['summary'] = summaries[lang as keyof typeof summaries];
 
   resume['basics']['location']['address'] = 'Grenoble';
-  resume['basics']['url'] = 'https://vtavernier.github.io/';
+  resume['basics']['website'] = 'https://vtavernier.github.io/';
   resume['basics']['profiles'].push({
     url: 'https://github.com/vtavernier',
     username: 'vtavernier',
