@@ -1,0 +1,443 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Vincent Tavernier",
+    "label": "R&D, DevOps and AWS Cloud engineer",
+    "image": "",
+    "email": "v.tavernier@pm.me",
+    "phone": "",
+    "url": "",
+    "summary": "18 years ago, my dad gave me a 400-page book on Visual Basic 6 and I went through it in a couple of months. Needless to say, I'm not programming in that language anymore, but my interest in technology hasn't faded one bit, far from it.\n\nI graduated from one of France's best computer science engineering schools back in 2017, and after a 4 year experience in computer graphics research I have now embarked in the next step of my professional journey as a DevOps and cloud engineer at Kaizen Solutions.\n\nThis might seem like a major shift, but that does not mean I'm starting from scratch either. In my opinion, anyone can learn technologies, frameworks and architecture concepts, even on the fly. But in my case, those past 6 years of professionnal have allowed me to develop significant skills which I routinely rely on:\n- Teaching and knowledge transfer experience: helping teammates get up to speed and autonomous on the technologies we use is highly valuable\n- Critical thinking: it's a complex world when business needs do not align with technological constraints. Weighing the pros and cons of various solutions is a must-have to ensure we develop maintainable and reliable software given the limited resources we have.\n- Following technological advancements: the IT landscape is constantly changing, and the right solution to your problem might be right around the corner. You just need to know about it without drowning in information!\n\nAll this is only scratching the surface, but what you're reading here is just a summary, feel free to check out the details below if you want the full list of technologies, systems and concepts I've encountered along the way.\n\nAnd in case you still have some reading time left, head over to my blog where I occasionnally share my views and experiences with software (and sometimes hardware): https://vtavernier.github.io\n\nHappy reading!",
+    "location": {
+      "countryCode": "FR",
+      "address": ""
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "vincent-tavernier-707b5012a",
+        "url": "https://www.linkedin.com/in/vincent-tavernier-707b5012a/"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "KAIZEN Solutions (KZS)",
+      "position": "Software Engineer",
+      "startDate": "2022-10-31",
+      "endDate": "",
+      "highlights": [],
+      "summary": "Contracting work for Schneider Electric\n\n- Development of an AWS cloud infrastructure platform for artifical intelligence workloads\n- Development of reusable Terraform modules\n- Implementation of DevSecOps pipelines, release and update automation\n\nLanguages: Go, Python 3, Terraform, Bash\nTechnologies: Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironment: Windows, Linux, AWS, GitHub Enterprise",
+      "url": "https://www.linkedin.com/company/kzs/",
+      "location": "Grenoble, France"
+    },
+    {
+      "name": "KAIZEN Solutions (KZS)",
+      "position": "Software Engineer",
+      "startDate": "2021-10-31",
+      "endDate": "",
+      "highlights": [],
+      "url": "https://www.linkedin.com/company/kzs/",
+      "location": "Grenoble, France"
+    },
+    {
+      "name": "KAIZEN Solutions (KZS)",
+      "position": "Software engineer",
+      "startDate": "2021-10-31",
+      "endDate": "2022-09-30",
+      "highlights": [],
+      "summary": "Contracting work for Thales AVS\n\n- Technical leader on a data collection, transformation and exploitation project\n- Designing the software architecture for supporting new features\n- Management of the project's operational tasks\n- AWS cloud and Kubernetes (Helm) developer\n- Code owner of the embedded data collection agents\n\nLanguages: C++, Python 3, Terraform, Helm\nTechnologies: ArgoCD, ElasticSearch, Grafana, Redis, Fluent-Bit, Metricbeat, Keycloak, Jenkins\nEnvironment: Windows, Linux, Docker, Kubernetes (K8s), AWS, Datadog\nMethods and integration: Git, Azure DevOps, GitLab",
+      "url": "https://www.linkedin.com/company/kzs/",
+      "location": "Grenoble, France"
+    },
+    {
+      "name": "Université Grenoble Alpes",
+      "position": "Teaching Assistant",
+      "startDate": "2020-09-30",
+      "endDate": "2021-08-31",
+      "highlights": [],
+      "summary": "Full-time teaching at the university and follow-up work on my previous research work.\n\n- Multiple classes taught in a computer science major : language theory, relational databases, and software development practices",
+      "url": "https://www.linkedin.com/school/universit%C3%A9-grenoble-alpes/",
+      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+    },
+    {
+      "name": "Université Grenoble Alpes",
+      "position": "PhD student",
+      "startDate": "2017-09-30",
+      "endDate": "2021-08-31",
+      "highlights": [],
+      "summary": "Thesis preparation : controlling the appearance of stochastic procedural textures\n\n- Publications regarding optimizing the Gabor Noise texture synthesis method via statistical indicators\n- Involved in the research's team day-to-day life (organizing seminars, presentation and IT system administration)\n- Teaching experience at university (algorithmics, relational databases and user interfaces at various levels)",
+      "url": "https://www.linkedin.com/school/universit%C3%A9-grenoble-alpes/",
+      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+    },
+    {
+      "name": "Inria",
+      "position": "Intern",
+      "startDate": "2017-02-28",
+      "endDate": "2017-07-31",
+      "highlights": [],
+      "summary": "Engineering graduate internship : studying and solving the strange visual artifacts occuring when procedural texturing with paradoxical requirements\n\n- Review of the state of the art on procedural texture synthesis\n- Development of objective measures of artifacts\n- Study of related works on visual perception of artifacts",
+      "url": "https://www.linkedin.com/company/inria/",
+      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+    },
+    {
+      "name": "Eaton",
+      "position": "Intern - Translation system for software products",
+      "startDate": "2016-06-30",
+      "endDate": "2016-08-31",
+      "highlights": [],
+      "summary": "Analysis, choice and implementation of a platform for managing translations of Eaton's software products, and integration into existing software",
+      "url": "https://www.linkedin.com/company/eaton/",
+      "location": "Montbonnot, Auvergne-Rhône-Alpes, France"
+    },
+    {
+      "name": "NSIGMA Junior-Entreprise",
+      "position": "Development of a customer relationship management system",
+      "startDate": "2015-10-31",
+      "endDate": "2016-01-31",
+      "highlights": [],
+      "summary": "Development of a customer relationship management Windows application for a tour operator.",
+      "url": "https://www.linkedin.com/company/nsigma-junior-enterprise/",
+      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+    }
+  ],
+  "volunteer": [],
+  "education": [
+    {
+      "institution": "Ecole Nationale Supérieure d'Informatique et de Mathématiques Appliquées de Grenoble",
+      "area": "Software engineer",
+      "studyType": "Engineering diploma",
+      "startDate": "2014-12-31",
+      "endDate": "2017-12-31",
+      "score": "",
+      "courses": []
+    },
+    {
+      "institution": "Lycée Rouvière",
+      "area": "Classe préparatoire PTSI aux grandes écoles",
+      "studyType": "",
+      "startDate": "2012-12-31",
+      "endDate": "2014-12-31",
+      "score": "",
+      "courses": []
+    },
+    {
+      "institution": "Lycée Rouvière",
+      "area": "Série scientifique, option sciences de l'ingénieur, spécialité physique, langue européenne anglais",
+      "studyType": "Baccalauréat",
+      "startDate": "2009-12-31",
+      "endDate": "2012-12-31",
+      "score": "Mention Très Bien",
+      "courses": []
+    }
+  ],
+  "awards": [
+    {
+      "title": "Première place au concours GEM IBM Watson",
+      "date": "2016-02-28",
+      "awarder": "IBM et Grenoble Ecole de Management",
+      "summary": "Présentation d'une réponse à une des problématiques actuelles de l'intelligence artificielle pour trouver des applications des technologies cognitives."
+    }
+  ],
+  "certificates": [],
+  "publications": [
+    {
+      "name": "Freely orientable microstructures for designing deformable 3D prints",
+      "publisher": "https://hal.inria.fr/hal-02524371v3",
+      "releaseDate": "2020-11-30",
+      "summary": "Nature offers a marvel of astonishing and rich deformation behaviors. Yet, most of the objects we fabricate are comparatively rather inexpressive, either rigid or having simple homogeneous behaviors when interacted with. In this work, we focus on controlling how a 3D printed volume reacts under large deformations. We propose a novel microstructure that is extremely rigid along a transverse direction, while being comparatively very flexible in the orthogonal plane. By allowing free gradation of orientation within the object, the microstructure can be designed such that, under deformation, some distances in the volume are preserved while others freely change. This allows to control the way the volume reshapes when deformed, and results in a wide range of design possibilities. Other gradations are possible, such as locally and progressively canceling the directional effect. To synthesize the structures we propose an algorithm that builds upon procedural texturing. It produces a cellular geometry that can be fabricated reliably despite 3D printing walls at a minimal thickness, for maximal flexibility. The synthesis algorithm is efficient, and scales to large volumes.",
+      "url": "https://hal.inria.fr/hal-02524371v3"
+    },
+    {
+      "name": "Making Gabor Noise Fast and Normalized",
+      "publisher": "Eurographics 2019 - 40th Annual Conference of the European Association for Computer Graphics",
+      "releaseDate": "2019-05-31",
+      "summary": "Gabor Noise is a powerful procedural texture synthesis technique, but it has two major drawbacks: It is costly due to the high required splat density and not always predictable because properties of instances can differ from those of the process. We bench performance and quality using alternatives for each Gabor Noise ingredient: point distribution, kernel weighting and kernel shape. For this, we introduce 3 objective criteria to measure process convergence, process stationarity, and instance stationarity. We show that minor implementation changes allow for 17-24x speed-up with same or better quality.",
+      "url": "https://hal.inria.fr/hal-02104389"
+    },
+    {
+      "name": "Gabor Noise Revisited",
+      "publisher": "j•FIG 2018 - Journées Françaises d'Informatique Graphique",
+      "releaseDate": "2018-11-30",
+      "summary": "Gabor noise ingredients — points distribution, weights, kernel — can be changed. We show that minor implementation changes allow for huge 17 − 24× speed-up with same or better quality.",
+      "url": "https://hal.archives-ouvertes.fr/hal-01926451"
+    }
+  ],
+  "skills": [
+    {
+      "name": "ArgoCD",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Terragrunt",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Go",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Semantic Release",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Renovate",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "AWS Lambda",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "GitHub Actions",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Keycloak",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Jenkins",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Elasticsearch",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Rust",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "OpenGL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "C++",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Intégration continue",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "LaTeX",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Git",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "C",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Perl",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Python",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Bash",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "AWS",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Virtualisation",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Testing",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Développement Open Source",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Microsoft Windows",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Linux",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "PostgreSQL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "CUDA",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Docker",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Helm",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "DevOps",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "SQL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Ansible",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Kubernetes",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Julia (langage de programmation)",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Java",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "WebGL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Terraform",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "C#",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "CMake",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Intégration continue et livraison continue (CI/CD)",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "ElasticSearch",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "OpenGL Shading Language",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Amazon Web Services",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Arduino",
+      "level": "",
+      "keywords": []
+    }
+  ],
+  "languages": [
+    {
+      "language": "fr",
+      "fluency": "Native Speaker"
+    },
+    {
+      "fluency": "Native Speaker",
+      "language": "Anglais"
+    },
+    {
+      "fluency": "Native Speaker",
+      "language": "Français"
+    }
+  ],
+  "interests": [],
+  "references": [],
+  "projects": [
+    {
+      "name": "Rendu de panorama de plans de ski \"à la Novat\"",
+      "startDate": "2016-05-31",
+      "summary": "Etude et développement d'algorithmes de rendu dans le style des panoramas de l'atelier \"Pierre Novat\" puis implémentation temps réel avec OpenGL/GLSL.",
+      "url": "https://ensiwiki.ensimag.fr/index.php/Rendu_de_panorama_de_plans_de_ski_%22%C3%A0_la_Novat%22",
+      "endDate": "2016-06-30"
+    },
+    {
+      "name": "Création de panoramas de montagnes \"à la Novat\" à partir de modèle numérique de terrain",
+      "startDate": "2016-02-28",
+      "summary": "Dans le cadre d'un module d'introduction à la recherche en laboratoire à l'Ensimag, étude des différents aspects relatifs à la création de panoramas de montagne dans le style de l'atelier \"Pierre Novat\".",
+      "url": "https://ensiwiki.ensimag.fr/index.php/Vincent_TAVERNIER_%28Encadrants_:_Renaud_BLANCH,_Michael_ORTEGA%29_:_Cr%C3%A9ation_interactive_de_panoramas_de_montagne",
+      "endDate": "2016-05-31"
+    },
+    {
+      "name": "Suivi de personne pour robot de téléprésence",
+      "startDate": "2016-02-28",
+      "summary": "Développement et implémentation d'un algorithme de suivi de personne à l'aide de systèmes de vision par ordinateur, pour faciliter le pilotage à distance d'un robot de téléprésence. Réalisé au FabMSTIC.",
+      "url": "https://github.com/vtavernier/robair-follow-me",
+      "endDate": "2016-05-31"
+    },
+    {
+      "name": "Site internet pour l'associatif de l'Ensimag",
+      "startDate": "2015-08-31",
+      "summary": "Développement d'une application Web pour promouvoir la vie associative de l'Ensimag. Cette application Ruby on Rails permet aux différentes associations de publier leurs évènements, créer des articles et présenter leurs partenariats.",
+      "url": "https://github.com/vtavernier/asso_ensimag",
+      "endDate": "2016-04-30"
+    }
+  ],
+  "meta": {
+    "version": "v1.0.0",
+    "canonical": "https://github.com/jsonresume/resume-schema/blob/v1.0.0/schema.json"
+  }
+}

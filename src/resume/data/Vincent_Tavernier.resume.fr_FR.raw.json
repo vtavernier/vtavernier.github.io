@@ -1,0 +1,443 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Vincent Tavernier",
+    "label": "Ingénieur R&D, DevOps, Cloud AWS",
+    "image": "",
+    "email": "v.tavernier@pm.me",
+    "phone": "",
+    "url": "",
+    "summary": "Il y a 18 ans, mon père m'a donné un livre de quelques 400 pages à propos de Visual Basic 6. Je l'ai lu en entier en quelques mois. Vous vous en doutez bien, je ne programme plus avec ce langage là, mais ma passion pour la technologie n'en a pas souffert, loin de là.\n\nJ'ai reçu mon diplôme d'ingénieur d'une des meilleurs écoles d'informatique de France en 2017, et après une expérience de 4 ans dans la recherche en informatique graphique, je continue mon aventure professionnelle en tant qu'ingénieur DevOps et cloud chez Kaizen Solutions.\n\nC'est un changement qui peut paraître brutal, mais je ne démarre pas de zéro non plus. Je pense sincèrement que tout le monde peut apprendre des technologies, des frameworks ou concepts d'architecture, y compris sur le tas. Mais en ce qui me concerne, ces 6 dernières années d'expérience professionnelle m'ont permis de développer des compétences significatives sur lesquelles je m'appuie régulièrement :\n- Expérience d'enseignement et de transfert de compétences : aider mes collègues à monter en compétence et à devenir autonomes sur les technologies du projet est précieux\n- Esprit critique : lorsque les besoins de l'entreprise ne sont pas alignés avec les contraintes technologiques, les décisions deviennent complexes. Etre en mesure de comparer les avantages et inconvénients des différentes approches est indispensable pour développer des produits maintenable et fiables étant donné des ressources limitées.\n- Veille technologique : l'univers de l'informatique est en changement constant, ce qui fait que la solution parfaite à votre problème est peut-être sous votre nez... Si vous avez réussi à en entendre parler au milieu de toute l'information disponible ces jours-ci !\n\nEvidemment, ceci n'est qu'un aperçu de ce que j'ai fait durant ces 6 dernières années, mais cette section n'est qu'un résumé ! Tous les détails sur les technologies, systèmes et concepts que j'ai manipulés se trouvent sur le reste de mon profil.\n\nS'il vous reste encore du temps libre, vous pouvez aussi jeter un coup d'oeil à mon blog où je partage ma vision et mes expériences avec le logiciel (et parfois du matériel) : https://vtavernier.github.io\n\nBonne lecture !",
+    "location": {
+      "countryCode": "FR",
+      "address": "France"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "vincent-tavernier-707b5012a",
+        "url": "https://www.linkedin.com/in/vincent-tavernier-707b5012a/"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "KAIZEN Solutions (KZS)",
+      "position": "Ingénieur logiciel",
+      "startDate": "2022-10-31",
+      "endDate": "",
+      "highlights": [],
+      "summary": "Prestation pour Schneider Electric\n\n- Développement d'une plateforme d'infrastructure cloud AWS pour l'intelligence artificielle\n- Développement de modules Terraform réutilisables\n- Mise en place de pipelines DevSecOps, automatisation des releases et mises à jour des dépendances\n\nLangages : Go, Python 3, Terraform, Bash\nTechnologies : Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironnement : Windows, Linux, AWS, GitHub Enterprise",
+      "url": "https://www.linkedin.com/company/kzs/",
+      "location": "Grenoble et périphérie"
+    },
+    {
+      "name": "KAIZEN Solutions (KZS)",
+      "position": "Ingénieur logiciel",
+      "startDate": "2021-10-31",
+      "endDate": "",
+      "highlights": [],
+      "url": "https://www.linkedin.com/company/kzs/",
+      "location": "Grenoble et périphérie"
+    },
+    {
+      "name": "KAIZEN Solutions (KZS)",
+      "position": "Ingénieur logiciel",
+      "startDate": "2021-10-31",
+      "endDate": "2022-09-30",
+      "highlights": [],
+      "summary": "Prestation pour Thales AVS\n\n- Leader technique sur un projet de collecte, transformation et exploitation de données\n- Conception de l'architecture logicielle des nouvelles fonctionnalités\n- Gestion des tâches opérationnelles du cycle de vie du projet\n- Développeur cloud AWS et Kubernetes (Helm)\n- Responsable du développement des composants de collecte embarqués\n\nLangages : C++, Python 3, Terraform, Helm\nTechnologies : ArgoCD, ElasticSearch, Grafana, Redis, Fluent-Bit, Metricbeat, Keycloak, Jenkins\nEnvironnement : Windows, Linux, Docker, Kubernetes (K8s), AWS, Datadog\nMéthodologies, intégration : Git, Azure DevOps, GitLab",
+      "url": "https://www.linkedin.com/company/kzs/",
+      "location": "Grenoble et périphérie"
+    },
+    {
+      "name": "Université Grenoble Alpes",
+      "position": "Attaché Temporaire d'Enseignement et de Recherche (ATER)",
+      "startDate": "2020-09-30",
+      "endDate": "2021-08-31",
+      "highlights": [],
+      "summary": "Enseignement à plein temps à l'université et poursuite des travaux de recherche en thèse.\n\n- Enseignement de plusieurs matières dans un cursus informatique : théorie des langages, bases de données relationnelles, pratiques de développement logiciel",
+      "url": "https://www.linkedin.com/school/universit%C3%A9-grenoble-alpes/",
+      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+    },
+    {
+      "name": "Université Grenoble Alpes",
+      "position": "Doctorant",
+      "startDate": "2017-09-30",
+      "endDate": "2021-08-31",
+      "highlights": [],
+      "summary": "Préparation de thèse de doctorat : contrôler l'apparence des textures stochastiques procédurales\n\n- Publication d'articles sur l'optimisation des performances de la méthode Gabor Noise via la mise en place d'outils statistiques\n- Participation à la vie de l'équipe de recherche (organisation de séminaires, présentations, administration des systèmes informatiques)\n- Enseignement à l'université (algorithmique, base de données et interfaces utilisateurs à divers niveaux)",
+      "url": "https://www.linkedin.com/school/universit%C3%A9-grenoble-alpes/",
+      "location": "Grenoble et périphérie"
+    },
+    {
+      "name": "Inria",
+      "position": "Stagiaire",
+      "startDate": "2017-02-28",
+      "endDate": "2017-07-31",
+      "highlights": [],
+      "summary": "Stage de fin d'études : étude et résolution d'artefacts visuels se produisant lors de la génération procédurale de textures soumises à des contraintes paradoxales\n\n- Revue de la littérature sur la génération procédurale de texture\n- Mise en place d'outils objectifs pour la mesure des artefacts\n- Proposition de liens avec des études sur la perception visuelle",
+      "url": "https://www.linkedin.com/company/inria/",
+      "location": "Région de Grenoble, France"
+    },
+    {
+      "name": "Eaton",
+      "position": "Stage - Système de traduction pour produits logiciels",
+      "startDate": "2016-06-30",
+      "endDate": "2016-08-31",
+      "highlights": [],
+      "summary": "Comparaison, choix et mise en place d'une plateforme de gestion des traductions pour les produits logiciels Eaton et intégration d'un système de traduction d'interface utilisateur.",
+      "url": "https://www.linkedin.com/company/eaton/",
+      "location": "Montbonnot"
+    },
+    {
+      "name": "NSIGMA Junior-Entreprise",
+      "position": "Développement d'un système de gestion de relations client",
+      "startDate": "2015-10-31",
+      "endDate": "2016-01-31",
+      "highlights": [],
+      "summary": "Développement d’une application Windows de gestion de relations client pour un tour opérateur.",
+      "url": "https://www.linkedin.com/company/nsigma-junior-enterprise/",
+      "location": "Région de Grenoble, France"
+    }
+  ],
+  "volunteer": [],
+  "education": [
+    {
+      "institution": "Ecole Nationale Supérieure d'Informatique et de Mathématiques Appliquées de Grenoble",
+      "area": "Ingénierie des systèmes d'information",
+      "studyType": "Diplôme d'ingénieur",
+      "startDate": "2014-12-31",
+      "endDate": "2017-12-31",
+      "score": "",
+      "courses": []
+    },
+    {
+      "institution": "Lycée Rouvière",
+      "area": "Classe préparatoire PTSI aux grandes écoles",
+      "studyType": "",
+      "startDate": "2012-12-31",
+      "endDate": "2014-12-31",
+      "score": "",
+      "courses": []
+    },
+    {
+      "institution": "Lycée Rouvière",
+      "area": "Série scientifique, option sciences de l'ingénieur, spécialité physique, langue européenne anglais",
+      "studyType": "Baccalauréat",
+      "startDate": "2009-12-31",
+      "endDate": "2012-12-31",
+      "score": "Mention Très Bien",
+      "courses": []
+    }
+  ],
+  "awards": [
+    {
+      "title": "Première place au concours GEM IBM Watson",
+      "date": "2016-02-28",
+      "awarder": "IBM et Grenoble Ecole de Management",
+      "summary": "Présentation d'une réponse à une des problématiques actuelles de l'intelligence artificielle pour trouver des applications des technologies cognitives."
+    }
+  ],
+  "certificates": [],
+  "publications": [
+    {
+      "name": "Freely orientable microstructures for designing deformable 3D prints",
+      "publisher": "https://hal.inria.fr/hal-02524371v3",
+      "releaseDate": "2020-11-30",
+      "summary": "Nature offers a marvel of astonishing and rich deformation behaviors. Yet, most of the objects we fabricate are comparatively rather inexpressive, either rigid or having simple homogeneous behaviors when interacted with. In this work, we focus on controlling how a 3D printed volume reacts under large deformations. We propose a novel microstructure that is extremely rigid along a transverse direction, while being comparatively very flexible in the orthogonal plane. By allowing free gradation of orientation within the object, the microstructure can be designed such that, under deformation, some distances in the volume are preserved while others freely change. This allows to control the way the volume reshapes when deformed, and results in a wide range of design possibilities. Other gradations are possible, such as locally and progressively canceling the directional effect. To synthesize the structures we propose an algorithm that builds upon procedural texturing. It produces a cellular geometry that can be fabricated reliably despite 3D printing walls at a minimal thickness, for maximal flexibility. The synthesis algorithm is efficient, and scales to large volumes.",
+      "url": "https://hal.inria.fr/hal-02524371v3"
+    },
+    {
+      "name": "Making Gabor Noise Fast and Normalized",
+      "publisher": "Eurographics 2019 - 40th Annual Conference of the European Association for Computer Graphics",
+      "releaseDate": "2019-05-31",
+      "summary": "Gabor Noise is a powerful procedural texture synthesis technique, but it has two major drawbacks: It is costly due to the high required splat density and not always predictable because properties of instances can differ from those of the process. We bench performance and quality using alternatives for each Gabor Noise ingredient: point distribution, kernel weighting and kernel shape. For this, we introduce 3 objective criteria to measure process convergence, process stationarity, and instance stationarity. We show that minor implementation changes allow for 17-24x speed-up with same or better quality.",
+      "url": "https://hal.inria.fr/hal-02104389"
+    },
+    {
+      "name": "Gabor Noise Revisited",
+      "publisher": "j•FIG 2018 - Journées Françaises d'Informatique Graphique",
+      "releaseDate": "2018-11-30",
+      "summary": "Gabor noise ingredients — points distribution, weights, kernel — can be changed. We show that minor implementation changes allow for huge 17 − 24× speed-up with same or better quality.",
+      "url": "https://hal.archives-ouvertes.fr/hal-01926451"
+    }
+  ],
+  "skills": [
+    {
+      "name": "ArgoCD",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Terragrunt",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Go",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Semantic Release",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "C++",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "AWS",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Bash",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Virtualisation",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Intégration continue",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Python",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Testing",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "LaTeX",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Développement Open Source",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Microsoft Windows",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Linux",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "PostgreSQL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Git",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "CUDA",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Rust",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Docker",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Helm",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "DevOps",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Renovate",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "SQL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Ansible",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Kubernetes",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Julia (langage de programmation)",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Java",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "OpenGL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "WebGL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Perl",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Terraform",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "C#",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "C",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "CMake",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Elasticsearch",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Intégration continue et livraison continue (CI/CD)",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "GitHub Actions",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "ElasticSearch",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Jenkins",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "OpenGL Shading Language",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "AWS Lambda",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Keycloak",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Amazon Web Services",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Arduino",
+      "level": "",
+      "keywords": []
+    }
+  ],
+  "languages": [
+    {
+      "language": "fr",
+      "fluency": "Native Speaker"
+    },
+    {
+      "fluency": "Native Speaker",
+      "language": "Anglais"
+    },
+    {
+      "fluency": "Native Speaker",
+      "language": "Français"
+    }
+  ],
+  "interests": [],
+  "references": [],
+  "projects": [
+    {
+      "name": "Rendu de panorama de plans de ski \"à la Novat\"",
+      "startDate": "2016-05-31",
+      "summary": "Etude et développement d'algorithmes de rendu dans le style des panoramas de l'atelier \"Pierre Novat\" puis implémentation temps réel avec OpenGL/GLSL.",
+      "url": "https://ensiwiki.ensimag.fr/index.php/Rendu_de_panorama_de_plans_de_ski_%22%C3%A0_la_Novat%22",
+      "endDate": "2016-06-30"
+    },
+    {
+      "name": "Création de panoramas de montagnes \"à la Novat\" à partir de modèle numérique de terrain",
+      "startDate": "2016-02-28",
+      "summary": "Dans le cadre d'un module d'introduction à la recherche en laboratoire à l'Ensimag, étude des différents aspects relatifs à la création de panoramas de montagne dans le style de l'atelier \"Pierre Novat\".",
+      "url": "https://ensiwiki.ensimag.fr/index.php/Vincent_TAVERNIER_%28Encadrants_:_Renaud_BLANCH,_Michael_ORTEGA%29_:_Cr%C3%A9ation_interactive_de_panoramas_de_montagne",
+      "endDate": "2016-05-31"
+    },
+    {
+      "name": "Suivi de personne pour robot de téléprésence",
+      "startDate": "2016-02-28",
+      "summary": "Développement et implémentation d'un algorithme de suivi de personne à l'aide de systèmes de vision par ordinateur, pour faciliter le pilotage à distance d'un robot de téléprésence. Réalisé au FabMSTIC.",
+      "url": "https://github.com/vtavernier/robair-follow-me",
+      "endDate": "2016-05-31"
+    },
+    {
+      "name": "Site internet pour l'associatif de l'Ensimag",
+      "startDate": "2015-08-31",
+      "summary": "Développement d'une application Web pour promouvoir la vie associative de l'Ensimag. Cette application Ruby on Rails permet aux différentes associations de publier leurs évènements, créer des articles et présenter leurs partenariats.",
+      "url": "https://github.com/vtavernier/asso_ensimag",
+      "endDate": "2016-04-30"
+    }
+  ],
+  "meta": {
+    "version": "v1.0.0",
+    "canonical": "https://github.com/jsonresume/resume-schema/blob/v1.0.0/schema.json"
+  }
+}

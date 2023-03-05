@@ -1,0 +1,12 @@
+---
+import { renderResume, getAvailablePages } from '~/resume/render';
+
+export function getStaticPaths() {
+  return getAvailablePages();
+}
+
+const { lang } = Astro.params;
+const resumeHtml = renderResume(lang, false);
+---
+
+<Fragment set:html={resumeHtml} />

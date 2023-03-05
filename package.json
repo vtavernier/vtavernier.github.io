@@ -7,6 +7,7 @@
     "start": "astro dev",
     "build": "astro build",
     "build:podman": "podman build -t localhost/vtavernier.github.io .github/actions/build-pages && podman run --rm -it -e BUILD_ONLY=true -v $PWD:/src:z -w /src localhost/vtavernier.github.io",
+    "build:podman-full": "podman build -t localhost/vtavernier.github.io .github/actions/build-pages && podman run --rm -it -v $PWD:/src:z -w /src localhost/vtavernier.github.io",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier -w .",
@@ -49,6 +50,9 @@
     "node": ">=16.12.0"
   },
   "dependencies": {
-    "astro-diagram": "^0.6.3"
+    "astro-diagram": "^0.6.3",
+    "jsonresume-theme-stackoverflow": "^2.0.0",
+    "jsonresume-theme-stackoverflow-fr": "^2.2.1",
+    "puppeteer": "^19.7.2"
   }
 }
