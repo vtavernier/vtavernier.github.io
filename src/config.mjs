@@ -4,7 +4,7 @@ const CONFIG = {
 
   origin: process.env.SITE || 'https://vtavernier.github.io',
   basePathname: process.env.BASE_URL || '/',
-  trailingSlash: false,
+  trailingSlash: true,
 
   title: 'The Tavern — Programming and research stuff',
   description: 'My findings and sharings on programming projects, personal or not.',
