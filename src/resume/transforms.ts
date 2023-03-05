@@ -73,7 +73,7 @@ export function transformJsonResume(rawResume: any, lang: string): any {
           },
           'OpenGL Shading Language': {
             name: 'OpenGL GLSL',
-          }
+          },
         } as any
       )[skill.name] || {}),
     }))
@@ -81,6 +81,15 @@ export function transformJsonResume(rawResume: any, lang: string): any {
 
   // TODO: Include it actually?
   resume['awards'] = [];
+
+  // TODO: Replace ensiwki links with something else?
+  resume['projects'] = resume['projects'].map((project: any) => {
+    if (project['url'] && project['url'].includes('ensiwiki')) {
+      delete project['url'];
+    }
+
+    return project;
+  });
 
   if (lang == 'en_US') {
     const awards = {
