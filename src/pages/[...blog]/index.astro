@@ -1,6 +1,7 @@
 ---
 import { BLOG } from '~/config.mjs';
 
+import Comments from '~/components/blog/Comments.astro';
 import Layout from '~/layouts/PageLayout.astro';
 import SinglePost from '~/components/blog/SinglePost.astro';
 import ToBlogLink from '~/components/blog/ToBlogLink.astro';
@@ -34,5 +35,6 @@ const meta = {
 
 <Layout {meta}>
   <SinglePost post={{ ...post, image: meta.image }} url={url} />
+  <Comments />
   <ToBlogLink />
 </Layout>

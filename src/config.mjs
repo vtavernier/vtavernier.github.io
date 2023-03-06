@@ -15,6 +15,14 @@ const CONFIG = {
   language: 'en',
   textDirection: 'ltr',
 
+  // Used for utterances
+  repo: 'vtavernier/vtavernier.github.io',
+  utterances: {
+    issueTerm: 'pathname',
+    theme: 'github-dark',
+    label: 'comments',
+  },
+
   dateFormatter: new Intl.DateTimeFormat('en', {
     year: 'numeric',
     month: 'short',
