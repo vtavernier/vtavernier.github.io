@@ -51,7 +51,7 @@ const CONFIG = {
     category: {
       pathname: 'category', // Category main path /category/some-category
       noindex: true,
-      disabled: true,
+      disabled: false,
     },
 
     tag: {
