@@ -33,5 +33,5 @@ export function renderResume(lang: string, includeDoctype: boolean): string {
 
 export function getAvailablePages() {
   const author = 'vincent-tavernier';
-  return [{ params: { lang: 'fr', author } }, { params: { lang: 'en', author } }];
+  return [{ params: { authorLang: `${author}_fr` } }, { params: { authorLang: `${author}_en` } }];
 }

@@ -7,7 +7,8 @@ export function getStaticPaths() {
 }
 
 export const get: APIRoute = async function get(context) {
-  const { lang } = context.params;
+  const { authorLang } = context.params;
+  const lang = authorLang!.split('_')[1]!;
 
   // Load rendered HTML in browser
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });

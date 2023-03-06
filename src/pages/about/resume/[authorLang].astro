@@ -5,8 +5,8 @@ export function getStaticPaths() {
   return getAvailablePages();
 }
 
-const { lang } = Astro.params;
-const resumeHtml = renderResume(lang, false);
+const { authorLang } = Astro.params;
+const resumeHtml = renderResume(authorLang!.split('_')[1]!, false);
 ---
 
 <Fragment set:html={resumeHtml} />
