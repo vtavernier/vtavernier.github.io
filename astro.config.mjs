@@ -10,7 +10,9 @@ import mdx from '@astrojs/mdx';
 import compress from 'astro-compress';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+
 import { readingTimeRemarkPlugin } from './src/utils/frontmatter.mjs';
+import remarkEmdash from './src/remark/emdash.ts';
 
 import { SITE } from './src/config.mjs';
 
@@ -42,7 +44,7 @@ export default defineConfig({
       serviceEntryPoint: '@astrojs/image/sharp',
     }),
     mdx({
-      remarkPlugins: [remarkMath],
+      remarkPlugins: [remarkMath, remarkEmdash],
       rehypePlugins: [rehypeKatex],
     }),
 
