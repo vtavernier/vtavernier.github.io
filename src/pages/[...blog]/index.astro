@@ -10,6 +10,8 @@ import { getCanonical, getPermalink } from '~/utils/permalinks';
 import { fetchPosts } from '~/utils/blog';
 import { findImage } from '~/utils/images';
 
+import 'katex/dist/katex.css';
+
 export async function getStaticPaths() {
   if (BLOG?.disabled || BLOG?.post?.disabled) return [];
   return (await fetchPosts()).map((post) => ({
