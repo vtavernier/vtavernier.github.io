@@ -52,7 +52,6 @@
     "node": ">=16.12.0"
   },
   "dependencies": {
-    "astro-diagram": "^0.6.3",
     "astro-m2dx": "^0.7.15",
     "jsonresume-theme-stackoverflow": "^2.0.0",
     "jsonresume-theme-stackoverflow-fr": "^2.2.1",

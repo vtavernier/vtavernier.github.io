@@ -1,0 +1,11 @@
+---
+export interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+---
+
+<div class="mermaid">
+{code}
+</div>

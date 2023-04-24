@@ -2,6 +2,11 @@
 import { SITE } from '~/config.mjs';
 ---
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
+
 <script is:inline define:vars={{ defaultTheme: SITE.defaultTheme }}>
   function applyTheme(theme) {
     if (theme === 'dark') {
