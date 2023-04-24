@@ -53,9 +53,11 @@
   },
   "dependencies": {
     "astro-diagram": "^0.6.3",
+    "astro-m2dx": "^0.7.15",
     "jsonresume-theme-stackoverflow": "^2.0.0",
     "jsonresume-theme-stackoverflow-fr": "^2.2.1",
     "katex": "^0.16.4",
-    "puppeteer": "^19.7.2"
+    "puppeteer": "^19.7.2",
+    "remark-directive": "^2.0.1"
   }
 }

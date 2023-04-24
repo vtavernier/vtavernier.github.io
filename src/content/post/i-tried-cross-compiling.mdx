@@ -137,6 +137,7 @@ When you got started with programming using compiled languages, you were likely 
 architecture for which you are compiling your programs is the same that runs your compiler. This is the simplest
 situation, represented below. In a nutshell:
 
+:::TerminalOutput
 ```bash
 # The gcc command whithout -c invokes the compiler and the linker in sequence
 # This one compiles main.c and links with either libsomething.a or libsomething.so
@@ -145,6 +146,7 @@ $ gcc -lsomething main.c
 $ ./a.out
 # Your program runs, congratulations!
 ```
+:::
 
 <figure>
 <Diagram code={`
@@ -175,6 +177,7 @@ albeit requiring some patience while the low-power ARM cores churn away to produ
 Both those cases are represented below. Dynamic libraries are only present if the target platform has a dynamic linker,
 such as Linux embedded targets. The previous compilation process gets slightly more complex:
 
+:::TerminalOutput
 ```bash
 # All the gcc and binutils (cross-)tools are prefixed with the target triplet,
 # here "arm-linux-gnueabihf". This one compiles main.c and links with
@@ -191,6 +194,7 @@ $ scp a.out pi@raspberry:~∕
 # Run it
 $ ssh pi@raspberry ./a.out
 ```
+:::
 
 <figure>
 <Diagram code={`
@@ -351,6 +355,7 @@ Ranking the reasons for cross-compiling from "required" to "convenient", these a
 * A compiler is available, but you do not have access to the target (either because you don't own the hardware, or the
   build process is running on continuous integration servers).
 * Limited target hardware performance. Compiling the PoC for this article results in the following:
+:::TerminalOutput
 ```bash
 # Preparation: fetch all dependencies
 $ cargo clean && cargo fetch
@@ -364,6 +369,7 @@ Finished release [optimized] target(s) in 9.07s
 # ARMv6l BCM2835 (Raspberry Pi Zero)
 Finished release [optimized] target(s) in 55m 21s
 ```
+:::
 
 The Raspberry Pi Zero is thus ***366 times*** slower than my desktop PC at compiling the example code. Granted, it
 won't heat up my office as much as a CPU with a 105W TDP. Note that network and I/O performance is also much worse on
@@ -387,6 +393,7 @@ page).
 
 You can then test the acquired compiler with a simple program:
 
+:::TerminalOutput
 ```bash
 $ cat <<EOT >main.c
 #include <stdio.h>
@@ -399,14 +406,17 @@ EOT
 
 $ arm-linux-gnueabihf-gcc main.c
 ```
+:::
 
 Unsurprisingly, it compiles without warnings or errors. And when you transfer it to our target of the day, a Raspberry
 Pi Zero, and run it:
 
+:::TerminalOutput
 ```bash
 $ ./a.out
 Segmentation fault
 ```
+:::
 
 Which is a disappointment, to say the least. We have acquired the right toolchain (i.e. `arm-linux-gnueabihf`), as
 [tutorials](https://hackaday.com/2016/02/03/code-craft-cross-compiling-for-the-raspberry-pi/) and the [raspberrypi/tools
@@ -420,12 +430,15 @@ Time for some digging.
 # Naming things is hard
 
 Running the following commands on a Raspberry Pi Zero, we obtain this output:
-```
+:::TerminalOutput
+```bash
 $ dpkg --print-architecture
 armhf
+
 $ echo $MACHTYPE
 arm-unknown-linux-gnueabihf
 ```
+:::
 
 `armhf` is the Debian architecture for the distribution's packages, and `arm-unknown-linux-gnueabihf` is the GNU
 triplet[^triplet-fullform] binaries for this system are compiled for. Currently, everything matches, so let's look a
@@ -517,7 +530,7 @@ package for GCC 10, you will notice that it was patched to build ARMv6 code:
 ```
 
 On a side note, Rust/LLVM gets this *naming different things a different way*[^naming-things] thing right:
-<TerminalOutput>
+:::TerminalOutput
 $ rustup target list | grep arm
 arm-linux-androideabi
 arm-unknown-linux-gnueabi
@@ -536,7 +549,7 @@ armv7-unknown-linux-musleabihf
 armv7a-none-eabi
 armv7r-none-eabi
 armv7r-none-eabihf
-</TerminalOutput>
+:::
 
 But we shall get back to Rust later, as we don't even have a C compiler for our target for now.
 
@@ -556,6 +569,7 @@ To ensure compatibility between our freshly-built cross-compiling toolchain and 
 versions of the various components (binutils, gcc and glibc) should match the ones in the actual system. On an
 up-to-date Raspberry Pi, you can check these using `dpkg` (assuming you installed the `build-essential` package for
 compiling native programs):
+:::TerminalOutput
 ```bash
 $ dpkg --list | grep -e gcc -e libc-bin -e binutils
 ii  binutils        2.35.2-2+rpi1            armhf        GNU assembler, linker and binary utilities
@@ -565,12 +579,14 @@ ii  gcc             4:10.2.1-1+rpi1          armhf        GNU C compiler
 ii  libc-bin        2.31-13+rpt2+rpi1        armhf        GNU C Library: Binaries
 [...]
 ```
+:::
 
 Skipping over the [boring
 details](https://github.com/vtavernier/cross-images/blob/a960a8fde182fcbf155a48e0785fd099b8997c58/targets/raspberrypi/Dockerfile)
 of building binutils 2.35/gcc 10.2/glibc 2.31, and packaging all this in a Docker image allows us to compile our first
 standalone binary for armv6 from an x86_64 machine:
 
+:::TerminalOutput
 ```bash
 $ docker run --rm -v $PWD:/src vtavernier/cross:raspberrypi arm-linux-gnueabihf-gcc main.c
 $ readelf -A a.out
@@ -579,6 +595,7 @@ $ readelf -A a.out
   Tag_CPU_arch: v6
 [...]
 ```
+:::
 
 ## What didn't work
 
@@ -710,6 +727,7 @@ instructions](https://github.com/vtavernier/cross-images/tree/a960a8fde182fcbf15
 companion repository to this post. Using these images makes cross-compiling [the
 PoC](https://github.com/vtavernier/blog-cross-rpi) a breeze:
 
+:::TerminalOutput
 ```bash
 # Get the code
 $ git clone https://github.com/vtavernier/blog-cross-rpi.git && cd blog-cross-rpi
@@ -724,6 +742,7 @@ $ scp target/arm-linux-gnueabihf-gcc/debug/blog-cross-rpi pi@raspi-zero:~
 # Run it
 $ ssh pi@raspi-zero ./blog-cross-rpi
 ```
+:::
 
 ## Conclusion
 

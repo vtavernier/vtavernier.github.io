@@ -62,3 +62,8 @@
 .text-green {
   @apply text-green-500;
 }
+
+.tm-output pre {
+  margin-top: 0;
+  margin-bottom: 0;
+}
