@@ -1,4 +1,0 @@
-set tw=120
-set spell
-set spelllang=en
-autocmd BufNewFile,BufRead *.md set ft=markdown.pandoc

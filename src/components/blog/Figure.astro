@@ -1,0 +1,47 @@
+---
+import { Image } from '@astrojs/image/components';
+import type { FormatEnum } from 'sharp';
+import { findImage } from '~/utils/images';
+import { renderMarkdown } from '@astrojs/markdown-remark';
+
+export type ImageFormat = keyof FormatEnum;
+
+export type ImageProfile = {
+  widths: number[];
+  sizes: string;
+  fit: 'cover';
+  position: 'center';
+  formats: ImageFormat[];
+};
+
+export type Props = {
+  src: string;
+  title?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  profile?: ImageProfile | undefined;
+};
+
+const { src, alt, profile, title, width, height } = Astro.props;
+
+const showLabel = !!title;
+
+const imageProps = {
+  src: await findImage(src),
+  alt: alt || '',
+  profile,
+  width,
+  height,
+};
+
+if (!imageProps.src) {
+  throw new Error(`Image ${src} not found`);
+}
+---
+
+<figure class="flex flex-col">
+  <Image class="mx-auto" {...imageProps} />
+
+  {showLabel && <figcaption class="mx-auto" set:html={(await renderMarkdown(title, {})).code} />}
+</figure>

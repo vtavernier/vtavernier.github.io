@@ -1,0 +1,34 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+import { getCollection } from 'astro:content';
+import Headline from '~/components/blog/Headline.astro';
+
+async function loadProjects() {
+  const projects = await getCollection('project');
+  const results = projects.sort((a, b) => b.data.weight.valueOf() - a.data.weight.valueOf());
+
+  return results;
+}
+
+export async function getStaticPaths() {
+  return await loadProjects();
+}
+
+const projects = await loadProjects();
+
+const { page } = Astro.props;
+
+const meta = {
+  title: 'Projects',
+  description: "@vtavernier's personal projects",
+};
+---
+
+<Layout {meta}>
+  <Headline subtitle="Nothing to see here. Yet." />
+</Layout>
+
+<script is:inline>
+  window.location = 'https://github.com/vtavernier?tab=repositories&q=&type=source&language=&sort=';
+</script>

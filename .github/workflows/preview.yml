@@ -16,15 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
 
       - name: Build
         id: build
         uses: ./.github/actions/build-pages
         with:
           base-url: /pr-preview/pr-${{ github.event.number }}/
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy
         uses: rossjrw/pr-preview-action@v1

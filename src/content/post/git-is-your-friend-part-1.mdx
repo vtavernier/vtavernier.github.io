@@ -1,0 +1,550 @@
+---
+title: Git is your friend, not your enemy — Part 1
+tags: [tutorial, git]
+category: Tutorials
+publishDate: 2021-01-11
+series:
+  - Git is your friend, not your enemy
+description: Git is a helpful tool when it's actually part of your workflow instead of fighting against it. Learn how to use Git to make it this way!
+excerpt: When and what to commit, how to write useful commit messages and how to share your work.
+image: ~/assets/images/git-01.jpg
+---
+import Diagram from '~/components/Diagram.astro';
+import TerminalOutput from '~/components/TerminalOutput.astro';
+
+> This post is the first part of a tutorial series on how to use Git to its full potential, based on my personal
+> experience and online resources. Although this tutorial will cover some basic parts of using Git, this tutorial is not
+> adapted if you have no experience at all. The first few chapters of the [Pro Git book](https://git-scm.com/book/en/v2)
+> are a good place to start.
+
+A common trend among inexperienced Git users is to think of Git as a burden that they need to carry along while also
+doing the rest of their work. This is especially true as they have not been introduced to the more powerful features of
+Git. Thus, Git is just a convoluted way of keeping a version history. Indeed, this is what a typical file editing
+session looks like if you're just starting to use Git:
+
+:::TerminalOutput
+```sh
+$ emacs file.txt
+
+$ git add file.txt
+# Why do we have to "add" the file again?
+
+# Then this?
+$ git commit
+# Now vim is open, great! How do we exit it again?
+
+# Try to send the changes
+$ git push
+To git@github.com:example-org/example.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'git@github.com:example-org/example.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+# Ok the tutorial said to use git pull when this happens
+$ git pull
+
+# Great, now vim opened again... but then
+$ git push
+
+# All good now!
+```
+:::
+
+And honestly, no one would use Git if it was this hard every time you make a single change inside a file. Especially if
+the only thing this enables is "you can now use `git checkout` to manually copy and paste previous versions of your
+file, provided you know when the changes happened".
+
+But 87.2% of developers use Git ([Stack Overflow Developer Survey
+2018](https://insights.stackoverflow.com/survey/2018#work-_-version-control)) for many very valid reasons, so let's
+debunk some myths about Git and start using its more powerful features!
+
+# First: properly configure Git
+
+The behavior of most Git commands is controlled by *Git configuration files*. The defaults are set at the system level,
+and are then overridden by the user-level file, `~/.gitconfig`. Here is a typical `~/.gitconfig` file to get started:
+
+```ini
+[user]
+	# Your full name
+	name = Bob Johnson
+	# Your email
+	email = bob.johnson@example.com
+
+[core]
+	# The editor git uses for commit messages
+	editor = $EDITOR
+	# Or pick any of those:
+	#editor = vim
+	#editor = emacs
+	#editor = subl -n -w
+	#editor = code --wait
+	#editor = atom --wait
+	# etc...
+```
+
+This sets up your user information as well as your editor preferences. This is all that's needed for now!
+
+# Git isn't just a backup solution
+
+Using Git in a project enables contributors to check out previous versions of a given file, or see when it was changed,
+for example using the `git log` command:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git log --oneline -- CMakeLists.txt</span>
+<span style="color:olive;">2e2878c</span> Fix dllimport usage
+<span style="color:olive;">471f7eb</span> Add WebGL support
+<span style="color:olive;">1d9a8de</span> Fix CMP0077 warnings
+<span style="color:olive;">2388a7b</span> Add option to disable library types
+<span style="color:olive;">15fcbe8</span> Fix CMake errors
+<span style="color:gray;">[etc...]</span>
+`} />
+
+When using `--oneline`, the first column is the *commit hash* (or *commit SHA*) which uniquely identifies what the `git
+commit` command added to the repository when it was issued. You can check out how a file looked for a given commit, and
+then restore it to its last known state:
+
+```sh
+$ git checkout 1d9a8de -- CMakeLists.txt
+$ git checkout HEAD -- CMakeLists.txt
+```
+
+However, a *commit* is **not** a version of a file. It is actually a set of changes (a patch) associated with some metadata
+(author and committer information, date, and commit message). This is what the `git show` command allows you to inspect:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git show 1d9a8de</span>
+<span style="color:olive;">commit 1d9a8decc4dd7ee42689149dbd763103075f8422</span>
+Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
+Date:   Fri Aug 23 16:25:14 2019 +0200
+
+    Fix CMP0077 warnings
+
+<span style="font-weight:bold;">diff --git a/CMakeLists.txt b/CMakeLists.txt</span>
+<span style="font-weight:bold;">index e304257..e6b21a5 100644</span>
+<span style="font-weight:bold;">--- a/CMakeLists.txt</span>
+<span style="font-weight:bold;">+++ b/CMakeLists.txt</span>
+<span style="color:teal;">@@ -49,8 +49,8 @@</span> message(STATUS &quot;shadertoy v\${ST_VERSION_FULL} (\${SHADERTOY_VERSION_STANDALONE})&quot;
+ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+ 
+ # Use bundled spdlog
+<span style="color:red;">-set(SPDLOG_BUILD_EXAMPLES OFF)</span>
+<span style="color:red;">-set(SPDLOG_BUILD_TESTING OFF)</span>
+<span style="color:green;">+</span><span style="color:green;">set(SPDLOG_BUILD_EXAMPLES OFF CACHE BOOL &quot;&quot; FORCE)</span>
+<span style="color:green;">+</span><span style="color:green;">set(SPDLOG_BUILD_TESTING OFF CACHE BOOL &quot;&quot; FORCE)</span>
+ set(SPDLOG_DIR \${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/spdlog)
+ add_subdirectory(\${SPDLOG_DIR} EXCLUDE_FROM_ALL)
+ 
+`} />
+
+Each commit also references one (or more in case of a merge) parent commits, which is how the *history* of a repository
+is constructed. Here is an example from the `git merge` reference manual. *A* to *H* refer to commits, *topic* and
+*master* are branch names. Time evolves from left to right in these graphs, with more recent commits at the right.
+
+```
+       A---B---C topic
+      /         \
+ D---E---F---G---H master
+```
+
+Thus, by thinking of commits as sets of changes instead of versions we can view the history of a repository as a log of
+what was changed over time, instead of just a series of snapshots taken at random times. Which brings us to the next
+question.
+
+# What makes a good commit?
+
+Previous users of SVN have probably noticed when migrating to Git that committing requires setting a non-empty message
+to accompany the change set. However, trying to get around it by just using "`.`" or any other non-descriptive message
+is probably the worst thing you can do:
+
+* This will render the output of `git log` completely useless
+* You won't have a way of differentiating what each commit changes
+* Even worse, if you collaborate with other people on the same repository, they will have to inspect every single change
+  in every commit to discover what you changed.
+
+All of this adds up to a lot of wasted time for each collaborator, present and future.
+
+I instead like to use the time I'm spending preparing a commit to reflect on what the commit actually brings to the
+project. This makes committing part of my workflow instead of a chore. The key idea behind it is if you changed
+something in a project, there is a reason behind it. This reason should be the subject line of your commit message. Here
+are a few examples:
+
+> * Fix window resizing bug
+> * Add support for non-linear transforms
+> * Refactor thread pool module
+
+## How to include changes in a commit?
+
+In the ideal workflow, you work on a single feature/fix at any given time, thus you can add changed files with `git add`
+and commit the result, which will be focused on what you are currently working on only.
+
+> But what if you changed multiple things at once and you have multiple reasons for a commit?
+
+Indeed, you might have forgotten to commit regularly, you got carried away developing new features, fixing bugs, etc.
+But you should still make ***individual*** commits for each of those reasons. Commits are cheap, and by describing each
+change you made individually you can create a well-formatted log of changes made to the project for yourself and your
+collaborators.
+
+One way to do that is to use the `-p` option of `git add`. This makes `git add` enter *interactive mode* where you can
+choose to stage (i.e. include in your next commit) each individual change or not. Here is an example of an interactive
+staging session using `git add -p`:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git add -p</span>
+<span style="font-weight:bold;">diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt</span>
+<span style="font-weight:bold;">index 84768a1..d259c12 100644</span>
+<span style="font-weight:bold;">--- a/examples/CMakeLists.txt</span>
+<span style="font-weight:bold;">+++ b/examples/CMakeLists.txt</span>
+<span style="color:teal;">@@ -2,6 +2,8 @@</span> cmake_minimum_required(VERSION 3.10)
+ 
+ project(libshadertoy-examples)
+ 
+<span style="color:green;">+</span><span style="color:green;">set(CMAKE_EXPORT_COMPILE_COMMANDS ON)</span>
+<span style="color:green;">+</span>
+ # Directories
+ set(INCLUDE_ROOT \${CMAKE_CURRENT_SOURCE_DIR})
+ set(SRC_ROOT \${CMAKE_CURRENT_SOURCE_DIR})
+<span style="font-weight:bold;color:#6666ff;">Stage this hunk [y,n,q,a,d,e,?]? </span>n
+
+<span style="font-weight:bold;">diff --git a/examples/web-gradient/CMakeLists.txt b/examples/web-gradient/CMakeLists.txt</span>
+<span style="font-weight:bold;">index eaf57f2..e65928d 100644</span>
+<span style="font-weight:bold;">--- a/examples/web-gradient/CMakeLists.txt</span>
+<span style="font-weight:bold;">+++ b/examples/web-gradient/CMakeLists.txt</span>
+<span style="color:teal;">@@ -11,6 +11,8 @@</span> target_link_options(example_web_gradient PRIVATE
+ 	&quot;SHELL:-s EXIT_RUNTIME=1&quot;
+ 	&quot;SHELL:-s DISABLE_EXCEPTION_CATCHING=0&quot;
+ 	&quot;SHELL:-s USE_GLFW=3&quot;
+<span style="color:green;">+</span>	<span style="color:green;">&quot;SHELL:-s EXPORTED_FUNCTIONS='[\&quot;_main\&quot;, \&quot;_reset\&quot;, \&quot;_load_source\&quot;, \&quot;_get_source\&quot;]'&quot;</span>
+<span style="color:green;">+</span>	<span style="color:green;">&quot;SHELL:-s EXTRA_EXPORTED_RUNTIME_METHODS='[\&quot;cwrap\&quot;]'&quot;</span>
+ 	&quot;SHELL:--embed-file \${CMAKE_CURRENT_SOURCE_DIR}/../gradient.glsl@gradient.glsl&quot;)
+ 
+ # C++17
+<span style="font-weight:bold;color:#6666ff;">Stage this hunk [y,n,q,a,d,e,?]? </span>y
+
+<span style="font-weight:bold;">diff --git a/examples/web-gradient/main.cpp b/examples/web-gradient/main.cpp</span>
+<span style="font-weight:bold;">index 85dca53..11c3e1c 100644</span>
+<span style="font-weight:bold;">--- a/examples/web-gradient/main.cpp</span>
+<span style="font-weight:bold;">+++ b/examples/web-gradient/main.cpp</span>
+<span style="color:teal;">@@ -2,10 +2,14 @@</span>
+ 
+ #include &lt;shadertoy.hpp&gt;
+ #include &lt;shadertoy/backends/webgl.hpp&gt;
+<span style="color:green;">+</span><span style="color:green;">#include &lt;shadertoy/utils/log.hpp&gt;</span>
+ 
+ #include &lt;GLFW/glfw3.h&gt;
+ #include &lt;emscripten.h&gt;
+ 
+<span style="color:green;">+</span><span style="color:green;">#include &lt;fstream&gt;</span>
+<span style="color:green;">+</span><span style="color:green;">#include &lt;streambuf&gt;</span>
+<span style="color:green;">+</span>
+ struct ctx
+ {
+ 	shadertoy::render_context context;
+<span style="font-weight:bold;color:#6666ff;">Stage this hunk [y,n,q,a,d,j,J,g,/,s,e,?]? </span>y
+<span style="color:teal;">@@ -14,7 +18,9 @@</span> struct ctx
+ 	GLFWwindow *window;
+ 	int frameCount;
+ 	float t = 0.;
+<span style="color:green;">+</span>	<span style="color:green;">float t_offset = 0.;</span>
+ 	std::unique_ptr&lt;shadertoy::backends::gx::backend&gt; backend;
+<span style="color:green;">+</span>	<span style="color:green;">std::string shader_source;</span>
+ 
+ 	ctx(GLFWwindow *window) : window(window), frameCount(0), t(0.)
+ 	{
+<span style="font-weight:bold;color:#6666ff;">Stage this hunk [y,n,q,a,d,K,j,J,g,/,s,e,?]? </span>q
+`} />
+
+In interactive staging mode, you can get a reminder of available commands by typing `h`:
+
+```
+y - stage this hunk
+n - do not stage this hunk
+q - quit; do not stage this hunk or any of the remaining ones
+a - stage this hunk and all later hunks in the file
+d - do not stage this hunk or any of the later hunks in the file
+g - select a hunk to go to
+/ - search for a hunk matching the given regex
+j - leave this hunk undecided, see next undecided hunk
+J - leave this hunk undecided, see next hunk
+s - split the current hunk into smaller hunks
+e - manually edit the current hunk
+? - print help
+```
+
+A *hunk* in Git terminology is a block of changes. You can decide to include it (`y`) or not (`n`) in your next commit.
+If it is made up of several changes (such as the 3rd and 4th hunks in the previous example), you can split it into
+smaller hunks using `s` and then decide on the fate of individual changes. `a` and `d` are the file-level equivalent of
+`y` and `n` if you know all hunks in the current file should be staged or not. `e` is an advanced feature that allows
+you to stage a different change to what Git detected, but you should first be familiar with
+[patch files](https://en.wikipedia.org/wiki/Patch_(Unix)) in order to use it.
+
+If you staged a hunk by mistake, don't worry: `git reset`, the command to un-stage changes also supports the `-p`
+option. Note that the logic is reversed in that case (`y` will *reset* the hunk being shown, thus un-staging it, while
+`n` does nothing and leaves it staged). `git checkout` also supports `-p` in case you need it.
+
+## Writing a good commit message
+
+Once you selected all changes you want to include in your commit, you can commit them to the repository with `git
+commit`. Commit messages should be made of:
+
+1. A subject line: a short (&lt;50 characters) summary of what the commit changes. This is the reason mentioned earlier in
+   this article.
+2. A blank line to end the subject line.
+3. An extended description of the commit (optional): if your commit is non-trivial, include a short write-up of your
+   thought process through the making of that change. This will serve as future reference for you and your
+   collaborators, and *bonus* if you're using GitHub, this will automatically be used as the description of the pull
+   request if you are using those in your workflow.
+
+There are a lot of [resources](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) and conventions
+available on how to write good commit messages, some of them even using [emoji](https://gitmoji.carloscuesta.me/). What
+is important is to be consistent: pick a way to write your commit messages, and stick to it ***every*** time you commit.
+
+# Sharing your work with others
+
+Chances are that you are using Git to work with other people on the same project. When starting out with Git this is
+usually the hard part, but it doesn't have to be. Let's see how Git handles those situations.
+
+## Repositories and remotes
+
+Everyone working on a project using Git has a full copy of the repository. This means the current state of the branches,
+as well as their entire history. Thus, most git commands work on locally stored state and don't need network access;
+this makes the Git workflow fast and resilient to network failures.
+
+When synchronizing your changes with a server (a GitHub, GitLab, Bitbucket, etc. repository), Git tries to assemble
+together the changes made on both sides in a deterministic way. In Git terminology, the "*other*" repository you're
+synchronizing with is called a *remote*. When you use `git clone [url]`, the remote at the address `url` will be
+called `origin`.
+
+You can list branches using the `git branch -a` command:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git branch -a</span>
+  develop
+* <span style="color:green;">master</span>
+  <span style="color:red;">remotes/origin/HEAD</span> -&gt; origin/master
+  <span style="color:red;">remotes/origin/develop</span>
+  <span style="color:red;">remotes/origin/gh-pages</span>
+  <span style="color:red;">remotes/origin/master</span>
+`} />
+
+A few things are worth noting:
+
+* There are two local branches (they have no `[remote]/` prefix in their name): `master` and `develop`. `master` is the
+  current branch (denoted by an asterisk).
+* The `origin` remote has three branches: `master`, `develop` and `gh-pages`.
+* The default branch of the remote repository is `master`: this is what `origin/HEAD` points to, and is checked out when
+  you clone the repository initially[^master-branch-name]
+
+Since all this information is stored locally, the remote branches represent the last known state of the remote
+repository. Running the `git status`, `git branch` or even `git checkout origin/master` commands will **not** try to
+read the remote repository. You have to use the `git fetch` command if you want to update your local copy of the
+repository to the current state of the remote.
+
+Furthermore, the changes you make to a branch happen to the local copy of the branch you are currently on (the one
+pointed to by `HEAD`). Thus, if you want to compare your branch with the current state of the remote branch of the same
+name, you can use the following command:
+
+<TerminalOutput set:html={`
+$ <span style="font-weight:bold;color:white;">git diff master..origin/master</span>
+<span style="font-weight:bold;">diff --git a/.travis.yml b/.travis.yml</span>
+<span style="font-weight:bold;">index d8cf3e8..00a66ce 100644</span>
+<span style="font-weight:bold;">--- a/.travis.yml</span>
+<span style="font-weight:bold;">+++ b/.travis.yml</span>
+<span style="color:teal;">@@ -58,12 +58,7 @@</span> script: |
+         # Docker image parameters
+         BUILD_IMAGE=\${PACKAGE_NAME}/\${OS_DIST}_\${OS_VERSION}
+         # TODO: i386
+<span style="color:red;">-        docker run --mount type=bind,source=$(pwd),target=/build --rm $BUILD_IMAGE \</span>
+<span style="color:red;">-          make \</span>
+<span style="color:red;">-          BINTRAY_API_KEY=$BINTRAY_API_KEY \</span>
+<span style="color:red;">-          BINTRAY_ORG=$BINTRAY_ORG \</span>
+<span style="color:red;">-          CI_COMMIT_REF_NAME=$TRAVIS_TAG \</span>
+<span style="color:red;">-          gl</span>
+<span style="color:green;">+</span><span style="color:green;">        docker run --mount type=bind,source=$(pwd),target=/build --rm $BUILD_IMAGE make CI_COMMIT_REF_NAME=$TRAVIS_TAG gl</span>
+       fi
+     )
+   elif [ $TRAVIS_OS_NAME = windows ]; then
+<span style="color:teal;">@@ -75,7 +70,6 @@</span> script: |
+ after_success: |
+   [ $TRAVIS_PULL_REQUEST = false ] &amp;&amp;
+   [ $TRAVIS_OS_NAME = linux ] &amp;&amp;
+<span style="color:red;">-  [[ $TRAVIS_BRANCH =~ &quot;^master|develop$&quot; ]] &amp;&amp;</span>
+   [ $OS_TYPE = deb ] &amp;&amp;
+   [ $OS_DIST = debian ] &amp;&amp;
+   [ $OS_VERSION = buster ] &amp;&amp;
+<span style="color:gray;">[etc...]</span>
+`} />
+
+Note that this is how the `git status` determines the state of your branch relative to the remote branch.
+
+## Sending your work to a remote
+
+Once your local copy of the remote branches is up-to-date (`git fetch origin` for the `origin` remote) and you decide to
+send your (committed) work, you will encounter one of these cases:
+
+* No one worked on the remote copy of the branch you are currently working on. Thus, you only added commits to the *end*
+  of the history for that branch. Graphically, this can be represented as follows:
+
+  ```
+         origin/master
+        /
+   D---E---F---G---H master
+  ```
+
+  Sending your changes to the remote is trivial in this case: since the history is linear it is just a matter of sending
+  the commit data to the server, and updating where the remote `master` branch points to. This is referred to as a
+  `fast-forward` merge in the Git documentation. Think of it as the `origin/master` label just skipping through commits
+  to its current location:
+
+  ```
+          > > > > >  origin/master
+        /           /
+   D---E---F---G---H master
+  ```
+
+  This is the *happy path*, just use `git push` and it will work as expected.
+
+* Someone else (or yourself on a different machine) worked on the same branch. This will be noted by this kind of output
+  in `git status` (emphasis mine):
+
+<TerminalOutput set:html={`
+On branch develop
+<span style="font-weight:bold">Your branch and 'origin/develop' have diverged,
+and have 1 and 1 different commits each, respectively.</span>
+  (use "git pull" to merge the remote branch into yours)
+[...]
+`} />
+
+  Again, represented as graph, the situation is as follows:
+
+  ```
+          A---B---C origin/master
+         /
+    D---E---F---G---H master
+  ```
+
+  Which brings us to the last part of this tutorial: strategies for merging your work and remote changes.
+
+## Merging remote changes -- How to `git pull`
+
+The situation we just witnessed requires "manual" action. There is no way for Git to decide which strategy to choose to
+solve this problem since mind-reading has not been implemented into any known Git clients yet. We have two options to
+solve this conflict:
+
+* Integrate the remote's changes into our own, and push the result: this is the default behavior of Git you have
+  probably encountered already. We'll refer to this strategy as a *merge pull*[^non-official-term]. This strategy is
+  suitable when you are responsible for integrating the remote changes into your work before sharing it.
+* Apply our local changes onto the new state of the remote: this is an alternative to the first behavior which can be
+  set as the default, or invoked through `git pull --rebase`. We'll refer to this strategy as a *rebase
+  pull*[^non-official-term]. This strategy requires you to modify your (already-made) changes to be able to integrate
+  with the existing remote changes, before sharing it.
+
+You might encounter online posts or people advising you to always stick to one of the two approaches. This is heavily
+misguided advice however, since each strategy has its pros and cons, and you should always evaluate which one is
+appropriate depending on the context. Let us review these two approaches for the above case.
+
+### *Merge pull*
+
+Without `--rebase`, `git pull` is equivalent to `git fetch && git merge origin/master`[^master-in-this-example]. This
+will result in the following situation:
+
+```
+                  origin/master
+                 /
+        A---B---C---.
+       /             \
+  D---E---F---G---H---M master
+```
+
+* A *merge commit* was created: this is the commit *M* which was added to the local `master` branch. Note that it has
+  two parents, *C* and *H*. Aside from indicating we are combining two branches together, eventual merge conflicts would
+  be solved and committed as part of this commit.
+* The `origin/master` branch is still on commit *C*. This will be updated once we push to the `origin` remote with the
+  `git push` command.
+
+This merge operation solves the problem encountered by `git push`: there is now a fast-forward path for the
+`origin/master` branch:
+
+```
+                 / > > > origin/master
+        A---B---C---.   /
+       /             \ /
+  D---E---F---G---H---M master
+```
+
+The main drawback of this kind of `git pull` is that it results in a non-linear history. If it makes sense to have an
+explicit merge commit, this is the recommended approach. However a *rebase pull* is more suited for merging unrelated, non-conflicting work and obtain a linear history.
+
+### *Rebase pull*
+
+With `--rebase`, `git pull` is equivalent to `git fetch && git rebase origin/master`[^master-in-this-example]. This will
+result in the following situation:
+
+```
+                  origin/master
+                 /
+        A---B---C---F'---G'---H' master
+       /
+  D---E---F---G---H
+```
+
+* Three commits were created: *F'*, *G'* and *H'*: these commits correspond to the *F*, *G* and *H* commits (our local
+  work), but *rebased* onto the `origin/master` branch. The resulting `master` branch looks as if we committed our work
+  after *A*, *B* and *C* were added to the repository.
+* The `origin/master` branch is still on commit *C*. This will be updated once we push to the `origin` remote with the
+  `git push` command.
+
+This rebase operation also solves the problem encountered by `git push`: there is now a fast-forward path for the
+`origin/master` branch:
+
+```
+                  > > > > > > > origin/master
+                 /             /
+        A---B---C---F'---G'---H' master
+       /
+  D---E---F---G---H
+```
+
+Note that contrarily to the *merge pull*, the history is linear and does not keep a trace of a merge operation
+happening. If we remove the old `master` branch state from the graph, we obtain one single branch in the history:
+
+```
+                              origin/master
+                             /
+  D---A---B---C---F'---G'---H' master
+```
+
+This makes the log less noisy and thus much more readable. This doesn't make the *rebase pull* the magical solution:
+
+* Rebasing might introduce merge conflicts to be resolved at every single commit being rebased (3 in our case).
+* Rebasing changes the history (the commit SHA depends on the parent commit, which changes with a rebase), so if you
+  already published the *F*, *G* and *H* commits, you should ***absolutely not*** rebase commits.
+
+### `git pull` conclusion
+
+I will leave whether or not to add `--rebase` to your `git pull` commands to you, since they depend on your workflow.
+Personally, I always use `git pull --rebase` as long as I am working with local branch changes, and regular *merge
+pulls* otherwise. You can enable `git pull --rebase` by default globally: `git config --global pull.rebase true`, and
+make *merge pulls* instead with `git pull --no-rebase`.
+
+# Conclusion
+
+In this first part, we reviewed the basics of writing good commits to keep the history useful, and how to properly merge
+those changes with the remote repository, and how this relates to a standard version-controlled workflow.
+
+In the next part we will look into more advanced techniques such as *interactive rebasing* as a way to cleanup a messy
+(local) history, and using a merge tool to solve merge conflicts.
+
+[^master-branch-name]: Following the Black Lives Matter protests of 2020, many companies and individuals started
+  changing the default branch name of their Git repositories to other names. Look out for those in case your tools
+  complain about a missing master branch. One way to check for this is to use the `git remote show [remote]` command
+  and look for `HEAD branch` in its output.
+
+[^non-official-term]: These terms are not used in the official documentation, but we use them here for simplicity. The
+  man page for `git pull` explains the operation of these in much more detail if you need it.
+
+[^master-in-this-example]: We're pushing to the `master` branch of the `origin` repository in this case. Remember to
+  adapt this to your repository when following this tutorial.

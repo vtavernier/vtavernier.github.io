@@ -1,0 +1,62 @@
+{
+  "name": "vtavernier.github.io",
+  "description": "Source repository for my blog.",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "build:podman": "podman build -t localhost/vtavernier.github.io .github/actions/build-pages && podman run --rm -it -e BUILD_ONLY=true -v $PWD:/src:z -w /src localhost/vtavernier.github.io",
+    "build:podman-full": "podman build -t localhost/vtavernier.github.io .github/actions/build-pages && podman run --rm -it -v $PWD:/src:z -w /src localhost/vtavernier.github.io",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "prettier -w .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --ext .js,.ts,.astro",
+    "subfont": "subfont -ir --no-fallbacks --silent --root dist",
+    "ci:check": "run-s format:check lint",
+    "postinstall": "sed -i \"s#src = src.substring(config.base.length - 1);#src = src.substring(config.base.length - +config.base.endsWith('/'));#\" node_modules/@astrojs/image/dist/build/ssg.js"
+  },
+  "devDependencies": {
+    "@astrojs/image": "^0.14.1",
+    "@astrojs/mdx": "^0.16.0",
+    "@astrojs/rss": "^2.1.0",
+    "@astrojs/sitemap": "^1.0.1",
+    "@astrojs/tailwind": "^3.0.1",
+    "@astrolib/seo": "^0.3.0",
+    "@fontsource/inter": "^4.5.15",
+    "@tailwindcss/typography": "^0.5.9",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "astro": "^2.0.10",
+    "astro-compress": "^1.1.32",
+    "astro-icon": "^0.8.0",
+    "eslint": "^8.33.0",
+    "eslint-plugin-astro": "^0.23.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "limax": "2.1.0",
+    "mdast-util-to-string": "^3.1.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.4",
+    "prettier-plugin-astro": "^0.8.0",
+    "reading-time": "^1.5.0",
+    "rehype-katex": "^6.0.2",
+    "remark-math": "^5.1.1",
+    "sharp": "^0.31.3",
+    "subfont": "^6.12.4",
+    "svgo": "2.8.0",
+    "tailwindcss": "^3.2.6",
+    "typescript": "^4.9.5"
+  },
+  "engines": {
+    "node": ">=16.12.0"
+  },
+  "dependencies": {
+    "astro-m2dx": "^0.7.15",
+    "jsonresume-theme-stackoverflow": "^2.0.0",
+    "jsonresume-theme-stackoverflow-fr": "^2.2.1",
+    "katex": "^0.16.4",
+    "puppeteer": "^19.7.2",
+    "remark-directive": "^2.0.1"
+  }
+}

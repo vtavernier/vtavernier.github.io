@@ -1,8 +1,0 @@
-{{ $repo := .Page.Params.repo }}
-{{ $json := getJSON (printf "https://api.github.com/repos/vtavernier/%s/readme" $repo) (dict "Authorization" (printf "Bearer %s" (getenv "GITHUB_TOKEN"))) }}
-<header>
-  <h1>
-    <a href="https://github.com/vtavernier/{{ $repo }}">{{ .Page.Title }}</a>
-  </h1>
-</header>
-{{ $json.content | base64Decode | replaceRE "^#.*" "" | replaceRE "\\)\\n\\[!\\[" ") [![" | safeHTML }}

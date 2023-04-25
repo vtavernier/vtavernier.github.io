@@ -1,0 +1,16 @@
+---
+import { SITE } from '~/config.mjs';
+import Layout from '~/layouts/PageLayout.astro';
+
+import LatestPosts from '~/components/blog/LatestPosts.astro';
+
+const meta = {
+  title: SITE.title,
+  description: SITE.description,
+  dontUseTitleTemplate: true,
+};
+---
+
+<Layout {meta}>
+  <LatestPosts title="Latest posts from the Blog" />
+</Layout>

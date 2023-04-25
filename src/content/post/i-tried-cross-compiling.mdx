@@ -1,0 +1,777 @@
+---
+title: I tried cross-compiling for the Raspberry Pi
+tags: [cross-compiling, rust, c++]
+category: Embedded programming
+publishDate: 2021-11-15
+description: I tried cross-compiling for the Raspberry Pi. And it went horribly wrong.
+excerpt: A story of cross-compilers and obscure platform details.
+image: ~/assets/images/raspberry-pi-01.jpg
+---
+import Diagram from '~/components/Diagram.astro';
+import TerminalOutput from '~/components/TerminalOutput.astro';
+
+> And it went horribly wrong.
+
+In software development there are tasks which are easy and others which are... *less easy*&trade;. This post tells the
+story of how I managed to cross-compile a Rust project with native dependencies for the Raspberry Pi Zero regardless of
+the many, **many** pitfalls of cross-compiling. If you --- like me --- enjoy spending your spare time battling with
+toolchains and obscure compilation flags, you will probably enjoy this tale.
+
+# Context
+
+I went down this rabbit hole while working on [hyperion.rs](https://github.com/vtavernier/hyperion.rs), my Rust
+reimplementation of the [Hyperion](https://hyperion-project.org/) ambient lighting daemon. More specifically in this
+project, settings are persisted in a SQLite database, and lighting effects can be programmed using Python. Those
+constitute our two native dependencies we will focus on here.
+
+Instead of compiling the entire project, we will focus on the PoC available
+[here](https://github.com/vtavernier/blog-cross-rpi). This is a simple Rust program which uses the
+[sqlite](https://crates.io/crates/sqlite) and [pyo3](https://crates.io/crates/pyo3) crates to display some strings and
+floating-point values. In order to test various compiling scenarios, both crates are gated by the `sql` and `python`
+features respectively. With both features enabled, this is the entire program:
+
+```rs
+use color_eyre::eyre::Result;
+use pyo3::prelude::*;
+
+#[pyclass]
+#[derive(Default, Debug, Clone)]
+struct User {
+    name: String,
+    age: f64,
+}
+
+/// Get users from the SQLite database
+fn get_users() -> Result<Vec<User>> {
+    use sqlite::State;
+
+    // From the sqlite crate example
+    let connection = sqlite::open(":memory:")?;
+
+    connection.execute(
+        "
+        CREATE TABLE users (name TEXT, age INTEGER);
+        INSERT INTO users VALUES ('Alice', 42.5);
+        INSERT INTO users VALUES ('Bob', 69.69);
+        ",
+    )?;
+
+    let mut statement = connection.prepare("SELECT * FROM users")?;
+    let mut result = Vec::with_capacity(2);
+
+    while let State::Row = statement.next()? {
+        result.push(User {
+            name: statement.read(0)?,
+            age: statement.read(1)?,
+        });
+    }
+
+    Ok(result)
+}
+
+/// Print user names using Python
+fn python_print(users: Vec<User>) -> Result<()> {
+    use pyo3::types::*;
+
+    #[pymethods]
+    impl User {
+        #[getter]
+        fn name(&self) -> &str {
+            self.name.as_str()
+        }
+    }
+
+    Python::with_gil(|py| {
+        let locals = PyDict::new(py);
+        locals.set_item(
+            "users",
+            PyList::new(
+                py,
+                users.into_iter().map(|user| PyCell::new(py, user).unwrap()),
+            ),
+        )?;
+
+        py.run("print([user.name for user in users])", None, Some(&locals))?;
+
+        Ok(())
+    })
+}
+
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
+    // Get users
+    let users = get_users()?;
+
+    // Print users for debugging
+    println!("Read users from sqlite: {:#?}", users);
+
+    python_print(users)
+}
+```
+
+Which is nothing too fancy. If this program compiles and runs on the target, it means we obtained a working binary which
+properly linked to the native dependencies we mentioned, and uses the proper ABI (this is especially important for ARM
+targets which have many different floating point ABIs). My goal here was to:
+* Compile a binary for the Raspberry Pi Zero with reasonable speed
+* Automate this process so it can run in continuous integration
+* Limit as much as possible the required per-project setup
+
+So let's get started!
+
+# Cross-compiling 101
+
+The problem we will be tackling here uses the following concepts:
+
+* **Compiling**: the process of turning source code into machine code using a *compiler*. Or multiple if you have
+  multiple source languages to compile.
+* **Linking**: the process of assembling machine objects into the final binary. Inputs to the linking stage are parts of
+  the project you are compiling, as well as third party dependencies like *libc* --- and in our case *libsqlite3* and
+  *libpython3*.
+* **Host**: the system you are compiling on. This one runs the *compiler*.
+* **Target**: the system you run the compiled program on.
+* **Cross-compiling**: compiling a program when the *host* is different from the *target*. This is done using a
+  *cross-compiler* which runs on the *host* and creates programs to run on the *target*.
+
+When you got started with programming using compiled languages, you were likely compiling natively: the target
+architecture for which you are compiling your programs is the same that runs your compiler. This is the simplest
+situation, represented below. In a nutshell:
+
+:::TerminalOutput
+```bash
+# The gcc command whithout -c invokes the compiler and the linker in sequence
+# This one compiles main.c and links with either libsomething.a or libsomething.so
+$ gcc -lsomething main.c
+
+$ ./a.out
+# Your program runs, congratulations!
+```
+:::
+
+<figure>
+<Diagram code={`
+graph LR
+  subgraph Host["Host (and target)"]
+    Compiler[/"Compiler (gcc, clang)"/]
+    int_files
+    Linker[/"Linker (ld, lld)"/]
+
+    so_files["Libraries (.a, .so)"]
+    binary["Binary"]
+  end
+
+  src_files["Source files (.c, .cpp)"] --> Compiler --> int_files["Object files (.o)"] --> Linker
+  so_files --> Linker --> binary
+`} />
+<figcaption>Native compiling: compiling and running the program happens on the host</figcaption>
+</figure>
+
+If you kept going and developed for a microcontroller-based platform such as Arduino, Espressif devices and countless
+others, you **have** used a cross-compiler. Indeed, these platforms can neither host a full operating system needed by
+the compiler nor provide the required computational power to compile modern languages.
+
+However, some more powerful embedded platforms do provide operating systems and compilers: today's subject, the
+Raspberry Pi, runs a full Debian distribution and contains all the required tools for developing compiled software ---
+albeit requiring some patience while the low-power ARM cores churn away to produce the binaries for your project.
+
+Both those cases are represented below. Dynamic libraries are only present if the target platform has a dynamic linker,
+such as Linux embedded targets. The previous compilation process gets slightly more complex:
+
+:::TerminalOutput
+```bash
+# All the gcc and binutils (cross-)tools are prefixed with the target triplet,
+# here "arm-linux-gnueabihf". This one compiles main.c and links with
+# libsomething.a/.so, but for "arm-linux-gnueabihf".
+$ arm-linux-gnueabihf-gcc -lsomething main.c
+
+$ ./a.out
+Exec format error.
+# This message indicates you are trying to run a binary for the wrong architecture.
+# You will get used to it as you try cross-compiling things.
+
+# Deploy the binary to the target hardware (or upload using DFU for microcontrollers)
+$ scp a.out pi@raspberry:~∕
+# Run it
+$ ssh pi@raspberry ./a.out
+```
+:::
+
+<figure>
+<Diagram code={`
+graph LR
+  subgraph Host
+    Compiler[/"Compiler (gcc, clang)"/]
+    Linker[/"Linker (ld, lld)"/]
+
+    subgraph target_only["Target architecture objects"]
+      int_files["Object files (.o)"]
+    end
+  end
+
+  subgraph Target
+    so_files["Libraries (.a, .so)"]
+    binary["Binary"]
+  end
+
+  src_files["Source files (.c, .cpp)"] --> Compiler --> int_files --> Linker
+  so_files --> Linker --> binary
+
+  linkStyle 3 stroke-dasharray: 5 5
+  style so_files stroke-dasharray: 5 5
+`} />
+<figcaption>Cross-compiling: compiling happens on the host, and running on the target</figcaption>
+</figure>
+
+## Rust, and the case of `rustc`
+
+You have probably noticed the two previous charts only mentioned `gcc` and `clang`, i.e. C compilers. And this article
+started with a Rust example, so what gives?
+
+What actually happens when you compile a Rust project is the following:
+* `cargo` fetches dependencies and invokes `rustc` to compile all the libraries, proc-macros and build scripts
+  * Build scripts may build native dependencies written in C/C++ during this process
+* `cargo` then invokes `rustc` to produce the final binary
+* `rustc` invokes the system's linker for the target
+
+On Linux systems, the (native) system linker used is `cc`, which usually is a symlink to the system's version of `gcc`.
+On Windows, `CL.exe` will be invoked when using the `x86_64-pc-windows-msvc` target. You were probably prompted by
+`rustup` when installing Rust that you need to have a C compiler available (Linux), or to install the Visual C++ Build
+Tools (Windows) so `cargo build` works out-of-box once you have installed Rust.
+
+This means that native compiling Rust is as follows:
+
+<figure>
+<Diagram code={`
+graph LR
+  subgraph Sources
+    rs_files
+    c_sources
+  end
+
+  subgraph Host["Host (and target)"]
+    native_linker[/"Linker (cc)"/]
+    target_linker[/"Linker (cc)"/]
+
+    so_files["Libraries (.a, .so)"]
+    binary["Binary"]
+
+    subgraph cargo
+      rustc
+      native_linker
+      build_scripts
+      proc_macros
+    end
+
+    cc
+    a
+    rlib
+    build_scripts-. invokes .->cc
+    proc_macros-. used by .->rustc
+  end
+
+  rs_files["Sources (.rs)"] --> rustc[/rustc/] --> rlib["Rust libraries (.rlib)"]
+  native_linker --> build_scripts["Build scripts"]
+  native_linker --> proc_macros["Proc macros (.so)"]
+  rustc --> native_linker
+  c_sources["Sources (.c)"] --> cc[/cc/] --> a["Static libraries (.a)"]
+
+  rlib --> target_linker
+  a --> target_linker
+  so_files --> target_linker
+
+  target_linker --> binary
+`} />
+<figcaption>Native compiling Rust with non-Rust dependencies</figcaption>
+</figure>
+
+... and remember how cross-compiling makes everything more complicated? Here, we need to generate code:
+* For the target: the actual program that will run on the target architecture
+* For the host: build scripts and proc-macros are Rust code that runs on the host
+
+So, when we are cross-compiling Rust, we need **both** a native linker and a cross linker for the target. As well as a
+native C compiler, if we have non-Rust build dependencies, and a C cross-compiler if we have non-Rust dependencies. I
+promise this is the last overly wide graph of this introduction before we get to the point.
+
+<figure>
+<Diagram code={`
+graph LR
+  subgraph Sources
+    rs_files
+    c_sources
+  end
+
+  subgraph Host
+    native_linker[/"Linker (cc)"/]
+    target_linker[/"Target linker (ARCH-cc)"/]
+
+    subgraph cargo
+      rustc
+      native_linker
+      build_scripts
+      proc_macros
+    end
+
+    cc[/"ARCH-cc"/]
+
+    subgraph target_only["Target architecture objects"]
+      rlib
+      a
+    end
+
+    build_scripts-. invokes .->cc
+    proc_macros-. used by .->rustc
+  end
+
+  subgraph Target
+    target_so_files["Libraries (.a, .so)"]
+    binary["Binary"]
+  end
+
+  rs_files["Sources (.rs)"] --> rustc[/rustc/] --> rlib["Rust libraries (.rlib)"]
+  native_linker --> build_scripts["Build scripts"]
+  native_linker --> proc_macros["Proc macros (.so)"]
+  rustc --> native_linker
+  c_sources["Sources (.c)"] --> cc --> a["Static libraries (.a)"]
+
+  rlib --> target_linker
+  a --> target_linker
+  target_so_files --> target_linker
+
+  target_linker --> binary
+`} />
+<figcaption>Cross-compiling Rust with non-Rust dependencies. <em>ARCH</em> is the target architecture prefix.<br/>Note:
+the case where proc macros or build scripts have C dependencies or link to system libraries is not represented here and
+is left as an exercise to readers who need more spaghetti in their lives. 🍝</figcaption>
+</figure>
+
+So, why do we need that extra complexity, especially if the target *has* native compilers which we could invoke the same
+way we do native development on desktop?
+
+# Why cross-compile?
+
+Ranking the reasons for cross-compiling from "required" to "convenient", these are the main reasons:
+
+* No target-hosted compiler is available (microcontrollers)
+* A compiler is available, but you do not have access to the target (either because you don't own the hardware, or the
+  build process is running on continuous integration servers).
+* Limited target hardware performance. Compiling the PoC for this article results in the following:
+:::TerminalOutput
+```bash
+# Preparation: fetch all dependencies
+$ cargo clean && cargo fetch
+
+# Compile the project in release mode
+$ cargo build --offline --release --all-features
+
+# x86_64 Ryzen 7 5800X (Desktop PC)
+Finished release [optimized] target(s) in 9.07s
+
+# ARMv6l BCM2835 (Raspberry Pi Zero)
+Finished release [optimized] target(s) in 55m 21s
+```
+:::
+
+The Raspberry Pi Zero is thus ***366 times*** slower than my desktop PC at compiling the example code. Granted, it
+won't heat up my office as much as a CPU with a 105W TDP. Note that network and I/O performance is also much worse on
+embedded targets, but we have waited long enough!
+
+# Acquiring a cross-compiler
+
+As I have mentioned previously, to cross-compile you need a cross-compiler for your target architecture. Architectures
+are usually identified using *triplets* which are strings of the form
+`machine-vendor-operatingsystem`[^osdev-target-triplets]. Some examples of triplets are:
+
+* x86_64-linux-gnu: Linux running on x86_64 CPUs, using the GNU toolchain
+* riscv64-none-elf: Bare-metal ELF, running on RISC-V CPUs
+* arm-linux-gnueabihf: Linux running on ARM CPUs, using the GNU toolchain, with hardfp floating point ABI
+
+With enough luck, the compiler you need for your target will be available in your favorite distribution's repositories,
+and it becomes a simple matter of `sudo apt install gcc-arm-linux-gnueabihf`. Otherwise, you can download
+cross-compiling toolchains from third parties (for recent ARM targets, check out the [Arm
+Developer](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-a/downloads)
+page).
+
+You can then test the acquired compiler with a simple program:
+
+:::TerminalOutput
+```bash
+$ cat <<EOT >main.c
+#include <stdio.h>
+
+int main() {
+  printf("Hello, world!\n");
+  return 0;
+}
+EOT
+
+$ arm-linux-gnueabihf-gcc main.c
+```
+:::
+
+Unsurprisingly, it compiles without warnings or errors. And when you transfer it to our target of the day, a Raspberry
+Pi Zero, and run it:
+
+:::TerminalOutput
+```bash
+$ ./a.out
+Segmentation fault
+```
+:::
+
+Which is a disappointment, to say the least. We have acquired the right toolchain (i.e. `arm-linux-gnueabihf`), as
+[tutorials](https://hackaday.com/2016/02/03/code-craft-cross-compiling-for-the-raspberry-pi/) and the [raspberrypi/tools
+repository](https://github.com/raspberrypi/tools) mention... The right toolchain, aside from one minor detail of this
+repository's README:
+
+> Note: if building for Pi0/1 using `--with-arch=armv6 --with-float=hard --with-fpu=vfp` is recommended (and matches the default flags of the toolchains included here).
+
+Time for some digging.
+
+# Naming things is hard
+
+Running the following commands on a Raspberry Pi Zero, we obtain this output:
+:::TerminalOutput
+```bash
+$ dpkg --print-architecture
+armhf
+
+$ echo $MACHTYPE
+arm-unknown-linux-gnueabihf
+```
+:::
+
+`armhf` is the Debian architecture for the distribution's packages, and `arm-unknown-linux-gnueabihf` is the GNU
+triplet[^triplet-fullform] binaries for this system are compiled for. Currently, everything matches, so let's look a
+little closer at binaries that run (and those that don't).
+<TerminalOutput set:html={`
+<span style="color:gray"># Read architecture specific information with readelf -A
+# Compare the output for /bin/bash (which works) and our a.out (which does not work)</span>
+$ <span style="font-weight:bold;color:white">diff -u --color &lt;(readelf -A /bin/bash) &lt;(readelf -A a.out)</span>
+--- /dev/fd/63  2021-10-27 23:24:35.083790612 +0200
++++ /dev/fd/62  2021-10-27 23:24:35.083790612 +0200
+@@ -1,10 +1,11 @@
+ Attribute Section: aeabi
+ File Attributes
+<span style="color:red">-  Tag_CPU_name: "6"
+-  Tag_CPU_arch: v6</span>
+<span class="text-green">+  Tag_CPU_name: "7-A"
++  Tag_CPU_arch: v7
++  Tag_CPU_arch_profile: Application</span>
+   Tag_ARM_ISA_use: Yes
+<span style="color:red">-  Tag_THUMB_ISA_use: Thumb-1
+-  Tag_FP_arch: VFPv2</span>
+<span class="text-green">+  Tag_THUMB_ISA_use: Thumb-2
++  Tag_FP_arch: VFPv3-D16</span>
+   Tag_ABI_PCS_wchar_t: 4
+   Tag_ABI_FP_rounding: Needed
+   Tag_ABI_FP_denormal: Needed
+`} />
+
+So our host's `arm-linux-gnueabihf-gcc` produces ARMv7-A binaries while the Raspberry Pi Zero expects ARMv6 binaries?
+<TerminalOutput set:html={`
+# Host
+$ arm-linux-gnueabihf-gcc -v
+Using built-in specs.
+COLLECT_GCC=arm-linux-gnueabihf-gcc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc-cross/arm-linux-gnueabihf/10/lto-wrapper
+Target: arm-linux-gnueabihf
+Configured with: ../src/configure -v --with-pkgversion='Debian 10.2.1-6'
+--with-bugurl=file:///usr/share/doc/gcc-10/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2
+--prefix=/usr --with-gcc-major-version-only --program-suffix=-10 --enable-shared --enable-linker-build-id
+--libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls
+--with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes
+--with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libitm --disable-libquadmath
+--disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib
+--enable-libphobos-checking=release --without-target-system-zlib --enable-multiarch --disable-sjlj-exceptions
+<span style="font-weight:bold;color:white">--with-arch=armv7-a --with-fpu=vfpv3-d16 --with-float=hard</span> --with-mode=thumb --disable-werror --enable-checking=release
+--build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=arm-linux-gnueabihf --program-prefix=arm-linux-gnueabihf-
+--includedir=/usr/arm-linux-gnueabihf/include --with-build-config=bootstrap-lto-lean --enable-link-mutex
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+
+# Raspberry Pi
+$ gcc -v
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/arm-linux-gnueabihf/10/lto-wrapper
+Target: arm-linux-gnueabihf
+Configured with: ../src/configure -v --with-pkgversion='Raspbian 10.2.1-6+rpi1'
+--with-bugurl=file:///usr/share/doc/gcc-10/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2
+--prefix=/usr --with-gcc-major-version-only --program-suffix=-10 --program-prefix=arm-linux-gnueabihf-
+--enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix
+--libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug
+--enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libitm
+--disable-libquadmath --disable-libquadmath-support --enable-plugin --with-system-zlib
+--enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch
+--disable-sjlj-exceptions <span style="font-weight:bold;color:white">--with-arch=armv6 --with-fpu=vfp --with-float=hard</span> --disable-werror --enable-checking=release --build=arm-linux-gnueabihf
+--host=arm-linux-gnueabihf --target=arm-linux-gnueabihf
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 10.2.1 20210110 (Raspbian 10.2.1-6+rpi1)
+`} />
+
+***Yes.*** And if you happen to look at the source for the Raspbian (Raspberry Pi's version of the Debian distribution)
+package for GCC 10, you will notice that it was patched to build ARMv6 code:
+```make
+  # http://mirrordirector.raspbian.org/raspbian/pool/main/g/gcc-10/gcc-10_10.3.0-8.debian.tar.xz
+  # debian/rules2
+  # ...
+  ifneq (,$(filter %armhf,$(DEB_TARGET_ARCH)))
+    ifeq ($(distribution),Raspbian)
+      with_arm_arch = armv6
+      with_arm_fpu = vfp
+    else
+      with_arm_arch = armv7-a
+      with_arm_fpu = vfpv3-d16
+    endif
+  else
+  # ...
+```
+
+On a side note, Rust/LLVM gets this *naming different things a different way*[^naming-things] thing right:
+:::TerminalOutput
+$ rustup target list | grep arm
+arm-linux-androideabi
+arm-unknown-linux-gnueabi
+<span style="font-weight:bold">arm-unknown-linux-gnueabihf</span> &lt;-- ARMv6 target
+arm-unknown-linux-musleabi
+arm-unknown-linux-musleabihf
+armebv7r-none-eabi
+armebv7r-none-eabihf
+armv5te-unknown-linux-gnueabi
+armv5te-unknown-linux-musleabi
+armv7-linux-androideabi
+armv7-unknown-linux-gnueabi
+<span style="font-weight:bold">armv7-unknown-linux-gnueabihf</span> &lt;-- ARMv7 target
+armv7-unknown-linux-musleabi
+armv7-unknown-linux-musleabihf
+armv7a-none-eabi
+armv7r-none-eabi
+armv7r-none-eabihf
+:::
+
+But we shall get back to Rust later, as we don't even have a C compiler for our target for now.
+
+# Getting a cross-compiling toolchain
+
+## What worked
+
+Since the compiler we need --- a recent GCC with the right build flags --- is not available, we can build one and
+package it as a Docker image so we can reuse it, both locally and in continuous integration pipelines. Getting a
+cross-compiling GCC toolchain working is a rather tedious task, which would need an entire blog post of its own.
+Fortunately, such blog posts already exist and are actually the solution to our toolchain problems: Paul Silisteanu's
+excellent guide "[Building GCC as a cross compiler for the Raspberry
+Pi](https://solarianprogrammer.com/2018/05/06/building-gcc-cross-compiler-raspberry-pi/)" details how to build binutils,
+glibc and GCC 10 for the Raspberry Pi[^actual-gcc10-build].
+
+To ensure compatibility between our freshly-built cross-compiling toolchain and the target system, the build flags and
+versions of the various components (binutils, gcc and glibc) should match the ones in the actual system. On an
+up-to-date Raspberry Pi, you can check these using `dpkg` (assuming you installed the `build-essential` package for
+compiling native programs):
+:::TerminalOutput
+```bash
+$ dpkg --list | grep -e gcc -e libc-bin -e binutils
+ii  binutils        2.35.2-2+rpi1            armhf        GNU assembler, linker and binary utilities
+[...]
+ii  gcc             4:10.2.1-1+rpi1          armhf        GNU C compiler
+[...]
+ii  libc-bin        2.31-13+rpt2+rpi1        armhf        GNU C Library: Binaries
+[...]
+```
+:::
+
+Skipping over the [boring
+details](https://github.com/vtavernier/cross-images/blob/a960a8fde182fcbf155a48e0785fd099b8997c58/targets/raspberrypi/Dockerfile)
+of building binutils 2.35/gcc 10.2/glibc 2.31, and packaging all this in a Docker image allows us to compile our first
+standalone binary for armv6 from an x86_64 machine:
+
+:::TerminalOutput
+```bash
+$ docker run --rm -v $PWD:/src vtavernier/cross:raspberrypi arm-linux-gnueabihf-gcc main.c
+$ readelf -A a.out
+[...]
+  Tag_CPU_name: "6"
+  Tag_CPU_arch: v6
+[...]
+```
+:::
+
+## What didn't work
+
+The previous section described the final (working) solution to the problem of getting an ARMv6 cross-compiler. I also
+tried various other options, without success:
+* Using Raspbian's gcc packages: since the `gcc-10` compiler works on Raspbian to produce ARMv6 binaries, it should be
+  possible to take the corresponding *source package*, i.e. the source that generated the binary Debian packages, and
+  *simply* compile it for the host architecture (x86_64). We could therefore keep all the patches, have the exact same
+  version and flags as the target version of GCC.
+
+  This is close to not possible, for two reasons:
+  * Since none of Raspbian's packages exist for `gcc-10` on x86_64, we would need to build x86_64-hosted versions of
+    ***all*** the transitive dependencies of `gcc-10` to satisfy the build dependencies of the cross-compiler.
+  * A cross-compiler package and a compiler package are very different things, at least in terms of Debian packages.
+    Both [GCC](https://salsa.debian.org/toolchain-team/gcc) and [Cross
+    GCC](https://salsa.debian.org/toolchain-team/gcc-cross) packages work on a tarball of GCC, but they configure it
+    with different flags, install to different locations, produce different binary packages, etc. And all of this looks
+    very mysterious if you have never been involved with GCC toolchain packaging --- as it is my case.
+
+  I didn't pursue this way to the end, but it did seem like a dead-end early on. Please tell me in the comments if I'm
+  wrong about this!
+
+* To benefit from the already available native toolchains, we could emulate the Raspberry Pi's ARMv6 CPU using
+  [QEMU](https://www.qemu.org/), and build inside this environment. This is what the [Balena base
+  images](https://www.balena.io/docs/reference/base-images/base-images/) enable, using the kernel's
+  [binfmt_misc](https://en.wikipedia.org/wiki/Binfmt_misc) support and [QEMU User Mode
+  Emulation](https://www.qemu.org/docs/master/user/index.html). The original Hyperion ambient lighting project uses this
+  for continuous integration (see their
+  [Dockerfiles](https://github.com/hyperion-project/hyperion.docker-ci/blob/dec107c9cfd793163f0baef16ec1a8ed9196ab3b/armv6l))
+  and it seems to work pretty well except for two issues:
+  * It's slow: ARMv6 code needs to be emulated and computation-intensive tasks like compiling Rust code heavily suffers
+    from this. I would show a comparison using this post's PoC, if it weren't for the second issue:
+  * It doesn't work on 64-bit systems: QEMU User Mode Emulation works by translating system calls so the host kernel can
+    handle them. However, some kernel APIs return word-sized values (64 bits on x86_64) which won't fit on emulated user
+    space structures for 32-bit architectures like ARMv6. This is a [known
+    bug](https://gitlab.com/qemu-project/qemu/-/issues/263), and in case you encounter it, for example by compiling a
+    Rust project, the error looks like this:
+    ```
+        Updating crates.io index
+    warning: spurious network error (2 tries remaining): could not read directory '/root/.cargo/registry/index/github.com-1285ae84e5963aae/.git//refs': Value too large for defined data type; class=Os (2)
+    warning: spurious network error (1 tries remaining): could not read directory '/root/.cargo/registry/index/github.com-1285ae84e5963aae/.git//refs': Value too large for defined data type; class=Os (2)
+    error: failed to get `color-eyre` as a dependency of package `blog-cross-rpi v0.1.0 (/blog-cross-rpi)`
+
+    Caused by:
+      failed to fetch `https://github.com/rust-lang/crates.io-index`
+
+    Caused by:
+      could not read directory '/root/.cargo/registry/index/github.com-1285ae84e5963aae/.git//refs': Value too large for defined data type; class=Os (2)
+    ```
+    Note the *Value too large for defined data type*, which corresponds to the `EOVERFLOW` error mentioned in the QEMU
+    issue tracker.
+
+  Those images are still very useful for fetching dependencies and running simple tests (that don't rely on
+  unsupported system calls), as we will see in the next part.
+
+# Dependencies and where to get them
+
+The next step once you have a working cross-compiler is to fetch the dependencies for the project you are compiling. We
+have multiple options:
+
+| Method                                       | Pros                                                        | Cons                                                                                                                                                                                                                                               |
+|:---------------------------------------------|:------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Cross-compile all the dependencies           | Great opportunity to learn                                  | All transitive dependencies need to be recompiled, and that is going to take a while.                                                                                                                                                              |
+| Use Debian's armhf packages                  | Fully supported by `apt`/`dpkg`, binary packages available  | Debian armhf is ARMv7, linking to ARMv7 libraries results in an ARMv7 binary being created.                                                                                                                                                        |
+| Add Raspbian's (armhf) repositories to `apt` | We get the exact packages for the target, still using `apt` | Raspbian's packages are not *multiarch-aware*[^debian-multiarch] since they are native packages, and can't be installed at the same time. Also, postinst scripts are not supported since they only run on the native architecture for the package. |
+
+In case you tried option #3, `apt install libpython3-dev` probably produced an error message looking like the following:
+```
+The following packages have unmet dependencies:
+ libexpat1:armhf : Depends: libc6:armhf (>= 2.25) but it is not installable
+                   Depends: libgcc-s1:armhf (>= 3.5) but it is not installable
+ libexpat1-dev:armhf : Depends: libc6-dev:armhf but it is not installable or
+                                libc-dev:armhf
+ libpython3.9:armhf : Depends: libpython3.9-stdlib:armhf (= 3.9.2-1+rpi1) but it is not installable
+                      Depends: libc6:armhf (>= 2.29) but it is not installable
+ libpython3.9-dev:armhf : Depends: libpython3.9-stdlib:armhf (= 3.9.2-1+rpi1) but it is not installable
+ libsqlite3-0:armhf : Depends: libc6:armhf (>= 2.29) but it is not installable
+ libsqlite3-dev:armhf : Depends: libc6-dev:armhf but it is not installable
+ zlib1g:armhf : Depends: libc6:armhf (>= 2.4) but it is not installable
+ zlib1g-dev:armhf : Depends: libc6-dev:armhf but it is not installable or
+                             libc-dev:armhf
+E: Unable to correct problems, you have held broken packages.
+```
+
+Following the dependency chain of `but it is not installable` packages does reveal `libc6:amd64` and `libc6:armhf`
+cannot be installed at the same time, since they are both native (and not *multiarch-aware*) packages, and thus install
+to the same location.
+
+To solve this issue, we need to get the files for our dependencies and move them to a non-conflicting location. We can
+use the [Balena base images](https://www.balena.io/docs/reference/base-images/base-images/) to do this:
+1. Run the [Raspberry Pi image](https://hub.docker.com/r/balenalib/raspberry-pi-debian)
+2. Install the build dependencies using `apt-get update && apt-get install -y libpython3-dev libsqlite3-dev`
+3. Copy `/usr/{include,lib,share}` into the cross-compiling root
+
+It's convoluted, but [it works!](https://github.com/vtavernier/cross-images/blob/a960a8fde182fcbf155a48e0785fd099b8997c58/targets/raspberrypi/Dockerfile#L90-L118).
+You can link to the dependencies using `arm-linux-gnueabihf-gcc` and the right `-l/-L` flags, but that's not what we are
+here for today...
+
+## Compiling Rust code with `cross`
+
+> “Zero setup” cross compilation and “cross testing” of Rust crates
+
+From the README of [cross](https://github.com/rust-embedded/cross).
+
+`cross` makes it easy to compile Rust for foreign architectures without having to install the (cross-)toolchains
+manually. For targets supported by cross, compiling is as easy as replacing this:
+
+```bash
+cargo build --target arm-unknown-linux-gnueabihf
+```
+
+With this:
+
+```bash
+cross build --target arm-unknown-linux-gnueabihf
+```
+
+When running `cross`, the following happens:
+* `cross` fetches the cross-building Docker image for the chosen target (either the [default
+  built-in](https://github.com/rust-embedded/cross/tree/master/docker), or the one specified in `Cross.toml`)
+* Then, it bind-mounts `$CARGO_HOME` as `/cargo`, the project's source as `/project` and the target dir as `/target`
+  inside the container.
+* Finally, it runs `cargo` with the given flags inside the container
+
+The role of the Docker image is just to provide the cross-compiling tools along with the right environment variables
+that tell `cargo` which compilers and linkers to use for producing binaries for the target[^cargo-env]. If you wish to
+use the images built from all this, see [the usage
+instructions](https://github.com/vtavernier/cross-images/tree/a960a8fde182fcbf155a48e0785fd099b8997c58#usage) from the
+companion repository to this post. Using these images makes cross-compiling [the
+PoC](https://github.com/vtavernier/blog-cross-rpi) a breeze:
+
+:::TerminalOutput
+```bash
+# Get the code
+$ git clone https://github.com/vtavernier/blog-cross-rpi.git && cd blog-cross-rpi
+
+# Build with all dependencies
+$ export ENABLE_PYO3=1
+$ cross build --target arm-unknown-linux-gnueabihf-gcc --all-features
+
+# Send the result to the target
+$ scp target/arm-linux-gnueabihf-gcc/debug/blog-cross-rpi pi@raspi-zero:~
+
+# Run it
+$ ssh pi@raspi-zero ./blog-cross-rpi
+```
+:::
+
+## Conclusion
+
+Building for the Raspberry Pi Zero was an interesting challenge and great learning experience. What worked in the end is
+the following:
+
+1. Build the same version of GCC/glibc as Raspbian
+2. Use the Balena image for Raspberry Pi[^balena-image-raspberry-pi] to fetch native dependencies
+3. Copy the cross-compiler from step 1, the dependencies from step 2, set some environment variables
+4. Use the resulting Docker image with `cross`
+
+The images are available for use (see [the repository](https://github.com/vtavernier/cross-images) for instructions) if
+you want to compile Rust code for the Raspberry Pi Zero... or you could just get a [Raspberry Pi Zero
+2](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/) for \$5 more. Yes, it runs ARMv7 code, and yes, it came
+out while I was writing this piece. And since you are still reading this, you can probably guess which steps we can skip
+with this new board.
+
+Until then, happy cross-compiling!
+
+## References
+
+[^osdev-target-triplets]: https://wiki.osdev.org/Target_Triplet
+[^triplet-fullform]: This is the triplet in its full form, the extra `unknown` is the vendor, which can be omitted
+[^naming-things]: [It's a hard problem](https://www.karlton.org/2017/12/naming-things-hard/)
+[^actual-gcc10-build]: Paul's post recommends building glibc 2.28 with GCC 8 because later versions of GCC would fail.
+  Since I wanted to build for Raspbian Bullseye (the latest stable version of Raspbian), I managed to build glibc 2.31
+  with GCC 10.2.0 with only a few patches required, which was manageable. This also means we only need one
+  cross-compiler, the one we're targeting.
+[^debian-multiarch]: https://wiki.debian.org/Multiarch/HOWTO
+[^cargo-env]: Variables such as `CC_<target-triple>` to specify what is the compiler for the LLVM target named
+  `<target-triple>`.
+[^balena-image-raspberry-pi]: https://docker.io/balenalib/raspberry-pi-debian:bullseye-build

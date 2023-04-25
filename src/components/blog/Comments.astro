@@ -1,0 +1,32 @@
+---
+import { SITE } from '~/config.mjs';
+---
+
+<div
+  id="utterances-container"
+  data-repo={SITE.repo}
+  data-issue-term={SITE.utterances.issueTerm}
+  data-theme={SITE.utterances.theme}
+  data-label={SITE.utterances.label}
+>
+</div>
+
+<script>
+  const script = document.createElement('script');
+  const container = document.querySelector('#utterances-container'); // your id in your html above
+  const attributes = container.attributes;
+
+  // Replace the value of each key with yours
+  Object.entries({
+    src: 'https://utteranc.es/client.js',
+    repo: attributes['data-repo'].value,
+    'issue-term': attributes['data-issue-term'].value,
+    label: attributes['data-label'].value,
+    theme: attributes['data-theme'].value,
+    crossorigin: 'anonymous',
+  }).forEach(([key, value]) => {
+    script.setAttribute(key, value);
+  });
+
+  container?.appendChild(script);
+</script>
