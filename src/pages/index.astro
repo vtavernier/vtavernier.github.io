@@ -3,7 +3,6 @@ import { SITE } from '~/config.mjs';
 import Layout from '~/layouts/PageLayout.astro';
 
 import LatestPosts from '~/components/blog/LatestPosts.astro';
-import Hero from '~/components/widgets/Hero.astro';
 
 const meta = {
   title: SITE.title,
@@ -13,17 +12,5 @@ const meta = {
 ---
 
 <Layout {meta}>
-  <Hero>
-    <Fragment slot="title">New year, new blog theme</Fragment>
-
-    <Fragment slot="subtitle">
-      If you encounter any issues, don't hesitate to <a
-        class="font-semibold hover:text-purple-600 text-white transition-all ease-in duration-100"
-        rel="external"
-        href="https://github.com/vtavernier/vtavernier.github.io/issues">report them</a
-      >!
-    </Fragment>
-  </Hero>
-
   <LatestPosts title="Latest posts from the Blog" />
 </Layout>
