@@ -27,12 +27,10 @@ const meta = {
 
 <Layout {meta}>
   <Headline
-    subtitle="Note: this page hosts links to the READMEs of my various projects. Follow the links in the titles to the GitHub repositories for more information."
+    subtitle="Nothing to see here. Yet."
   />
-
-  <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
-    <ul>
-      {projects.map((project) => <li class="mb-12 md:mb-20">{project.data.title}</li>)}
-    </ul>
-  </section>
 </Layout>
+
+<script is:inline>
+  window.location = "https://github.com/vtavernier?tab=repositories&q=&type=source&language=&sort="
+</script>
