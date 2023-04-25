@@ -11,7 +11,7 @@ export const get: APIRoute = async function get(context) {
   const lang = authorLang!.split('_')[1]!;
 
   // Load rendered HTML in browser
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+  const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox'] });
   const page = await browser.newPage();
   await page.setContent(renderResume(lang!, true));
   await page.waitForNetworkIdle();
