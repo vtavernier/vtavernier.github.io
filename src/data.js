@@ -9,7 +9,7 @@ export const headerData = {
     },
     {
       text: 'Projects',
-      href: "https://github.com/vtavernier?tab=repositories&q=&type=source&language=&sort=", // getPermalink('/projects'),
+      href: 'https://github.com/vtavernier?tab=repositories&q=&type=source&language=&sort=', // getPermalink('/projects'),
     },
     {
       text: 'Research',

@@ -46,7 +46,12 @@ export default defineConfig({
       serviceEntryPoint: '@astrojs/image/sharp',
     }),
     mdx({
-      remarkPlugins: [remarkMath, remarkEmdash, remarkDirective, [m2dx, { componentDirectives: 'utils/directives.ts' }]],
+      remarkPlugins: [
+        remarkMath,
+        remarkEmdash,
+        remarkDirective,
+        [m2dx, { componentDirectives: 'utils/directives.ts' }],
+      ],
       rehypePlugins: [rehypeKatex],
     }),
 
