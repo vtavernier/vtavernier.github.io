@@ -79,7 +79,21 @@
 <span class=line><span style=color:#f8f8f2>$ gcc -lsomething main.c</span></span>
 <span class=line></span>
 <span class=line><span style=color:#f8f8f2>$ ./a.out</span></span>
-<span class=line><span style=color:#6272a4># Your program runs, congratulations!</span></span></code></pre></div><figure><div class=mermaid>graph LR subgraph Host[&quot;Host (and target)&quot;] Compiler[/&quot;Compiler (gcc, clang)&quot;/] int_files Linker[/&quot;Linker (ld, lld)&quot;/] so_files[&quot;Libraries (.a, .so)&quot;] binary[&quot;Binary&quot;] end src_files[&quot;Source files (.c, .cpp)&quot;] --&gt; Compiler --&gt; int_files[&quot;Object files (.o)&quot;] --&gt; Linker so_files --&gt; Linker --&gt; binary</div><figcaption>Native compiling: compiling and running the program happens on the host</figcaption></figure><p>If you kept going and developed for a microcontroller-based platform such as Arduino, Espressif devices and countless others, you <strong>have</strong> used a cross-compiler. Indeed, these platforms can neither host a full operating system needed by the compiler nor provide the required computational power to compile modern languages.</p><p>However, some more powerful embedded platforms do provide operating systems and compilers: today’s subject, the Raspberry Pi, runs a full Debian distribution and contains all the required tools for developing compiled software — albeit requiring some patience while the low-power ARM cores churn away to produce the binaries for your project.</p><p>Both those cases are represented below. Dynamic libraries are only present if the target platform has a dynamic linker, such as Linux embedded targets. The previous compilation process gets slightly more complex:</p><div class="drop-shadow-sm rounded-md tm-output" style=background-color:#282a36;color:var(--tw-prose-pre-code)><div class="p-4 pb-1"><svg viewBox="0 0 54 14" height=14 width=54 xmlns=http://www.w3.org/2000/svg><g fill=none fill-rule=evenodd transform="translate(1 1)"><circle cx=6 cy=6 r=6 fill=#FF5F56 stroke=#E0443E stroke-width=.5></circle><circle cx=26 cy=6 r=6 fill=#FFBD2E stroke=#DEA123 stroke-width=.5></circle><circle cx=46 cy=6 r=6 fill=#27C93F stroke=#1AAB29 stroke-width=.5></circle></g></svg></div><pre class=astro-code style=background-color:#282a36;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word><code><span class=line><span style=color:#6272a4># All the gcc and binutils (cross-)tools are prefixed with the target triplet,</span></span>
+<span class=line><span style=color:#6272a4># Your program runs, congratulations!</span></span></code></pre></div><figure><pre class=mermaid>
+graph LR
+  subgraph Host[&quot;Host (and target)&quot;]
+    Compiler[/&quot;Compiler (gcc, clang)&quot;/]
+    int_files
+    Linker[/&quot;Linker (ld, lld)&quot;/]
+
+    so_files[&quot;Libraries (.a, .so)&quot;]
+    binary[&quot;Binary&quot;]
+  end
+
+  src_files[&quot;Source files (.c, .cpp)&quot;] --&gt; Compiler --&gt; int_files[&quot;Object files (.o)&quot;] --&gt; Linker
+  so_files --&gt; Linker --&gt; binary
+
+</pre><figcaption>Native compiling: compiling and running the program happens on the host</figcaption></figure><p>If you kept going and developed for a microcontroller-based platform such as Arduino, Espressif devices and countless others, you <strong>have</strong> used a cross-compiler. Indeed, these platforms can neither host a full operating system needed by the compiler nor provide the required computational power to compile modern languages.</p><p>However, some more powerful embedded platforms do provide operating systems and compilers: today’s subject, the Raspberry Pi, runs a full Debian distribution and contains all the required tools for developing compiled software — albeit requiring some patience while the low-power ARM cores churn away to produce the binaries for your project.</p><p>Both those cases are represented below. Dynamic libraries are only present if the target platform has a dynamic linker, such as Linux embedded targets. The previous compilation process gets slightly more complex:</p><div class="drop-shadow-sm rounded-md tm-output" style=background-color:#282a36;color:var(--tw-prose-pre-code)><div class="p-4 pb-1"><svg viewBox="0 0 54 14" height=14 width=54 xmlns=http://www.w3.org/2000/svg><g fill=none fill-rule=evenodd transform="translate(1 1)"><circle cx=6 cy=6 r=6 fill=#FF5F56 stroke=#E0443E stroke-width=.5></circle><circle cx=26 cy=6 r=6 fill=#FFBD2E stroke=#DEA123 stroke-width=.5></circle><circle cx=46 cy=6 r=6 fill=#27C93F stroke=#1AAB29 stroke-width=.5></circle></g></svg></div><pre class=astro-code style=background-color:#282a36;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word><code><span class=line><span style=color:#6272a4># All the gcc and binutils (cross-)tools are prefixed with the target triplet,</span></span>
 <span class=line><span style=color:#6272a4># here &quot;arm-linux-gnueabihf&quot;. This one compiles main.c and links with</span></span>
 <span class=line><span style=color:#6272a4># libsomething.a/.so, but for &quot;arm-linux-gnueabihf&quot;.</span></span>
 <span class=line><span style=color:#f8f8f2>$ arm-linux-gnueabihf-gcc -lsomething main.c</span></span>
@@ -92,7 +106,115 @@
 <span class=line><span style=color:#6272a4># Deploy the binary to the target hardware (or upload using DFU for microcontrollers)</span></span>
 <span class=line><span style=color:#f8f8f2>$ scp a.out pi@raspberry:</span><span style=color:#ff79c6>~</span><span style=color:#f8f8f2>∕</span></span>
 <span class=line><span style=color:#6272a4># Run it</span></span>
-<span class=line><span style=color:#f8f8f2>$ ssh pi@raspberry ./a.out</span></span></code></pre></div><figure><div class=mermaid>graph LR subgraph Host Compiler[/&quot;Compiler (gcc, clang)&quot;/] Linker[/&quot;Linker (ld, lld)&quot;/] subgraph target_only[&quot;Target architecture objects&quot;] int_files[&quot;Object files (.o)&quot;] end end subgraph Target so_files[&quot;Libraries (.a, .so)&quot;] binary[&quot;Binary&quot;] end src_files[&quot;Source files (.c, .cpp)&quot;] --&gt; Compiler --&gt; int_files --&gt; Linker so_files --&gt; Linker --&gt; binary linkStyle 3 stroke-dasharray: 5 5 style so_files stroke-dasharray: 5 5</div><figcaption>Cross-compiling: compiling happens on the host, and running on the target</figcaption></figure><h2 id=rust-and-the-case-of-rustc>Rust, and the case of <code>rustc</code></h2><p>You have probably noticed the two previous charts only mentioned <code>gcc</code> and <code>clang</code>, i.e. C compilers. And this article started with a Rust example, so what gives?</p><p>What actually happens when you compile a Rust project is the following:</p><ul><li><code>cargo</code> fetches dependencies and invokes <code>rustc</code> to compile all the libraries, proc-macros and build scripts<ul><li>Build scripts may build native dependencies written in C/C++ during this process</li></ul></li><li><code>cargo</code> then invokes <code>rustc</code> to produce the final binary</li><li><code>rustc</code> invokes the system’s linker for the target</li></ul><p>On Linux systems, the (native) system linker used is <code>cc</code>, which usually is a symlink to the system’s version of <code>gcc</code>. On Windows, <code>CL.exe</code> will be invoked when using the <code>x86_64-pc-windows-msvc</code> target. You were probably prompted by <code>rustup</code> when installing Rust that you need to have a C compiler available (Linux), or to install the Visual C++ Build Tools (Windows) so <code>cargo build</code> works out-of-box once you have installed Rust.</p><p>This means that native compiling Rust is as follows:</p><figure><div class=mermaid>graph LR subgraph Sources rs_files c_sources end subgraph Host[&quot;Host (and target)&quot;] native_linker[/&quot;Linker (cc)&quot;/] target_linker[/&quot;Linker (cc)&quot;/] so_files[&quot;Libraries (.a, .so)&quot;] binary[&quot;Binary&quot;] subgraph cargo rustc native_linker build_scripts proc_macros end cc a rlib build_scripts-. invokes .-&gt;cc proc_macros-. used by .-&gt;rustc end rs_files[&quot;Sources (.rs)&quot;] --&gt; rustc[/rustc/] --&gt; rlib[&quot;Rust libraries (.rlib)&quot;] native_linker --&gt; build_scripts[&quot;Build scripts&quot;] native_linker --&gt; proc_macros[&quot;Proc macros (.so)&quot;] rustc --&gt; native_linker c_sources[&quot;Sources (.c)&quot;] --&gt; cc[/cc/] --&gt; a[&quot;Static libraries (.a)&quot;] rlib --&gt; target_linker a --&gt; target_linker so_files --&gt; target_linker target_linker --&gt; binary</div><figcaption>Native compiling Rust with non-Rust dependencies</figcaption></figure><p>… and remember how cross-compiling makes everything more complicated? Here, we need to generate code:</p><ul><li>For the target: the actual program that will run on the target architecture</li><li>For the host: build scripts and proc-macros are Rust code that runs on the host</li></ul><p>So, when we are cross-compiling Rust, we need <strong>both</strong> a native linker and a cross linker for the target. As well as a native C compiler, if we have non-Rust build dependencies, and a C cross-compiler if we have non-Rust dependencies. I promise this is the last overly wide graph of this introduction before we get to the point.</p><figure><div class=mermaid>graph LR subgraph Sources rs_files c_sources end subgraph Host native_linker[/&quot;Linker (cc)&quot;/] target_linker[/&quot;Target linker (ARCH-cc)&quot;/] subgraph cargo rustc native_linker build_scripts proc_macros end cc[/&quot;ARCH-cc&quot;/] subgraph target_only[&quot;Target architecture objects&quot;] rlib a end build_scripts-. invokes .-&gt;cc proc_macros-. used by .-&gt;rustc end subgraph Target target_so_files[&quot;Libraries (.a, .so)&quot;] binary[&quot;Binary&quot;] end rs_files[&quot;Sources (.rs)&quot;] --&gt; rustc[/rustc/] --&gt; rlib[&quot;Rust libraries (.rlib)&quot;] native_linker --&gt; build_scripts[&quot;Build scripts&quot;] native_linker --&gt; proc_macros[&quot;Proc macros (.so)&quot;] rustc --&gt; native_linker c_sources[&quot;Sources (.c)&quot;] --&gt; cc --&gt; a[&quot;Static libraries (.a)&quot;] rlib --&gt; target_linker a --&gt; target_linker target_so_files --&gt; target_linker target_linker --&gt; binary</div><figcaption>Cross-compiling Rust with non-Rust dependencies. <em>ARCH</em> is the target architecture prefix.<br/>Note: the case where proc macros or build scripts have C dependencies or link to system libraries is not represented here and is left as an exercise to readers who need more spaghetti in their lives. 🍝</figcaption></figure><p>So, why do we need that extra complexity, especially if the target <em>has</em> native compilers which we could invoke the same way we do native development on desktop?</p><h1 id=why-cross-compile>Why cross-compile?</h1><p>Ranking the reasons for cross-compiling from “required” to “convenient”, these are the main reasons:</p><ul><li>No target-hosted compiler is available (microcontrollers)</li><li>A compiler is available, but you do not have access to the target (either because you don’t own the hardware, or the build process is running on continuous integration servers).</li><li>Limited target hardware performance. Compiling the PoC for this article results in the following:</li></ul><div class="drop-shadow-sm rounded-md tm-output" style=background-color:#282a36;color:var(--tw-prose-pre-code)><div class="p-4 pb-1"><svg viewBox="0 0 54 14" height=14 width=54 xmlns=http://www.w3.org/2000/svg><g fill=none fill-rule=evenodd transform="translate(1 1)"><circle cx=6 cy=6 r=6 fill=#FF5F56 stroke=#E0443E stroke-width=.5></circle><circle cx=26 cy=6 r=6 fill=#FFBD2E stroke=#DEA123 stroke-width=.5></circle><circle cx=46 cy=6 r=6 fill=#27C93F stroke=#1AAB29 stroke-width=.5></circle></g></svg></div><pre class=astro-code style=background-color:#282a36;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word><code><span class=line><span style=color:#6272a4># Preparation: fetch all dependencies</span></span>
+<span class=line><span style=color:#f8f8f2>$ ssh pi@raspberry ./a.out</span></span></code></pre></div><figure><pre class=mermaid>
+graph LR
+  subgraph Host
+    Compiler[/&quot;Compiler (gcc, clang)&quot;/]
+    Linker[/&quot;Linker (ld, lld)&quot;/]
+
+    subgraph target_only[&quot;Target architecture objects&quot;]
+      int_files[&quot;Object files (.o)&quot;]
+    end
+  end
+
+  subgraph Target
+    so_files[&quot;Libraries (.a, .so)&quot;]
+    binary[&quot;Binary&quot;]
+  end
+
+  src_files[&quot;Source files (.c, .cpp)&quot;] --&gt; Compiler --&gt; int_files --&gt; Linker
+  so_files --&gt; Linker --&gt; binary
+
+  linkStyle 3 stroke-dasharray: 5 5
+  style so_files stroke-dasharray: 5 5
+
+</pre><figcaption>Cross-compiling: compiling happens on the host, and running on the target</figcaption></figure><h2 id=rust-and-the-case-of-rustc>Rust, and the case of <code>rustc</code></h2><p>You have probably noticed the two previous charts only mentioned <code>gcc</code> and <code>clang</code>, i.e. C compilers. And this article started with a Rust example, so what gives?</p><p>What actually happens when you compile a Rust project is the following:</p><ul><li><code>cargo</code> fetches dependencies and invokes <code>rustc</code> to compile all the libraries, proc-macros and build scripts<ul><li>Build scripts may build native dependencies written in C/C++ during this process</li></ul></li><li><code>cargo</code> then invokes <code>rustc</code> to produce the final binary</li><li><code>rustc</code> invokes the system’s linker for the target</li></ul><p>On Linux systems, the (native) system linker used is <code>cc</code>, which usually is a symlink to the system’s version of <code>gcc</code>. On Windows, <code>CL.exe</code> will be invoked when using the <code>x86_64-pc-windows-msvc</code> target. You were probably prompted by <code>rustup</code> when installing Rust that you need to have a C compiler available (Linux), or to install the Visual C++ Build Tools (Windows) so <code>cargo build</code> works out-of-box once you have installed Rust.</p><p>This means that native compiling Rust is as follows:</p><figure><pre class=mermaid>
+graph LR
+  subgraph Sources
+    rs_files
+    c_sources
+  end
+
+  subgraph Host[&quot;Host (and target)&quot;]
+    native_linker[/&quot;Linker (cc)&quot;/]
+    target_linker[/&quot;Linker (cc)&quot;/]
+
+    so_files[&quot;Libraries (.a, .so)&quot;]
+    binary[&quot;Binary&quot;]
+
+    subgraph cargo
+      rustc
+      native_linker
+      build_scripts
+      proc_macros
+    end
+
+    cc
+    a
+    rlib
+    build_scripts-. invokes .-&gt;cc
+    proc_macros-. used by .-&gt;rustc
+  end
+
+  rs_files[&quot;Sources (.rs)&quot;] --&gt; rustc[/rustc/] --&gt; rlib[&quot;Rust libraries (.rlib)&quot;]
+  native_linker --&gt; build_scripts[&quot;Build scripts&quot;]
+  native_linker --&gt; proc_macros[&quot;Proc macros (.so)&quot;]
+  rustc --&gt; native_linker
+  c_sources[&quot;Sources (.c)&quot;] --&gt; cc[/cc/] --&gt; a[&quot;Static libraries (.a)&quot;]
+
+  rlib --&gt; target_linker
+  a --&gt; target_linker
+  so_files --&gt; target_linker
+
+  target_linker --&gt; binary
+
+</pre><figcaption>Native compiling Rust with non-Rust dependencies</figcaption></figure><p>… and remember how cross-compiling makes everything more complicated? Here, we need to generate code:</p><ul><li>For the target: the actual program that will run on the target architecture</li><li>For the host: build scripts and proc-macros are Rust code that runs on the host</li></ul><p>So, when we are cross-compiling Rust, we need <strong>both</strong> a native linker and a cross linker for the target. As well as a native C compiler, if we have non-Rust build dependencies, and a C cross-compiler if we have non-Rust dependencies. I promise this is the last overly wide graph of this introduction before we get to the point.</p><figure><pre class=mermaid>
+graph LR
+  subgraph Sources
+    rs_files
+    c_sources
+  end
+
+  subgraph Host
+    native_linker[/&quot;Linker (cc)&quot;/]
+    target_linker[/&quot;Target linker (ARCH-cc)&quot;/]
+
+    subgraph cargo
+      rustc
+      native_linker
+      build_scripts
+      proc_macros
+    end
+
+    cc[/&quot;ARCH-cc&quot;/]
+
+    subgraph target_only[&quot;Target architecture objects&quot;]
+      rlib
+      a
+    end
+
+    build_scripts-. invokes .-&gt;cc
+    proc_macros-. used by .-&gt;rustc
+  end
+
+  subgraph Target
+    target_so_files[&quot;Libraries (.a, .so)&quot;]
+    binary[&quot;Binary&quot;]
+  end
+
+  rs_files[&quot;Sources (.rs)&quot;] --&gt; rustc[/rustc/] --&gt; rlib[&quot;Rust libraries (.rlib)&quot;]
+  native_linker --&gt; build_scripts[&quot;Build scripts&quot;]
+  native_linker --&gt; proc_macros[&quot;Proc macros (.so)&quot;]
+  rustc --&gt; native_linker
+  c_sources[&quot;Sources (.c)&quot;] --&gt; cc --&gt; a[&quot;Static libraries (.a)&quot;]
+
+  rlib --&gt; target_linker
+  a --&gt; target_linker
+  target_so_files --&gt; target_linker
+
+  target_linker --&gt; binary
+
+</pre><figcaption>Cross-compiling Rust with non-Rust dependencies. <em>ARCH</em> is the target architecture prefix.<br/>Note: the case where proc macros or build scripts have C dependencies or link to system libraries is not represented here and is left as an exercise to readers who need more spaghetti in their lives. 🍝</figcaption></figure><p>So, why do we need that extra complexity, especially if the target <em>has</em> native compilers which we could invoke the same way we do native development on desktop?</p><h1 id=why-cross-compile>Why cross-compile?</h1><p>Ranking the reasons for cross-compiling from “required” to “convenient”, these are the main reasons:</p><ul><li>No target-hosted compiler is available (microcontrollers)</li><li>A compiler is available, but you do not have access to the target (either because you don’t own the hardware, or the build process is running on continuous integration servers).</li><li>Limited target hardware performance. Compiling the PoC for this article results in the following:</li></ul><div class="drop-shadow-sm rounded-md tm-output" style=background-color:#282a36;color:var(--tw-prose-pre-code)><div class="p-4 pb-1"><svg viewBox="0 0 54 14" height=14 width=54 xmlns=http://www.w3.org/2000/svg><g fill=none fill-rule=evenodd transform="translate(1 1)"><circle cx=6 cy=6 r=6 fill=#FF5F56 stroke=#E0443E stroke-width=.5></circle><circle cx=26 cy=6 r=6 fill=#FFBD2E stroke=#DEA123 stroke-width=.5></circle><circle cx=46 cy=6 r=6 fill=#27C93F stroke=#1AAB29 stroke-width=.5></circle></g></svg></div><pre class=astro-code style=background-color:#282a36;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word><code><span class=line><span style=color:#6272a4># Preparation: fetch all dependencies</span></span>
 <span class=line><span style=color:#f8f8f2>$ cargo clean </span><span style=color:#ff79c6>&amp;&amp;</span><span style=color:#f8f8f2> cargo fetch</span></span>
 <span class=line></span>
 <span class=line><span style=color:#6272a4># Compile the project in release mode</span></span>
