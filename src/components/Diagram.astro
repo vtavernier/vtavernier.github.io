@@ -6,6 +6,8 @@ export interface Props {
 const { code } = Astro.props;
 ---
 
-<div class="mermaid">
-  {code}
+<div class="not-prose">
+  <pre class="mermaid">
+{code}
+</pre>
 </div>
