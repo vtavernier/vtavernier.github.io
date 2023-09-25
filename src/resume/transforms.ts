@@ -19,7 +19,7 @@ export function transformJsonResume(rawResume: any, lang: string): any {
   });
 
   resume['basics']['image'] =
-    'https://fr.gravatar.com/userimage/127848543/864afa84ea03b14ad5f0add922d15ff6.jpg?size=400';
+    'https://fr.gravatar.com/userimage/127848543/b994f3935e4eb978d8af25724f754094.jpg?size=400';
 
   resume['meta']['theme'] = 'kendall';
 
