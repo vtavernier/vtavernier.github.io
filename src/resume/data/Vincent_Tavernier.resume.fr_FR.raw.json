@@ -27,7 +27,7 @@
       "startDate": "2022-10-31",
       "endDate": "",
       "highlights": [],
-      "summary": "Prestation pour Schneider Electric\n\n- Développement d'une plateforme d'infrastructure cloud AWS pour l'intelligence artificielle\n- Développement de modules Terraform réutilisables\n- Mise en place de pipelines DevSecOps, automatisation des releases et mises à jour des dépendances\n\nLangages : Go, Python 3, Terraform, Bash\nTechnologies : Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironnement : Windows, Linux, AWS, GitHub Enterprise",
+      "summary": "Prestation pour Schneider Electric\n\n- Mise en place et intégration de l'authentification OpenID Connect pour la CI/CD\n- Développement d'une plateforme interne pour les développeurs (IDP) sur AWS pour l'intelligence artificielle\n- Mise en place de pipelines DevSecOps, automatisation des releases et mises à jour des dépendances\n\nLangages : Go, Python 3, Terraform, Bash\nTechnologies : Open Policy Agent, Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironnement : Windows, Linux, AWS, GitHub Enterprise",
       "url": "https://www.linkedin.com/company/kzs/",
       "location": "Grenoble et périphérie"
     },
@@ -165,6 +165,11 @@
   ],
   "skills": [
     {
+      "name": "Open Policy Agent",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "ArgoCD",
       "level": "",
       "keywords": []
@@ -176,11 +181,6 @@
     },
     {
       "name": "Go",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Semantic Release",
       "level": "",
       "keywords": []
     },
@@ -291,6 +291,11 @@
     },
     {
       "name": "Kubernetes",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Semantic Release",
       "level": "",
       "keywords": []
     },

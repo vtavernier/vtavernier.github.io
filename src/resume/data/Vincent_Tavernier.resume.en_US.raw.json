@@ -27,7 +27,7 @@
       "startDate": "2022-10-31",
       "endDate": "",
       "highlights": [],
-      "summary": "Contracting work for Schneider Electric\n\n- Development of an AWS cloud infrastructure platform for artifical intelligence workloads\n- Development of reusable Terraform modules\n- Implementation of DevSecOps pipelines, release and update automation\n\nLanguages: Go, Python 3, Terraform, Bash\nTechnologies: Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironment: Windows, Linux, AWS, GitHub Enterprise",
+      "summary": "Contracting work for Schneider Electric\n\n- Implementation and integration of OpenID Connect for CI/CD workflow authentication\n- Development of an AWS internal developer platform (IDP) for artifical intelligence workloads\n- Implementation of DevSecOps pipelines, release and update automation\n\nLanguages: Go, Python 3, Terraform, Bash\nTechnologies: Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironment: Windows, Linux, AWS, GitHub Enterprise",
       "url": "https://www.linkedin.com/company/kzs/",
       "location": "Grenoble, France"
     },
@@ -165,6 +165,11 @@
   ],
   "skills": [
     {
+      "name": "Open Policy Agent",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "ArgoCD",
       "level": "",
       "keywords": []
@@ -260,12 +265,12 @@
       "keywords": []
     },
     {
-      "name": "Bash",
+      "name": "AWS",
       "level": "",
       "keywords": []
     },
     {
-      "name": "AWS",
+      "name": "Bash",
       "level": "",
       "keywords": []
     },
