@@ -13,6 +13,11 @@ concurrency: gh-pages
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - uses: actions/checkout@v2
         with:
