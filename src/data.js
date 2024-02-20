@@ -27,12 +27,12 @@ export const footerData = {
   links: [],
   secondaryLinks: [],
   socialLinks: [
-    { ariaLabel: 'E-mail', icon: 'tabler:mail', href: 'mailto:v.tavernier@pm.me' },
+    { ariaLabel: 'E-mail', icon: 'tabler:mail', href: 'mailto:alix.tavernier@pm.me' },
     { ariaLabel: 'Github', icon: 'tabler:brand-github', href: 'https://github.com/vtavernier' },
     {
       ariaLabel: 'LinkedIn',
       icon: 'tabler:brand-linkedin',
-      href: 'https://www.linkedin.com/in/vincent-tavernier-707b5012a/',
+      href: 'https://www.linkedin.com/in/alix-tavernier-707/',
     },
     { ariaLabel: 'crates.io', icon: 'tabler:package', href: 'https://crates.io/users/vtavernier' },
     { ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') },

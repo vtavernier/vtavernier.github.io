@@ -150,22 +150,22 @@ we can further refine using `git blame`. This command outputs which commit chang
 
 <TerminalOutput set:html={`
 $ <span style="font-weight:bold;color:white;">git blame src/insertion.cpp</span>
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  2) 
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  4) 
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  5) void sort_insertion(sort_data_t *data, size_t length) {
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100  6)     size_t i = 1;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  7) 
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100  8)     while (i &lt; length) {
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100  9)         size_t j = i;
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 10)         while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 11)             std::swap(data[j], data[j - 1]);
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 12)             j--;
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 13)         }
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 14)         i++;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 15)     }
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  2) 
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  4) 
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  5) void sort_insertion(sort_data_t *data, size_t length) {
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100  6)     size_t i = 1;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  7) 
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100  8)     while (i &lt; length) {
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100  9)         size_t j = i;
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100 10)         while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100 11)             std::swap(data[j], data[j - 1]);
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100 12)             j--;
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100 13)         }
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100 14)         i++;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100 15)     }
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100 16) }
 `} />
 
 If we cross-reference this with the output of `git log` we notice that most of the file was changed by one single
@@ -174,22 +174,22 @@ know this commit indeed doesn't change anything, we can ask Git to ignore it in 
 
 <TerminalOutput set:html={`
 $ <span style="font-weight:bold;color:white;">git blame --ignore-rev 01770f7 src/insertion.cpp</span>
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  2) 
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  4) 
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  5) void sort_insertion(sort_data_t *data, size_t length) {
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  6)     size_t i = 1;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  7) 
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  8)     while (i &lt; length) {
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100  9)         size_t j = i;
-<span style="font-weight:bold">5889f58f (Vincent Tavernier 2021-01-24 03:17:12 +0100 10)         while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {</span>
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 11)             std::swap(data[j], data[j - 1]);
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 12)             j--;
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 13)         }
-01770f7a (Vincent Tavernier 2021-01-24 03:18:38 +0100 14)         i++;
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 15)     }
-^65defb0 (Vincent Tavernier 2021-01-24 03:15:15 +0100 16) }
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  1) #include &quot;sort.h&quot;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  2) 
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  3) #include &lt;utility&gt;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  4) 
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  5) void sort_insertion(sort_data_t *data, size_t length) {
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  6)     size_t i = 1;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  7) 
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  8)     while (i &lt; length) {
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100  9)         size_t j = i;
+<span style="font-weight:bold">5889f58f (Alix Tavernier 2021-01-24 03:17:12 +0100 10)         while (j &gt; 0 &amp;&amp; data[j - 1] &lt; data[j]) {</span>
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100 11)             std::swap(data[j], data[j - 1]);
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100 12)             j--;
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100 13)         }
+01770f7a (Alix Tavernier 2021-01-24 03:18:38 +0100 14)         i++;
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100 15)     }
+^65defb0 (Alix Tavernier 2021-01-24 03:15:15 +0100 16) }
 `} />
 
 From this output, we can deduce:
@@ -199,7 +199,7 @@ From this output, we can deduce:
 <TerminalOutput set:html={`
 $ <span style="font-weight:bold;color:white;">git show 5889f58f</span>
 <span style="color:olive;">commit 5889f58fd7ec438b5e45ddab97611f6d34e916de</span>
-Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
+Author: Alix Tavernier &lt;alix.tavernier@pm.me&gt;
 Date:   Sun Jan 24 03:17:12 2021 +0100
 
     Update sorting logic
@@ -297,7 +297,7 @@ build/main
 <span style="color:green;">Tests succeeded</span>
 5889f58fd7ec438b5e45ddab97611f6d34e916de is the first bad commit
 commit 5889f58fd7ec438b5e45ddab97611f6d34e916de
-Author: Vincent Tavernier &lt;v.tavernier@pm.me&gt;
+Author: Alix Tavernier &lt;alix.tavernier@pm.me&gt;
 Date:   Sun Jan 24 03:17:12 2021 +0100
 
     Update sorting logic

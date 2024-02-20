@@ -1,6 +1,6 @@
 const CONFIG = {
   name: 'The Tavern',
-  author: 'Vincent Tavernier',
+  author: 'Alix Tavernier',
 
   origin: process.env.SITE || 'https://vtavernier.github.io',
   basePathname: process.env.BASE_URL || '/',
