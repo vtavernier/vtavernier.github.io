@@ -1,5 +1,5 @@
-import raw_fr_FR from './data/Vincent_Tavernier.resume.fr_FR.raw.json';
-import raw_en_US from './data/Vincent_Tavernier.resume.en_US.raw.json';
+import raw_fr_FR from './data/Alix_Tavernier.resume.fr_FR.raw.json';
+import raw_en_US from './data/Alix_Tavernier.resume.en_US.raw.json';
 import { transformJsonResume } from './transforms';
 import { render as renderEn } from 'jsonresume-theme-stackoverflow';
 import { render as renderFr } from 'jsonresume-theme-stackoverflow-fr';
@@ -32,6 +32,6 @@ export function renderResume(lang: string, includeDoctype: boolean): string {
 }
 
 export function getAvailablePages() {
-  const author = 'vincent-tavernier';
+  const author = 'alix-tavernier';
   return [{ params: { authorLang: `${author}_fr` } }, { params: { authorLang: `${author}_en` } }];
 }

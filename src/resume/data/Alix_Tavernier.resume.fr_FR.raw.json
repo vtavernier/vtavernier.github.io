@@ -1,112 +1,112 @@
 {
   "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
   "basics": {
-    "name": "Vincent Tavernier",
-    "label": "R&D, DevOps and AWS Cloud engineer",
+    "name": "Alix Tavernier",
+    "label": "Ingénieure R&D, DevOps, Cloud AWS",
     "image": "",
     "email": "v.tavernier@pm.me",
     "phone": "",
     "url": "",
-    "summary": "18 years ago, my dad gave me a 400-page book on Visual Basic 6 and I went through it in a couple of months. Needless to say, I'm not programming in that language anymore, but my interest in technology hasn't faded one bit, far from it.\n\nI graduated from one of France's best computer science engineering schools back in 2017, and after a 4 year experience in computer graphics research I have now embarked in the next step of my professional journey as a DevOps and cloud engineer at Kaizen Solutions.\n\nThis might seem like a major shift, but that does not mean I'm starting from scratch either. In my opinion, anyone can learn technologies, frameworks and architecture concepts, even on the fly. But in my case, those past 6 years of professionnal have allowed me to develop significant skills which I routinely rely on:\n- Teaching and knowledge transfer experience: helping teammates get up to speed and autonomous on the technologies we use is highly valuable\n- Critical thinking: it's a complex world when business needs do not align with technological constraints. Weighing the pros and cons of various solutions is a must-have to ensure we develop maintainable and reliable software given the limited resources we have.\n- Following technological advancements: the IT landscape is constantly changing, and the right solution to your problem might be right around the corner. You just need to know about it without drowning in information!\n\nAll this is only scratching the surface, but what you're reading here is just a summary, feel free to check out the details below if you want the full list of technologies, systems and concepts I've encountered along the way.\n\nAnd in case you still have some reading time left, head over to my blog where I occasionnally share my views and experiences with software (and sometimes hardware): https://vtavernier.github.io\n\nHappy reading!",
+    "summary": "Il y a 18 ans, mon père m'a donné un livre de quelques 400 pages à propos de Visual Basic 6. Je l'ai lu en entier en quelques mois. Vous vous en doutez bien, je ne programme plus avec ce langage là, mais ma passion pour la technologie n'en a pas souffert, loin de là.\n\nJ'ai reçu mon diplôme d'ingénieur d'une des meilleurs écoles d'informatique de France en 2017, et après une expérience de 4 ans dans la recherche en informatique graphique, je continue mon aventure professionnelle en tant qu'ingénieure DevOps et cloud chez Kaizen Solutions.\n\nC'est un changement qui peut paraître brutal, mais je ne démarre pas de zéro non plus. Je pense sincèrement que tout le monde peut apprendre des technologies, des frameworks ou concepts d'architecture, y compris sur le tas. Mais en ce qui me concerne, ces 6 dernières années d'expérience professionnelle m'ont permis de développer des compétences significatives sur lesquelles je m'appuie régulièrement :\n- Expérience d'enseignement et de transfert de compétences : aider mes collègues à monter en compétence et à devenir autonomes sur les technologies du projet est précieux\n- Esprit critique : lorsque les besoins de l'entreprise ne sont pas alignés avec les contraintes technologiques, les décisions deviennent complexes. Etre en mesure de comparer les avantages et inconvénients des différentes approches est indispensable pour développer des produits maintenable et fiables étant donné des ressources limitées.\n- Veille technologique : l'univers de l'informatique est en changement constant, ce qui fait que la solution parfaite à votre problème est peut-être sous votre nez... Si vous avez réussi à en entendre parler au milieu de toute l'information disponible ces jours-ci !\n\nEvidemment, ceci n'est qu'un aperçu de ce que j'ai fait durant ces 6 dernières années, mais cette section n'est qu'un résumé ! Tous les détails sur les technologies, systèmes et concepts que j'ai manipulés se trouvent sur le reste de mon profil.\n\nS'il vous reste encore du temps libre, vous pouvez aussi jeter un coup d'oeil à mon blog où je partage ma vision et mes expériences avec le logiciel (et parfois du matériel) : https://blog.alixinne.net\n\nBonne lecture !",
     "location": {
       "countryCode": "FR",
-      "address": ""
+      "address": "France"
     },
     "profiles": [
       {
         "network": "LinkedIn",
-        "username": "vincent-tavernier-707b5012a",
-        "url": "https://www.linkedin.com/in/vincent-tavernier-707b5012a/"
+        "username": "alix-tavernier-707b5012a",
+        "url": "https://www.linkedin.com/in/alix-tavernier-707b5012a/"
       }
     ]
   },
   "work": [
     {
       "name": "KAIZEN Solutions (KZS)",
-      "position": "Software Engineer",
+      "position": "Ingénieur logiciel",
       "startDate": "2022-10-31",
       "endDate": "",
       "highlights": [],
-      "summary": "Contracting work for Schneider Electric\n\n- Implementation and integration of OpenID Connect for CI/CD workflow authentication\n- Development of an AWS internal developer platform (IDP) for artifical intelligence workloads\n- Implementation of DevSecOps pipelines, release and update automation\n\nLanguages: Go, Python 3, Terraform, Bash\nTechnologies: Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironment: Windows, Linux, AWS, GitHub Enterprise",
+      "summary": "Prestation pour Schneider Electric\n\n- Mise en place et intégration de l'authentification OpenID Connect pour la CI/CD\n- Développement d'une plateforme interne pour les développeurs (IDP) sur AWS pour l'intelligence artificielle\n- Mise en place de pipelines DevSecOps, automatisation des releases et mises à jour des dépendances\n\nLangages : Go, Python 3, Terraform, Bash\nTechnologies : Open Policy Agent, Terraform, Terragrunt, AWS Lambda, AWS SageMaker, Semantic Release, Renovate, GitHub Actions\nEnvironnement : Windows, Linux, AWS, GitHub Enterprise",
       "url": "https://www.linkedin.com/company/kzs/",
-      "location": "Grenoble, France"
+      "location": "Grenoble et périphérie"
     },
     {
       "name": "KAIZEN Solutions (KZS)",
-      "position": "Software Engineer",
+      "position": "Ingénieur logiciel",
       "startDate": "2021-10-31",
       "endDate": "",
       "highlights": [],
       "url": "https://www.linkedin.com/company/kzs/",
-      "location": "Grenoble, France"
+      "location": "Grenoble et périphérie"
     },
     {
       "name": "KAIZEN Solutions (KZS)",
-      "position": "Software engineer",
+      "position": "Ingénieur logiciel",
       "startDate": "2021-10-31",
       "endDate": "2022-09-30",
       "highlights": [],
-      "summary": "Contracting work for Thales AVS\n\n- Technical leader on a data collection, transformation and exploitation project\n- Designing the software architecture for supporting new features\n- Management of the project's operational tasks\n- AWS cloud and Kubernetes (Helm) developer\n- Code owner of the embedded data collection agents\n\nLanguages: C++, Python 3, Terraform, Helm\nTechnologies: ArgoCD, ElasticSearch, Grafana, Redis, Fluent-Bit, Metricbeat, Keycloak, Jenkins\nEnvironment: Windows, Linux, Docker, Kubernetes (K8s), AWS, Datadog\nMethods and integration: Git, Azure DevOps, GitLab",
+      "summary": "Prestation pour Thales AVS\n\n- Leader technique sur un projet de collecte, transformation et exploitation de données\n- Conception de l'architecture logicielle des nouvelles fonctionnalités\n- Gestion des tâches opérationnelles du cycle de vie du projet\n- Développeur cloud AWS et Kubernetes (Helm)\n- Responsable du développement des composants de collecte embarqués\n\nLangages : C++, Python 3, Terraform, Helm\nTechnologies : ArgoCD, ElasticSearch, Grafana, Redis, Fluent-Bit, Metricbeat, Keycloak, Jenkins\nEnvironnement : Windows, Linux, Docker, Kubernetes (K8s), AWS, Datadog\nMéthodologies, intégration : Git, Azure DevOps, GitLab",
       "url": "https://www.linkedin.com/company/kzs/",
-      "location": "Grenoble, France"
+      "location": "Grenoble et périphérie"
     },
     {
       "name": "Université Grenoble Alpes",
-      "position": "Teaching Assistant",
+      "position": "Attaché Temporaire d'Enseignement et de Recherche (ATER)",
       "startDate": "2020-09-30",
       "endDate": "2021-08-31",
       "highlights": [],
-      "summary": "Full-time teaching at the university and follow-up work on my previous research work.\n\n- Multiple classes taught in a computer science major : language theory, relational databases, and software development practices",
+      "summary": "Enseignement à plein temps à l'université et poursuite des travaux de recherche en thèse.\n\n- Enseignement de plusieurs matières dans un cursus informatique : théorie des langages, bases de données relationnelles, pratiques de développement logiciel",
       "url": "https://www.linkedin.com/school/universit%C3%A9-grenoble-alpes/",
       "location": "Grenoble, Auvergne-Rhône-Alpes, France"
     },
     {
       "name": "Université Grenoble Alpes",
-      "position": "PhD student",
+      "position": "Doctorant",
       "startDate": "2017-09-30",
       "endDate": "2021-08-31",
       "highlights": [],
-      "summary": "Thesis preparation : controlling the appearance of stochastic procedural textures\n\n- Publications regarding optimizing the Gabor Noise texture synthesis method via statistical indicators\n- Involved in the research's team day-to-day life (organizing seminars, presentation and IT system administration)\n- Teaching experience at university (algorithmics, relational databases and user interfaces at various levels)",
+      "summary": "Préparation de thèse de doctorat : contrôler l'apparence des textures stochastiques procédurales\n\n- Publication d'articles sur l'optimisation des performances de la méthode Gabor Noise via la mise en place d'outils statistiques\n- Participation à la vie de l'équipe de recherche (organisation de séminaires, présentations, administration des systèmes informatiques)\n- Enseignement à l'université (algorithmique, base de données et interfaces utilisateurs à divers niveaux)",
       "url": "https://www.linkedin.com/school/universit%C3%A9-grenoble-alpes/",
-      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+      "location": "Grenoble et périphérie"
     },
     {
       "name": "Inria",
-      "position": "Intern",
+      "position": "Stagiaire",
       "startDate": "2017-02-28",
       "endDate": "2017-07-31",
       "highlights": [],
-      "summary": "Engineering graduate internship : studying and solving the strange visual artifacts occuring when procedural texturing with paradoxical requirements\n\n- Review of the state of the art on procedural texture synthesis\n- Development of objective measures of artifacts\n- Study of related works on visual perception of artifacts",
+      "summary": "Stage de fin d'études : étude et résolution d'artefacts visuels se produisant lors de la génération procédurale de textures soumises à des contraintes paradoxales\n\n- Revue de la littérature sur la génération procédurale de texture\n- Mise en place d'outils objectifs pour la mesure des artefacts\n- Proposition de liens avec des études sur la perception visuelle",
       "url": "https://www.linkedin.com/company/inria/",
-      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+      "location": "Région de Grenoble, France"
     },
     {
       "name": "Eaton",
-      "position": "Intern - Translation system for software products",
+      "position": "Stage - Système de traduction pour produits logiciels",
       "startDate": "2016-06-30",
       "endDate": "2016-08-31",
       "highlights": [],
-      "summary": "Analysis, choice and implementation of a platform for managing translations of Eaton's software products, and integration into existing software",
+      "summary": "Comparaison, choix et mise en place d'une plateforme de gestion des traductions pour les produits logiciels Eaton et intégration d'un système de traduction d'interface utilisateur.",
       "url": "https://www.linkedin.com/company/eaton/",
-      "location": "Montbonnot, Auvergne-Rhône-Alpes, France"
+      "location": "Montbonnot"
     },
     {
       "name": "NSIGMA Junior-Entreprise",
-      "position": "Development of a customer relationship management system",
+      "position": "Développement d'un système de gestion de relations client",
       "startDate": "2015-10-31",
       "endDate": "2016-01-31",
       "highlights": [],
-      "summary": "Development of a customer relationship management Windows application for a tour operator.",
+      "summary": "Développement d’une application Windows de gestion de relations client pour un tour opérateur.",
       "url": "https://www.linkedin.com/company/nsigma-junior-enterprise/",
-      "location": "Grenoble, Auvergne-Rhône-Alpes, France"
+      "location": "Région de Grenoble, France"
     }
   ],
   "volunteer": [],
   "education": [
     {
       "institution": "Ecole Nationale Supérieure d'Informatique et de Mathématiques Appliquées de Grenoble",
-      "area": "Software engineer",
-      "studyType": "Engineering diploma",
+      "area": "Ingénierie des systèmes d'information",
+      "studyType": "Diplôme d'ingénieur",
       "startDate": "2014-12-31",
       "endDate": "2017-12-31",
       "score": "",
@@ -185,82 +185,7 @@
       "keywords": []
     },
     {
-      "name": "Semantic Release",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Renovate",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "AWS Lambda",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "GitHub Actions",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Keycloak",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Jenkins",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Elasticsearch",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Rust",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "OpenGL",
-      "level": "",
-      "keywords": []
-    },
-    {
       "name": "C++",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Intégration continue",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "LaTeX",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Git",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "C",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Perl",
-      "level": "",
-      "keywords": []
-    },
-    {
-      "name": "Python",
       "level": "",
       "keywords": []
     },
@@ -280,7 +205,22 @@
       "keywords": []
     },
     {
+      "name": "Intégration continue",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Python",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "Testing",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "LaTeX",
       "level": "",
       "keywords": []
     },
@@ -305,7 +245,17 @@
       "keywords": []
     },
     {
+      "name": "Git",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "CUDA",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Rust",
       "level": "",
       "keywords": []
     },
@@ -325,6 +275,11 @@
       "keywords": []
     },
     {
+      "name": "Renovate",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "SQL",
       "level": "",
       "keywords": []
@@ -340,6 +295,11 @@
       "keywords": []
     },
     {
+      "name": "Semantic Release",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "Julia (langage de programmation)",
       "level": "",
       "keywords": []
@@ -350,7 +310,17 @@
       "keywords": []
     },
     {
+      "name": "OpenGL",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "WebGL",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Perl",
       "level": "",
       "keywords": []
     },
@@ -365,7 +335,17 @@
       "keywords": []
     },
     {
+      "name": "C",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "CMake",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Elasticsearch",
       "level": "",
       "keywords": []
     },
@@ -375,12 +355,32 @@
       "keywords": []
     },
     {
+      "name": "GitHub Actions",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "ElasticSearch",
       "level": "",
       "keywords": []
     },
     {
+      "name": "Jenkins",
+      "level": "",
+      "keywords": []
+    },
+    {
       "name": "OpenGL Shading Language",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "AWS Lambda",
+      "level": "",
+      "keywords": []
+    },
+    {
+      "name": "Keycloak",
       "level": "",
       "keywords": []
     },
