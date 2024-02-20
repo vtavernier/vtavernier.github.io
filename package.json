@@ -14,17 +14,16 @@
     "format:check": "prettier --check .",
     "lint": "eslint . --ext .js,.ts,.astro",
     "subfont": "subfont -ir --no-fallbacks --silent --root dist",
-    "ci:check": "run-s format:check lint",
-    "postinstall": "sed -i \"s#src = src.substring(config.base.length - 1);#src = src.substring(config.base.length - +config.base.endsWith('/'));#\" node_modules/@astrojs/image/dist/build/ssg.js"
+    "ci:check": "run-s format:check lint"
   },
   "devDependencies": {
-    "@astrojs/image": "^0.14.1",
     "@astrojs/mdx": "^2.0.0",
     "@astrojs/rss": "^4.0.0",
     "@astrojs/sitemap": "^3.0.0",
     "@astrojs/tailwind": "^5.0.0",
-    "@astrolib/seo": "^0.3.0",
-    "@fontsource/inter": "^5.0.0",
+    "@astrolib/seo": "1.0.0-beta.5",
+    "@fontsource-variable/inter": "^5.0.16",
+    "@iconify-json/tabler": "^1.1.104",
     "@tailwindcss/typography": "^0.5.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",

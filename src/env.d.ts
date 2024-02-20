@@ -1,6 +1,6 @@
 /* eslint-disable */
 /// <reference path="../.astro/types.d.ts" />
-/// <reference types="@astrojs/image/client" />
+/// <reference types="astrojs/client" />
 
 declare module 'jsonresume-theme-stackoverflow' {
   interface Theme {

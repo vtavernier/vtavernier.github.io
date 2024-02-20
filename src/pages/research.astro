@@ -1,12 +1,12 @@
 ---
-import { Image } from '@astrojs/image/components';
+import { Image } from 'astro:assets';
 
 import Layout from '~/layouts/PageLayout.astro';
 import Headline from '~/components/blog/Headline.astro';
 import rootPublications from '~/data/publications.json';
 
 import fs from 'node:fs';
-import { Icon } from 'astro-icon';
+import { Icon } from 'astro-icon/components';
 
 interface Publication {
   fileMain_s: string;
@@ -49,7 +49,6 @@ const meta = {
               <a href={publication.fileMain_s} target="blank" rel="noopener">
                 <Image
                   alt=""
-                  aspectRatio={1 / 1.414}
                   width={200}
                   src={import(`~/assets/images/publications/${publication.thumbId_i}.png`)}
                 />

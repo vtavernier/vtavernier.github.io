@@ -5,13 +5,13 @@ import { defineConfig } from 'astro/config';
 
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
-import image from '@astrojs/image';
 import mdx from '@astrojs/mdx';
 import compress from 'astro-compress';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import m2dx from 'astro-m2dx';
 import remarkDirective from 'remark-directive';
+import icon from "astro-icon";
 
 import { readingTimeRemarkPlugin } from './src/utils/frontmatter.mjs';
 import remarkEmdash from './src/remark/emdash.ts';
@@ -42,9 +42,6 @@ export default defineConfig({
       },
     }),
     sitemap(),
-    image({
-      serviceEntryPoint: '@astrojs/image/sharp',
-    }),
     mdx({
       remarkPlugins: [
         remarkMath,
@@ -54,6 +51,7 @@ export default defineConfig({
       ],
       rehypePlugins: [rehypeKatex],
     }),
+    icon(),
 
     compress({
       css: true,
