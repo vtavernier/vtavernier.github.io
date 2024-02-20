@@ -1,22 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    ":semanticCommits",
-    "schedule:weekly"
-  ],
-  "labels": [
-    "dependencies"
-  ],
+  "extends": ["config:base", ":semanticCommits", "schedule:weekly"],
+  "labels": ["dependencies"],
   "reviewersFromCodeOwners": true,
   "packageRules": [
     {
       "description": "Group all npm updates together",
       "groupName": "NPM",
       "groupSlug": "npm",
-      "matchDatasources": [
-        "npm"
-      ]
+      "matchDatasources": ["npm"]
     }
   ]
 }
