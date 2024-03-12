@@ -1,3 +1,3 @@
-# [vtavernier.github.io](https://vtavernier.github.io/)
+# [blog.alixinne.net](https://blog.alixinne.net/)
 
 Source repository for my blog.
