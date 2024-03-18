@@ -1,4 +1,4 @@
-FROM docker.io/library/node:18
+FROM docker.io/library/node:21
 
 RUN apt-get update -q && \
     apt-get install -y --no-install-recommends \
